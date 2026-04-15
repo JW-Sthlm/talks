@@ -180,7 +180,7 @@ table code{
   box-shadow:var(--shadow-sm);
 }
 
-/* ── 7 Levels ── */
+/* ── 7 Shades ── */
 .levels-container{
   display:flex;gap:48px;height:calc(100vh - 100px);align-items:stretch;
   position:relative;
@@ -538,6 +538,7 @@ table code{
 #header-link.visible{opacity:1;pointer-events:auto}
 #header-link a{color:var(--teal);text-decoration:none;font-weight:500}
 #header-link a:hover{text-decoration:underline}
+/* (poll-card styles removed) */
 </style>
 </head>
 <body>
@@ -546,13 +547,14 @@ table code{
 <div id="progress"></div>
 <nav id="nav"></nav>
 <div id="counter"><span>1</span> / 15</div>
-<div id="keys"><span class="key">&uarr;</span><span class="key">&darr;</span> navigate</div>
+<div id="keys"><span class="key">&uarr;</span><span class="key">&darr;</span> navigate &nbsp;<span class="key">P</span> presenter</div>
 
 <div id="deck">
 
 <!-- ═══════ SLIDE 1: TITLE ═══════ -->
-<section class="slide slide-title slide-hero" data-label="Title">
+<section class="slide slide-title slide-hero" data-label="Title" data-notes="The title asks a question: autonomous agents — what are they, and do we dare? By the end, you'll have an answer.">
   <div class="slide-inner">
+    <div class="reveal" style="font-family:var(--font-display);font-size:15px;letter-spacing:.15em;text-transform:uppercase;color:var(--fg-weak);opacity:0.55;margin-bottom:20px;text-shadow:0 1px 8px rgba(0,0,0,0.06);">Seven Shades of Agents</div>
     <h1 class="reveal">Autonoma Agenter <span class="accent">&ndash; vad &auml;r det och v&aring;gar vi?</span></h1>
     <p class="lead reveal d1">A field report on autonomous agents, real systems, and trust.</p>
     <p class="reveal d2" style="font-size:14px;color:var(--fg-muted);margin-top:-16px">Johan Wallquist &middot; Partner Solution Architect &middot; Microsoft</p>
@@ -564,11 +566,11 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 2: 7 LEVELS ═══════ -->
-<section class="slide slide-alt" data-label="7 Levels" id="levelsSlide">
+<section class="slide slide-alt" data-label="7 Shades" id="levelsSlide" data-notes="Seven shades of working with AI. Walk through 1-3 fast: familiar. Pause at 4: the shift. Land on 5: team direction. Show 6: system operation. Tease 7: Dark Factory.">
   <div class="slide-inner" style="padding-top:32px;padding-bottom:0;height:100%">
     <div class="levels-container reveal">
       <div class="levels-sidebar">
-        <div class="levels-sidebar-title">The 7 Levels of<br>AI Partnership</div>
+        <div class="levels-sidebar-title">Seven Shades<br>of Agents</div>
         <div class="levels-track">
           <div class="levels-track-fill" id="trackFill"></div>
           <div class="level-marker active" data-idx="0">
@@ -666,7 +668,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 3: AUDIENCE POLL ═══════ -->
-<section class="slide slide-alt" data-label="Poll">
+<section class="slide slide-alt" data-label="Poll" data-notes="Three questions. Hold up fingers 1-7. First: you personally. Second: your organization. Third: Sweden's coolest startups. Interesting — keep those numbers in mind.">
   <div class="slide-inner">
     <span class="part-label reveal">Interactive</span>
     <h2 class="reveal d1">Where Are You? <span class="accent">Where Is Your Organization?</span></h2>
@@ -674,47 +676,47 @@ table code{
     <div style="margin-top:32px;">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;max-width:700px;">
         <div class="reveal d1" style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;text-align:center;box-shadow:var(--shadow-sm);">
-          <div style="font-size:28px;margin-bottom:8px;">&#9995;</div>
+          <div style="font-size:28px;margin-bottom:8px;">✋</div>
           <div style="font-family:var(--font-display);font-weight:700;font-size:15px;margin-bottom:4px;">You personally</div>
           <div style="font-size:13px;color:var(--fg-muted);">What level are you at today?</div>
         </div>
         <div class="reveal d2" style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;text-align:center;box-shadow:var(--shadow-sm);">
-          <div style="font-size:28px;margin-bottom:8px;">&#127970;</div>
+          <div style="font-size:28px;margin-bottom:8px;">🏢</div>
           <div style="font-family:var(--font-display);font-weight:700;font-size:15px;margin-bottom:4px;">Your organization</div>
           <div style="font-size:13px;color:var(--fg-muted);">Where is your company?</div>
         </div>
         <div class="reveal d3" style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;text-align:center;box-shadow:var(--shadow-sm);">
-          <div style="font-size:28px;margin-bottom:8px;">&#128640;</div>
-          <div style="font-family:var(--font-display);font-weight:700;font-size:15px;margin-bottom:4px;">Sweden&rsquo;s coolest startups</div>
+          <div style="font-size:28px;margin-bottom:8px;">🚀</div>
+          <div style="font-family:var(--font-display);font-weight:700;font-size:15px;margin-bottom:4px;">Sweden's coolest startups</div>
           <div style="font-size:13px;color:var(--fg-muted);">Where are they?</div>
         </div>
       </div>
     </div>
     <div class="reveal d4" style="margin-top:24px;font-size:12px;color:var(--fg-muted);max-width:700px;line-height:1.8;">
-      <strong style="color:var(--fg-secondary);">The levels:</strong>
+      <strong style="color:var(--fg-secondary);">The shades:</strong>
       1 Ask &amp; Answer · 2 Draft Partner · 3 In-Context Assist · 4 Task Execution · 5 Team Direction · 6 System Operation · 7 Dark Factory
     </div>
-    <div class="quote reveal d5" style="margin-top:28px;">Show of hands &mdash; hold up the number of fingers matching your level. <strong>1 through 7.</strong></div>
+    <div class="quote reveal d4" style="margin-top:28px;white-space:nowrap;">Show of hands &mdash; hold up the number of fingers matching your shade. <strong>1 through 7.</strong></div>
   </div>
 </section>
 
 <!-- ═══════ SLIDE 4: DEMO INTRO ═══════ -->
-<section class="slide slide-hero" data-label="Demo">
+<section class="slide slide-hero" data-label="Demo" data-notes="We could talk about agents. I'd rather talk to them. Switch to terminal. Voice prompt. Wait for Squad to propose team. Approve. Watch files appear. PIVOT: I did this two weeks ago. Let me show you what happened.">
   <div class="slide-inner">
     <span class="part-label reveal">Level 5 &mdash; Let me prove it</span>
     <h2 class="reveal d1">We could talk about autonomous agents.<br><span class="accent">I&rsquo;d rather talk to them.</span></h2>
-    <div class="quote reveal d3" style="margin-top:40px;max-width:500px;">
+    <div class="quote reveal d3" style="margin-top:40px;max-width:500px;white-space:nowrap;">
       <strong>Tip:</strong> Watch what happens in the empty folder on the left side of the screen.
     </div>
   </div>
 </section>
 
 <!-- ═══════ SLIDE 5: THE REVEAL ═══════ -->
-<section class="slide slide-alt" data-label="Reveal">
+<section class="slide slide-alt" data-label="Reveal" data-notes="I initiated this build two weeks ago. Same conversation. Browse the live site — categories, search, entries. 14 sources scanned daily. Agents research, validate, ship. Built by one person. Who can't code.">
   <div class="slide-inner">
     <span class="part-label reveal">Level 6 &mdash; Here&rsquo;s what I built</span>
     <h2 class="reveal d1">Same conversation. <span class="accent">Two weeks later.</span></h2>
-    <p class="lead reveal d2">I initiated the build. I reviewed. I iterated. I kept going. Here&rsquo;s where it ended up.</p>
+    <p class="lead reveal d2" style="max-width:none;">I initiated the build. Reviewed. Iterated. Kept going.</p>
     <div class="card-grid reveal d3">
       <div class="info-card">
         <div class="icon">&#127760;</div>
@@ -733,14 +735,14 @@ table code{
         <div class="card-text"><strong>Domain experts curate</strong> &mdash; they decide, agents execute</div>
       </div>
     </div>
-    <div class="quote reveal d4" style="font-size:20px;font-weight:600;border-left-width:4px;">
+    <div class="quote reveal d4" style="font-size:20px;font-weight:600;border-left-width:4px;white-space:nowrap;">
       &ldquo;Built by one person. Who can&rsquo;t code.&rdquo;
     </div>
   </div>
 </section>
 
 <!-- ═══════ SLIDE 5: DARK FACTORY ═══════ -->
-<section class="slide slide-hero" data-label="Dark Factory">
+<section class="slide slide-hero" data-label="Dark Factory" data-notes="Level 7. Dark Factory. Fully autonomous software. We're not there yet. But look how close levels 5 and 6 got us. The path is clear. Vågar vi?">
   <div class="slide-inner">
     <span class="part-label reveal">Level 7 &mdash; The horizon</span>
     <h2 class="reveal d1">Dark Factory</h2>
@@ -750,24 +752,35 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 6: THE SHIFT ═══════ -->
-<section class="slide slide-alt" data-label="The Shift">
+<section class="slide slide-alt" data-label="The Shift" data-notes="Why now? AI crossed a threshold. Coding agents can now ship real work. Everything is code — when AI masters code, everyone gets access. The agent loop: understand, plan, act, check, iterate.">
   <div class="slide-inner">
     <span class="part-label reveal">Why now</span>
-    <h2 class="reveal d1">AI Was a Great Advisor. <span class="accent">Now It&rsquo;s Also a Great Operator.</span></h2>
+    <h2 class="reveal d1">AI Was a Great Advisor.<br><span class="accent" style="font-size:1.15em;">Now It&rsquo;s Also a Great Operator.</span></h2>
     <ul class="feature-list reveal d2" style="margin-bottom:28px;">
-      <li><span class="dot"></span> <strong>The threshold:</strong> Coding agents recently crossed the quality line. The ripple effects are everywhere.</li>
+      <li><span class="dot"></span> <strong>The threshold:</strong> Coding agents crossed the quality line &mdash; AI can now build and ship real changes to real systems. Everything is code; when AI masters code, everyone gets access.</li>
       <li><span class="dot"></span> <strong>Reasoning:</strong> Multi-step planning, dependency handling, complex workflows</li>
       <li><span class="dot"></span> <strong>Tool use:</strong> MCP, custom skills, specialist agents, extensible toolboxes</li>
       <li><span class="dot"></span> <strong>Self-correction:</strong> Agents check, iterate, and improve &mdash; in loops, not one-shots</li>
     </ul>
-    <div class="quote reveal d3">
-      <strong>The agent loop:</strong> Understand &rarr; Plan &rarr; Act &rarr; Check &rarr; <span style="color:var(--teal);font-weight:700;">Iterate</span> &mdash; wrapped in memory, guardrails, and human review.
+    <div class="reveal d3" style="margin-top:28px;">
+      <div style="display:flex;align-items:center;gap:0;flex-wrap:nowrap;overflow-x:auto;padding:16px 0;">
+        <div style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px 14px;font-family:var(--font-display);font-size:13px;font-weight:600;white-space:nowrap;box-shadow:var(--shadow-sm);">🧠 Understand</div>
+        <div style="color:var(--fg-weak);padding:0 6px;font-size:14px;">→</div>
+        <div style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px 14px;font-family:var(--font-display);font-size:13px;font-weight:600;white-space:nowrap;box-shadow:var(--shadow-sm);">📋 Plan</div>
+        <div style="color:var(--fg-weak);padding:0 6px;font-size:14px;">→</div>
+        <div style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px 14px;font-family:var(--font-display);font-size:13px;font-weight:600;white-space:nowrap;box-shadow:var(--shadow-sm);">🔧 Act</div>
+        <div style="color:var(--fg-weak);padding:0 6px;font-size:14px;">→</div>
+        <div style="background:var(--bg-white);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:8px 14px;font-family:var(--font-display);font-size:13px;font-weight:600;white-space:nowrap;box-shadow:var(--shadow-sm);">✅ Check</div>
+        <div style="color:var(--fg-weak);padding:0 6px;font-size:14px;">→</div>
+        <div style="background:var(--teal);color:#fff;border-radius:var(--radius-md);padding:8px 14px;font-family:var(--font-display);font-size:13px;font-weight:700;white-space:nowrap;box-shadow:var(--shadow-sm);">🔄 Iterate</div>
+      </div>
+      <div style="font-size:13px;color:var(--fg-muted);margin-top:4px;">Wrapped in memory · guardrails · human review</div>
     </div>
   </div>
 </section>
 
 <!-- ═══════ SLIDE 7: BUILDING BLOCKS ═══════ -->
-<section class="slide" data-label="Blocks">
+<section class="slide" data-label="Blocks" data-notes="Three layers. Copilot CLI — describe, it executes. Add tools — MCP, skills, toolboxes. Add a team — specialists with memory and task lists. The demo showed all three.">
   <div class="slide-inner">
     <span class="part-label reveal">Start simple</span>
     <h2 class="reveal d1">The Building Blocks</h2>
@@ -796,7 +809,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 8: BY THE NUMBERS ═══════ -->
-<section class="slide slide-alt" data-label="Numbers">
+<section class="slide slide-alt" data-label="Numbers" data-notes="Two evenings to first version. Eight agents. Fourteen sources daily. Seventy-five entries. Fifteen minutes a day. One non-developer. But it wasn't all smooth...">
   <div class="slide-inner">
     <span class="part-label reveal">Proof</span>
     <h2 class="reveal d1">By the Numbers</h2>
@@ -830,7 +843,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 9: VÅGAR VI? ═══════ -->
-<section class="slide slide-hero" data-label="Vågar vi?">
+<section class="slide slide-hero" data-label="Vågar vi?" data-notes="Day three. One agent doing everything. Added a link — also 'improved' three entries I didn't ask it to touch. Looked professional. I approved it. Site broke. Agent confidence is NOT agent correctness.">
   <div class="slide-inner">
     <span class="part-label reveal">The trust question</span>
     <h2 class="reveal d1">V&aring;gar Vi?</h2>
@@ -843,7 +856,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 10: TRUST SPECTRUM ═══════ -->
-<section class="slide slide-alt" data-label="Trust">
+<section class="slide slide-alt" data-label="Trust" data-notes="Not 'don't trust' or 'trust completely.' It's a spectrum. Check everything — safe but slow. Trust but verify — humans at judgment points. Let it run — fast, autonomous. Four safeguards: specialist agents, validation layers, human checkpoints, audit trail.">
   <div class="slide-inner">
     <span class="part-label reveal">The answer</span>
     <h2 class="reveal d1">The Trust Spectrum</h2>
@@ -852,7 +865,7 @@ table code{
       <div style="max-width:750px;">
         <!-- Scale bar -->
         <div class="reveal" style="overflow:hidden;">
-          <div class="trust-bar" style="display:flex;height:8px;border-radius:100px;overflow:hidden;margin-bottom:16px;transform:scaleX(0);transition:transform 1.2s cubic-bezier(0.16,1,0.3,1);transform-origin:left;">
+          <div class="trust-bar" style="display:flex;height:8px;border-radius:100px;overflow:hidden;margin-bottom:16px;transform:scaleX(0);transition:transform 2.5s cubic-bezier(0.16,1,0.3,1);transform-origin:left;">
             <div style="flex:1;background:linear-gradient(90deg, #e74c3c, #f39c12)"></div>
             <div style="flex:1.5;background:linear-gradient(90deg, #f39c12, var(--teal))"></div>
             <div style="flex:1;background:linear-gradient(90deg, var(--teal), #2ecc71)"></div>
@@ -860,15 +873,15 @@ table code{
         </div>
         <!-- Labels -->
         <div style="display:flex;justify-content:space-between;font-size:14px;">
-          <div style="text-align:left;max-width:180px;">
+          <div class="trust-label" style="text-align:left;max-width:180px;opacity:0;transition:opacity 0.8s 0.3s;">
             <div style="font-weight:700;color:#e74c3c;font-family:var(--font-display);">&#128274; Check Everything</div>
             <div style="font-size:13px;color:var(--fg-muted);margin-top:2px;">Safe but slow. Nothing ships without full review.</div>
           </div>
-          <div style="text-align:center;max-width:220px;">
+          <div class="trust-label" style="text-align:center;max-width:220px;opacity:0;transition:opacity 0.8s 1.2s;">
             <div style="font-weight:700;color:var(--teal);font-family:var(--font-display);font-size:16px;">&#9989; Trust but Verify</div>
             <div style="font-size:13px;color:var(--fg-muted);margin-top:2px;">Humans at judgment points. Agents handle the rest.</div>
           </div>
-          <div style="text-align:right;max-width:180px;">
+          <div class="trust-label" style="text-align:right;max-width:180px;opacity:0;transition:opacity 0.8s 2.0s;">
             <div style="font-weight:700;color:#2ecc71;font-family:var(--font-display);">&#9889; Let It Run</div>
             <div style="font-size:13px;color:var(--fg-muted);margin-top:2px;">Fast and autonomous. Monitor, don&rsquo;t micromanage.</div>
           </div>
@@ -885,7 +898,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 11: GUARDRAILS ═══════ -->
-<section class="slide" data-label="Guardrails">
+<section class="slide" data-label="Guardrails" data-notes="Security: human review before production, no secrets in prompts, full audit trail. Responsible AI: agents can be confidently wrong — verify, document, start small. Autonomy without guardrails is just chaos with better PR.">
   <div class="slide-inner">
     <span class="part-label reveal">What makes it safe</span>
     <h2 class="reveal d1">Guardrails That Make It Work</h2>
@@ -912,7 +925,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 12: WHAT I LEARNED ═══════ -->
-<section class="slide slide-alt" data-label="Lessons">
+<section class="slide slide-alt" data-label="Lessons" data-notes="Three things. One: we're already there. Not someday — now. Two: trust is earned. Start small, expand. Three: teams that direct agents will move faster. Competitive advantage. Window is open.">
   <div class="slide-inner">
     <span class="part-label reveal">Three takeaways</span>
     <h2 class="reveal d1">What I Learned</h2>
@@ -943,7 +956,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 13: YOUR TURN ═══════ -->
-<section class="slide slide-hero" data-label="Your Turn">
+<section class="slide slide-hero" data-label="Your Turn" data-notes="People blocked from building weren't blocked by ideas. Blocked by access — not ambition. That access is here now. Vågar du?">
   <div class="slide-inner" style="text-align:center;display:flex;flex-direction:column;align-items:center">
     <span class="part-label reveal">Invitation</span>
     <h2 class="reveal d1">What Level Are You At?</h2>
@@ -953,7 +966,7 @@ table code{
 </section>
 
 <!-- ═══════ SLIDE 15: RESOURCES ═══════ -->
-<section class="slide slide-alt" data-label="Resources">
+<section class="slide slide-alt" data-label="Resources" data-notes="Everything from this talk in one place: bit.ly/agentjohan. Scan the QR. AI was a great advisor. Now it's an operator. What will you operate?">
   <div class="slide-inner">
     <span class="part-label reveal">Get started</span>
     <h2 class="reveal d1">Resources</h2>
@@ -991,7 +1004,19 @@ slides.forEach((s,i)=>{
 const dots=[...document.querySelectorAll('.nav-dot')];
 
 const revealObs=new IntersectionObserver(e=>{
-  e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');const trustBar=el.target.querySelector('.trust-bar');if(trustBar)trustBar.style.transform='scaleX(1)';}});
+  e.forEach(el=>{
+    if(el.isIntersecting){
+      el.target.classList.add('visible');
+      const trustBar=el.target.querySelector('.trust-bar');
+      if(trustBar)trustBar.style.transform='scaleX(1)';
+      el.target.querySelectorAll('.trust-label').forEach(l=>l.style.opacity='1');
+    } else {
+      // Only reset trust-specific animations (not general reveals)
+      const trustBar=el.target.querySelector('.trust-bar');
+      if(trustBar){trustBar.style.transform='scaleX(0)';}
+      el.target.querySelectorAll('.trust-label').forEach(l=>l.style.opacity='0');
+    }
+  });
 },{threshold:.15});
 document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
 
@@ -1018,7 +1043,7 @@ const slideObs=new IntersectionObserver(e=>{
 },{threshold:.5});
 slides.forEach(s=>slideObs.observe(s));
 
-// ── 7 Levels carousel ──
+// ── 7 Shades carousel ──
 const levelsSlide=document.getElementById('levelsSlide');
 const levelPanels=levelsSlide?[...levelsSlide.querySelectorAll('.level-panel')]:[];
 const levelMarkers=levelsSlide?[...levelsSlide.querySelectorAll('.level-marker')]:[];
@@ -1097,6 +1122,32 @@ document.addEventListener('keydown',e=>{
     }
   }else if(e.key==='Home'){e.preventDefault();slides[0].scrollIntoView({behavior:'smooth'});}
   else if(e.key==='End'){e.preventDefault();slides[total-1].scrollIntoView({behavior:'smooth'});}
+});
+
+// Poll card stepper removed — using built-in reveal system
+
+// ── Presenter view sync ──
+const presenterChannel = new BroadcastChannel('presenter-sync');
+
+function broadcastSlide(idx) {
+  const slide = slides[idx];
+  const notes = slide ? slide.getAttribute('data-notes') || '' : '';
+  const label = slide ? slide.getAttribute('data-label') || ('Slide '+(idx+1)) : '';
+  presenterChannel.postMessage({
+    type: 'slide-change',
+    index: idx,
+    total: total,
+    label: label,
+    notes: notes
+  });
+}
+
+setInterval(() => { broadcastSlide(activeIndex); }, 500);
+
+document.addEventListener('keydown', e => {
+  if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey) {
+    window.open('agents-7shades-presenter.html', 'presenter', 'width=600,height=800');
+  }
 });
 </script>
 </body>

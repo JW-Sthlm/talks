@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presenter Notes — Autonoma Agenter</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #1a1a1a; color: #e8e8e8;
+    padding: 32px 40px; min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid #333;
+  }
+  .slide-label {
+    font-family: 'Plus Jakarta Sans', system-ui; font-size: 14px;
+    font-weight: 700; color: #2D6E6D; letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .slide-counter {
+    font-size: 13px; color: #666; font-weight: 500;
+  }
+  .slide-counter span { color: #2D6E6D; font-weight: 700; }
+  .notes {
+    flex: 1; display: flex; align-items: center;
+  }
+  .notes-text {
+    font-size: 28px; line-height: 1.6; font-weight: 300;
+    color: #d4d4d4; max-width: 100%;
+    transition: opacity 0.3s ease;
+  }
+  .notes-text strong { color: #2D6E6D; font-weight: 600; }
+  .waiting {
+    color: #555; font-style: italic; font-size: 20px;
+  }
+  .hint {
+    margin-top: 24px; padding-top: 16px;
+    border-top: 1px solid #333;
+    font-size: 12px; color: #555;
+  }
+  .hint kbd {
+    background: #2a2a2a; border: 1px solid #444; border-radius: 3px;
+    padding: 2px 6px; font-size: 11px;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="slide-label" id="slideLabel">Waiting for presentation...</div>
+    <div class="slide-counter"><span id="slideNum">-</span> / <span id="slideTotal">-</span></div>
+  </div>
+  <div class="notes">
+    <div class="notes-text" id="notesText">
+      <span class="waiting">Open the presentation and press <kbd>P</kbd> to connect.<br>This window syncs automatically.</span>
+    </div>
+  </div>
+  <div class="hint">
+    <kbd>P</kbd> in presentation to open this view · Notes update as you navigate · Keep this on your screen, share the presentation on projector
+  </div>
+
+  <script>
+    const channel = new BroadcastChannel('presenter-sync');
+    const labelEl = document.getElementById('slideLabel');
+    const numEl = document.getElementById('slideNum');
+    const totalEl = document.getElementById('slideTotal');
+    const notesEl = document.getElementById('notesText');
+    let lastIndex = -1;
+
+    channel.onmessage = (e) => {
+      if (e.data.type === 'slide-change') {
+        const { index, total, label, notes } = e.data;
+        if (index === lastIndex) return;
+        lastIndex = index;
+
+        labelEl.textContent = label;
+        numEl.textContent = index + 1;
+        totalEl.textContent = total;
+
+        notesEl.style.opacity = '0';
+        setTimeout(() => {
+          notesEl.textContent = notes || '(No notes for this slide)';
+          notesEl.style.opacity = '1';
+        }, 150);
+      }
+    };
+  </script>
+</body>
+</html>
