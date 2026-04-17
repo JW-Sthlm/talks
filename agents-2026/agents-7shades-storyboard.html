@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storyboard — Autonoma Agenter – 7 Shades edition</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+  
+  .header { background: #2D6E6D; color: white; padding: 1.5rem 2rem; }
+  .header h1 { font-size: 1.5rem; }
+  .header p { opacity: 0.85; font-size: 0.85rem; }
+  
+  /* Mode bar */
+  .mode-bar { background: white; border-bottom: 1px solid #ddd; padding: 0.6rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 0.5rem; }
+  .mode-bar span { font-size: 0.8rem; color: #666; }
+  .mode-bar button { background: #eee; border: 1px solid #ccc; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+  .mode-bar button.active { background: #2D6E6D; color: white; border-color: #2D6E6D; }
+  .mode-bar button:hover { background: #ddd; }
+  .mode-bar button.active:hover { background: #204F4E; }
+  .mode-bar .count { font-size: 0.7rem; color: #999; margin-left: auto; }
+  .mode-bar a { font-size: 0.75rem; margin-left: 1rem; color: #2D6E6D; text-decoration: none; }
+  
+  .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem 3rem; }
+  
+  /* Sorter view */
+  #sorter { padding: 1.5rem 0; }
+  .sorter-act { margin-bottom: 1.5rem; }
+  .sorter-act h4 { font-size: 0.75rem; color: #2D6E6D; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .sorter-grid { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .sorter-thumb { width: 260px; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .sorter-thumb:hover { transform: scale(1.03); box-shadow: 0 3px 12px rgba(0,0,0,0.15); }
+  .sorter-thumb.hidden { display: none; }
+  .sorter-slide { background: #F8F8F7; color: #21211F; padding: 0.7rem; min-height: 150px; display: flex; flex-direction: column; font-size: 0.5rem; overflow: hidden; }
+  .sorter-slide h5 { font-size: 0.65rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.3rem; color: #21211F; }
+  .sorter-slide .num { font-size: 0.5rem; opacity: 0.4; margin-bottom: 0.2rem; }
+  .sorter-slide .thumb-body { font-size: 0.48rem; opacity: 0.7; line-height: 1.4; overflow: hidden; color: #4A4A46; }
+  .sorter-slide .thumb-body ul { list-style: none; padding: 0; }
+  .sorter-slide .thumb-body li { padding-left: 0.8em; position: relative; margin-bottom: 0.1em; }
+  .sorter-slide .thumb-body li::before { content: '→'; position: absolute; left: 0; color: #2D6E6D; }
+  .sorter-slide .thumb-body blockquote { border-left: 2px solid #2D6E6D; padding-left: 0.4em; font-style: italic; opacity: 0.6; margin: 0.2em 0; }
+  .sorter-slide .thumb-body p { margin: 0.1em 0; }
+  .sorter-tags { display: flex; gap: 0.15rem; padding: 0.2rem 0.3rem; background: white; }
+  .sorter-tags .st { font-size: 0.45rem; padding: 0.05rem 0.2rem; border-radius: 2px; }
+  
+  /* Full slides */
+  #slides { }
+  .act-divider { margin: 2rem 0 0.5rem; }
+  .act-divider h3 { font-size: 0.85rem; color: #2D6E6D; border-bottom: 2px solid #2D6E6D; display: inline-block; padding-bottom: 0.2rem; }
+  .act-divider .time { font-size: 0.7rem; color: #999; margin-left: 0.5rem; }
+  
+  .slide-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 2rem; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .slide-row.hidden { display: none; }
+  .slide-panel { background: #F8F8F7; color: #21211F; padding: 1.5rem; min-height: 260px; display: flex; flex-direction: column; position: relative; font-size: 0.8rem; overflow: hidden; }
+  .slide-panel .sn { position: absolute; top: 0.5rem; right: 0.7rem; font-size: 0.6rem; opacity: 0.3; color: #797971; }
+  .slide-panel h2 { font-size: 1.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.2rem; color: #21211F; }
+  .slide-panel h4 { font-size: 0.7rem; opacity: 0.6; margin-bottom: 0.5rem; color: #4A4A46; }
+  .slide-panel ul { list-style: none; padding: 0; font-size: 0.7rem; }
+  .slide-panel li { padding: 0.15rem 0 0.15rem 1rem; position: relative; }
+  .slide-panel li::before { content: '→'; position: absolute; left: 0; color: #2D6E6D; font-size: 0.7rem; }
+  .slide-panel blockquote { border-left: 3px solid #2D6E6D; padding: 0.3rem 0.6rem; font-style: italic; opacity: 0.85; font-size: 0.7rem; margin: 0.4rem 0; background: rgba(45,110,109,0.06); }
+  .slide-panel p { font-size: 0.7rem; }
+  .slide-panel .accent { color: #2D6E6D; }
+  .slide-panel .small { font-size: 0.55rem; opacity: 0.4; }
+  .slide-panel .highlight-line { font-weight: 700; color: #2D6E6D; }
+  .slide-panel .pipeline { font-family: 'Cascadia Code','Consolas',monospace; font-size: 0.55rem; background: rgba(255,255,255,0.05); padding: 0.4em 0.6em; border-radius: 6px; line-height: 1.7; }
+  .slide-panel .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4em; margin: 0.5em 0; }
+  .slide-panel .stat { text-align: center; }
+  .slide-panel .stat .num { font-size: 1.4em; font-weight: 700; color: #2D6E6D; line-height: 1; }
+  .slide-panel .stat .label { font-size: 0.5em; opacity: 0.8; }
+  .slide-panel .failure-card { background: rgba(231,76,60,0.12); border-left: 4px solid #e74c3c; padding: 0.4em 0.6em; border-radius: 0 6px 6px 0; font-size: 0.6rem; }
+  .slide-panel .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em; }
+  .slide-panel .card { background: rgba(255,255,255,0.06); padding: 0.4em 0.5em; border-radius: 5px; }
+  .slide-panel .card-title { font-weight: 700; font-size: 0.6rem; margin-bottom: 0.15em; }
+  .slide-panel .card p { font-size: 0.55rem; }
+  .slide-panel .internal-badge { background: rgba(231,76,60,0.3); color: #e74c3c; padding: 0.1em 0.4em; border-radius: 4px; font-size: 0.45rem; font-weight: 700; display: inline-block; margin-bottom: 0.3em; border: 2px solid #e74c3c; }
+  
+  .script-panel { background: white; padding: 1.5rem; font-size: 0.85rem; }
+  .script-panel .meta { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
+  .script-panel .meta .timing { background: #2D6E6D; color: white; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; }
+  .script-panel .meta .energy { padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; color: white; }
+  .script-panel .meta .energy-high { background: #ff6b35; }
+  .script-panel .meta .energy-calm { background: #2ecc71; }
+  .script-panel .meta .tag { font-size: 0.55rem; padding: 0.1rem 0.3rem; border-radius: 3px; }
+  .tag-full { background: #EEF4F4; color: #2D6E6D; }
+  .tag-30 { background: #FFF3E0; color: #E65100; }
+  .tag-15 { background: #FCE4EC; color: #C62828; }
+  .tag-int { background: #fce4ec; color: #c62828; border: 1px solid #e74c3c; }
+  .script-panel p { margin-bottom: 0.5rem; line-height: 1.5; }
+  
+  /* Demo card */
+  .demo-card { margin-bottom: 2rem; background: white; border: 2px solid #e74c3c; border-radius: 10px; padding: 1.5rem; }
+  .demo-card h3 { color: #e74c3c; font-size: 1rem; margin-bottom: 0.6rem; }
+  .demo-step { display: flex; gap: 0.6rem; margin-bottom: 0.4rem; font-size: 0.8rem; }
+  .demo-num { background: #e74c3c; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; flex-shrink: 0; }
+  
+  /* Checklist */
+  .checklist { margin: 2rem 0; background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .checklist h3 { font-size: 1rem; margin-bottom: 0.6rem; }
+  .checklist table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .checklist th, .checklist td { padding: 0.3rem 0.5rem; text-align: left; border-bottom: 1px solid #eee; }
+  
+  @media (max-width: 900px) { .slide-row { grid-template-columns: 1fr; } .sorter-thumb { width: 110px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎤 Storyboard — "Autonoma Agenter – vad är det och vågar vi?" (7 Shades edition)</h1>
+  <p>Speaker script · demo plan · 7 Levels framework · prep checklist</p>
+</div>
+
+<div class="mode-bar">
+  <span>Mode:</span>
+  <button onclick="setMode('full')" id="btn-full" class="active">60 min</button>
+  <button onclick="setMode('30min')" id="btn-30min">30 min</button>
+  <button onclick="setMode('lightning')" id="btn-lightning">15 min</button>
+  <span class="count" id="slide-count"></span>
+  <a href="#sorter">↑ Sorter</a>
+  <a href="#slides">↓ Full script</a>
+</div>
+
+<div class="container">
+<div id='sorter'>
+
+<!-- Act 1 — The Framework -->
+<div class='sorter-act'><h4>Act 1 — The Framework · 7 min</h4><div class='sorter-grid'>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-1').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFFFFF"><span class="num">1</span><h5>Autonoma Agenter</h5><div class="thumb-body"><p>– vad är det och vågar vi?</p><p style="opacity:0.4;">Johan Wallquist · PSA · Microsoft</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-2').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">2</span><h5>The 7 Levels</h5><div class="thumb-body"><ul><li>L1-3: Ask → Draft → In-tool</li><li>L4: Agent plans &amp; executes</li><li>L5: Team of specialists</li><li>L6: Autonomous ops</li><li>L7: Dark Factory</li></ul></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-3').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFFFFF"><span class="num">3</span><h5>Audience Poll</h5><div class="thumb-body"><p>Where are YOU? Where is your ORG? Where are the coolest startups?</p><p style="opacity:0.5;">🖐️ Hold up fingers 1-7</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+</div></div>
+
+<!-- Act 2 — The Proof -->
+<div class='sorter-act'><h4>Act 2 — The Proof · 8 min</h4><div class='sorter-grid'>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-4').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFF5F5"><span class="num">4</span><h5>🔴 Live Demo</h5><div class="thumb-body"><p>We could talk about agents. I'd rather talk to them.</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-5').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFFFFF"><span class="num">5</span><h5>The Reveal</h5><div class="thumb-body"><p>Two weeks later — a live site. 10 categories. Agents run overnight.</p><blockquote>Built by one person. Who can't code.</blockquote></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min" onclick="document.getElementById('slide-6').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFFFFF"><span class="num">6</span><h5>Dark Factory</h5><div class="thumb-body"><p>Level 7 — fully autonomous software. We're not there yet. But look how close.</p></div></div>
+    <div class="sorter-tags"><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+</div></div>
+
+<!-- Act 3 — The Shift -->
+<div class='sorter-act'><h4>Act 3 — The Shift · 5 min</h4><div class='sorter-grid'>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-7').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFFFFF"><span class="num">7</span><h5>The Shift</h5><div class="thumb-body"><ul><li>Reasoning across tasks</li><li>Tool use — MCP, skills</li><li>Self-correction loops</li></ul><p style="opacity:0.5;">🧠→📋→🔧→✅→🔄</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min" onclick="document.getElementById('slide-8').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">8</span><h5>Building Blocks</h5><div class="thumb-body"><p>💬 Copilot → 🔌 + Tools → 👥 + Team</p></div></div>
+    <div class="sorter-tags"><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+</div></div>
+
+<!-- Act 4 — Vågar Vi? -->
+<div class='sorter-act'><h4>Act 4 — Vågar Vi? · 9 min</h4><div class='sorter-grid'>
+  <div class="sorter-thumb mode-full mode-30min" onclick="document.getElementById('slide-9').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">9</span><h5>By the Numbers</h5><div class="thumb-body"><p>2 evenings · 8 agents · 14 sources · 75+ entries · ~15 min/day · 1 non-dev</p></div></div>
+    <div class="sorter-tags"><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-10').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFF5F5"><span class="num">10</span><h5>Vågar Vi?</h5><div class="thumb-body"><p>🔥 Day Three — agent "improved" entries. Site broke.</p><p style="font-weight:700;opacity:0.9;">Agent confidence ≠ correctness</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-11').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">11</span><h5>Trust Spectrum</h5><div class="thumb-body"><p>🔒 Check Everything ↔ ✅ Trust but Verify ↔ ⚡ Let It Run</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min" onclick="document.getElementById('slide-12').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">12</span><h5>Guardrails</h5><div class="thumb-body"><ul><li>🔒 Security &amp; Governance</li><li>🤖 Responsible AI</li></ul><blockquote>Autonomy without guardrails is chaos with better PR.</blockquote></div></div>
+    <div class="sorter-tags"><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+</div></div>
+
+<!-- Act 5 — The Close -->
+<div class='sorter-act'><h4>Act 5 — The Close · 6 min</h4><div class='sorter-grid'>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-13').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">13</span><h5>What I Learned</h5><div class="thumb-body"><ul><li>We're already there</li><li>Trust is earned, not assumed</li><li>Teams that direct agents move faster</li></ul></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-14').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #FFFFFF"><span class="num">14</span><h5>Your Turn</h5><div class="thumb-body"><p>That access is here now. Vågar du?</p></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+  <div class="sorter-thumb mode-full mode-30min mode-lightning" onclick="document.getElementById('slide-15').scrollIntoView({behavior:'smooth'})">
+    <div class="sorter-slide" style="background: #F8F8F7"><span class="num">15</span><h5>Resources</h5><div class="thumb-body"><ul><li>🌐 bit.ly/agentjohan + QR</li><li>🔧 Copilot CLI</li><li>👥 Squad</li><li>🎓 Free course</li></ul></div></div>
+    <div class="sorter-tags"><span class='st tag-15'>15</span><span class='st tag-30'>30</span><span class='st tag-full'>60</span></div>
+  </div>
+</div></div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FULL SLIDES                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<div id='slides'>
+
+<!-- ═══ ACT 1 — THE FRAMEWORK ═══ -->
+<div class='act-divider'><h3>Act 1 — The Framework</h3><span class='time'>7 min</span></div>
+
+<!-- Slide 1: Title -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-1">
+  <div class="slide-panel" style="background: #FFFFFF">
+    <span class="sn">1/15</span>
+    <h2 style="font-size:1.4rem;">Autonoma Agenter<br><span class="accent">– vad är det och vågar vi?</span></h2>
+    <h4>A Field Report on Autonomous Agents and Trust</h4>
+    <p style="margin-top: 2em; opacity: 0.4; font-size: 0.5em;">Johan Wallquist · Partner Solution Architect · Microsoft</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>⚡ HIGH · 1 min</span></div>
+    <p>Welcome. The title asks a question: autonomous agents — what are they, and do we dare? By the end of this session, you'll have an answer. Let's start with a framework.</p>
+  </div>
+</div>
+
+<!-- Slide 2: The 7 Levels -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-2">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">2/15</span>
+    <h2>The 7 Levels</h2>
+    <h4>of AI Partnership</h4>
+    <div style="margin: 0.4em 0; font-size: 0.6rem;">
+      <div style="background: rgba(46,204,113,0.08); border-left: 3px solid #2ecc71; padding: 0.25em 0.5em; border-radius: 0 5px 5px 0; margin-bottom: 0.2em;">
+        <strong>L1</strong> Ask &amp; answer · <strong>L2</strong> Draft &amp; edit · <strong>L3</strong> In-tool copilot
+      </div>
+      <div style="background: rgba(243,156,18,0.1); border-left: 3px solid #f39c12; padding: 0.25em 0.5em; border-radius: 0 5px 5px 0; margin-bottom: 0.2em; margin-left: 0.5em;">
+        <strong>L4</strong> Agent — plans, executes, checks
+      </div>
+      <div style="background: rgba(155,89,182,0.1); border-left: 3px solid #9b59b6; padding: 0.25em 0.5em; border-radius: 0 5px 5px 0; margin-bottom: 0.2em; margin-left: 1em;">
+        <strong>L5</strong> Team of specialists — memory, roles
+      </div>
+      <div style="background: rgba(231,76,60,0.1); border-left: 3px solid #e74c3c; padding: 0.25em 0.5em; border-radius: 0 5px 5px 0; margin-bottom: 0.2em; margin-left: 1.5em;">
+        <strong>L6</strong> Autonomous ops — humans at judgment points
+      </div>
+      <div style="background: rgba(45,110,109,0.1); border-left: 3px solid #2D6E6D; padding: 0.25em 0.5em; border-radius: 0 5px 5px 0; margin-left: 2em;">
+        <strong>L7</strong> <span class="accent">Dark Factory</span> — fully autonomous software
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 FRAMEWORK · 4 min · Step through levels</span></div>
+    <p>There are seven levels of working with AI. Let me walk you through them.</p>
+    <p>These first three are familiar. You ask AI questions. It drafts for you. It works inside your tools. Most of us live here.</p>
+    <p>Level 4 is where it changes. You describe a task — AI plans, executes, and checks its own work. This is not autocomplete. This is an operator.</p>
+    <p>Level 5 — you're directing a team of specialist agents. Each with its own expertise, memory, and role. Frameworks like Microsoft Agent Framework, CrewAI, and Squad make this possible today.</p>
+    <p>Level 6 — agents run autonomously. They discover, triage, execute. Humans step in at the judgment points. Think autonomous DevOps, AI-powered content pipelines, self-healing systems.</p>
+    <p>Level 7 — the Dark Factory. Fully autonomous software that builds and operates itself. We're not there yet. But look how close we got.</p>
+    <p>Now — before I show you something, I want to know where you are.</p>
+  </div>
+</div>
+
+<!-- Slide 3: Audience Poll -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-3">
+  <div class="slide-panel" style="background: #FFFFFF">
+    <span class="sn">3/15</span>
+    <h2>Where Are You?<br><span class="accent">Where Is Your Organization?</span></h2>
+    <h4>🖐️ Hold up fingers — one through seven</h4>
+    <div style="margin: 0.5em 0; font-size: 0.6rem;">
+      <div class="card" style="margin-bottom: 0.3em;">
+        <div class="card-title">1️⃣ Where are YOU personally?</div>
+        <p>What level describes how you work with AI today?</p>
+      </div>
+      <div class="card" style="margin-bottom: 0.3em;">
+        <div class="card-title">2️⃣ Where is your ORGANIZATION?</div>
+        <p>Not the most advanced team — the typical employee.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">3️⃣ Where are Sweden's coolest AI startups?</div>
+        <p>Where do you think the frontier is?</p>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 INTERACTIVE · 2 min · Show of hands</span></div>
+    <p>Three questions. Hold up fingers — one through seven.</p>
+    <p>First: where are YOU personally? What level describes how you work with AI today?</p>
+    <p>Second: where is your ORGANIZATION? Not the most advanced team — the typical employee.</p>
+    <p>Third: where are Sweden's coolest AI startups? Where do you think the frontier is?</p>
+    <p>Interesting. Keep those numbers in mind. Now let me show you something.</p>
+  </div>
+</div>
+
+<!-- ═══ ACT 2 — THE PROOF ═══ -->
+<div class='act-divider'><h3>Act 2 — The Proof</h3><span class='time'>8 min</span></div>
+
+<!-- Slide 4: Demo -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-4">
+  <div class="slide-panel" style="background: #FFF5F5">
+    <span class="sn">4/15</span>
+    <h2>🔴 Live Demo</h2>
+    <h4>We could talk about autonomous agents.<br><span class="accent">I'd rather talk to them.</span></h4>
+    <p style="margin-top: 2em; opacity: 0.4; font-size: 0.5em;">Watch: how it thinks · what it proposes · what appears in the folders</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🔴 LIVE DEMO · 4-5 min · Voice → team → build → pivot</span></div>
+    <p>We could talk about autonomous agents. I'd rather talk to them.</p>
+    <p><strong>DO:</strong> Switch to terminal (pre-staged). Speak the prompt via voice-to-text. Three phases: team proposal → approve → build. Show file explorer while files appear. Pivot when ready. See demo card below.</p>
+  </div>
+</div>
+
+<!-- Demo Card after slide 4 -->
+<div class="demo-card">
+  <h3>🔴 SQUAD DEMO — Full Script</h3>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;font-weight:700;">What the audience will see</p>
+  <p style="font-size:0.78rem;margin-bottom:0.8rem;color:#666;">You talk to an AI team. It thinks about what you need, proposes specialists, and when you approve — starts building the project. Files appear in the folders in real-time. Then you jump ahead 6 weeks to show the finished result. The contrast between the half-built scaffold and the polished production site is the wow moment.</p>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;font-weight:700;">Before the talk (pre-staging)</p>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Open <strong>terminal</strong> (PowerShell 7) — large font (20pt+), dark theme, clean prompt</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Run <code>demosquad projectname</code> — creates folder, git init, squad init, launches Agency + Copilot + Squad</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Once loaded, press <kbd>Ctrl+L</kbd> to clear init clutter (keeps context)</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Open <strong>file explorer</strong> next to terminal — showing <code>projects\demo\projectname</code> (snap left/right)</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Type <code>squad</code> as first message — triggers welcome greeting. Leave it waiting for input.</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Browser tab pre-loaded with <code>aka.ms/agenticlibrary</code> (hidden behind terminal)</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div>Enable voice-to-text (Windows dictation: <code>Win+H</code>). Test it once before the talk.</div></div>
+  <div class="demo-step"><div class="demo-num">✓</div><div><strong>Do a full test run tonight.</strong> Time it. Know where your pivot point is.</div></div>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;margin-top:1rem;font-weight:700;">Phase 1 — The Prompt (~60 sec)</p>
+  <div class="demo-step"><div class="demo-num">1</div><div><strong>Narrate to audience:</strong> "I have an empty project. I'm not going to write code. I'm going to describe what I want to build — and let a team of AI agents figure out how."</div></div>
+  <div class="demo-step"><div class="demo-num">2</div><div><strong>Activate voice-to-text</strong> (<code>Win+H</code>) and <strong>speak this prompt:</strong></div></div>
+
+  <div style="background:#EEF4F4; border-left:4px solid #2D6E6D; padding:0.8rem 1rem; margin:0.5rem 0 0.5rem 2rem; border-radius:0 6px 6px 0; font-size:0.9rem;">
+    <p style="font-weight:700; margin-bottom:0.3rem;">🎤 The prompt (speak naturally, one phrase at a time):</p>
+    <p style="font-style:italic; line-height:1.6;">"I want to build a curated content library for AI resources.<br>
+    It should be a website where a community can browse and contribute links.<br>
+    I want it automated.<br>
+    New content should be discovered from feeds, triaged by topic, quality-checked, and published — with a human approving at the right moment.<br>
+    Help me think this through.<br>
+    What team do I need, what should the architecture look like, and what do we build first?"</p>
+  </div>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;margin-top:1rem;font-weight:700;">Phase 2 — The Team Proposal (~60 sec)</p>
+  <div class="demo-step"><div class="demo-num">3</div><div><strong>Wait.</strong> Squad thinks and proposes team members with names and roles (10-20 sec). <strong>Stay quiet — let the audience read.</strong> The silence is the drama.</div></div>
+  <div class="demo-step"><div class="demo-num">4</div><div><strong>React naturally:</strong> "Look at this. It didn't just list roles — it designed a team. Each specialist has a name, a charter, and will remember what it learns across sessions. It's a thinking partner — helping me design the architecture before a single line of code exists."</div></div>
+  <div class="demo-step"><div class="demo-num">5</div><div><strong>Say or type:</strong> <em>"This looks great. Hire them and start building the foundation."</em></div></div>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;margin-top:1rem;font-weight:700;">Phase 3 — Watch It Build (~60-90 sec)</p>
+  <div class="demo-step"><div class="demo-num">6</div><div><strong>Squad creates team files</strong> — charters, memory files appear in <code>.squad/agents/</code>. Point to file explorer: "Watch the folders."</div></div>
+  <div class="demo-step"><div class="demo-num">7</div><div><strong>Squad starts building</strong> — project files appear: folder structure, configs, workflow definitions, agent prompts. Don't narrate every file — let the visual speak. Occasionally point: "There's the workflow." "There's the agent definition."</div></div>
+  <div class="demo-step"><div class="demo-num">8</div><div><strong>After 30-60 seconds of files streaming</strong>, narrate: "This is still going. It's designing the workflows, writing the prompts, setting up the automation. I could sit here and watch it finish — or I could let it run and review later. That's how I actually work."</div></div>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;margin-top:1rem;font-weight:700;">Phase 4 — The Pivot</p>
+  <div class="demo-step"><div class="demo-num">9</div><div><strong>THE PIVOT LINE</strong> (rehearse this!): <em>"I did exactly this. Six weeks ago. Same empty folder. Same conversation. I let it build, I reviewed, I iterated — and I kept going. Let me show you where this ends up."</em></div></div>
+  <div class="demo-step"><div class="demo-num">10</div><div><strong>Switch to browser.</strong> Browse the live site — categories, search, a link entry. "This is in production. Real users. Real agents running overnight. Built from a conversation like the one you just watched."</div></div>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;margin-top:1rem;font-weight:700;">Fallback plan</p>
+  <div class="demo-step"><div class="demo-num">A</div><div><strong>If Squad is slow proposing the team (>30 sec):</strong> "It's thinking — designing the right team for this problem. While it works, let me show you where this conversation leads—" → pivot to site early. Come back to terminal later if it finishes.</div></div>
+  <div class="demo-step"><div class="demo-num">B</div><div><strong>If Squad proposes team but stalls on building:</strong> Pivot after the team proposal. "These specialists are now ready to build. I'll let them work — but let me skip ahead to show you the end result." The team proposal alone is a strong demo.</div></div>
+  <div class="demo-step"><div class="demo-num">C</div><div><strong>If voice-to-text fails:</strong> Type the prompt. You've rehearsed it. Keep talking while typing: "I'm describing what I want — a content library, automated discovery, quality gates..."</div></div>
+
+  <p style="font-size:0.85rem;margin-bottom:0.4rem;margin-top:1rem;font-weight:700;">Rehearsal notes</p>
+  <div class="demo-step"><div class="demo-num">!</div><div><strong>Do a full test run tonight.</strong> Time each phase. Know how long Squad takes to propose, approve, and start building.</div></div>
+  <div class="demo-step"><div class="demo-num">!</div><div><strong>Practice the voice prompt 3×.</strong> Windows dictation needs clear speech, slight pauses between phrases.</div></div>
+  <div class="demo-step"><div class="demo-num">!</div><div><strong>The silence while Squad thinks IS the drama.</strong> Don't fill it. Let the audience wonder.</div></div>
+  <div class="demo-step"><div class="demo-num">!</div><div><strong>The pivot line is the most important sentence.</strong> Rehearse it cold: <em>"I did exactly this. Six weeks ago. Let me show you where this ends up."</em></div></div>
+  <div class="demo-step"><div class="demo-num">!</div><div><strong>File explorer is your visual proof.</strong> The audience sees an empty folder become a project. Even if they can't read the file names, the tree growing is the signal.</div></div>
+</div>
+
+<!-- Slide 5: The Reveal -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-5">
+  <div class="slide-panel" style="background: #FFFFFF">
+    <span class="sn">5/15</span>
+    <h2>Two Weeks Later.</h2>
+    <h4>Same command. Same tools. I kept going.</h4>
+    <ul>
+      <li>🌐 Live site for a community — 10 categories, full-text search</li>
+      <li>📡 14 sources scanned daily — AI discovers content overnight</li>
+      <li>🤖 Agents research, validate, assign, format, ship</li>
+      <li>👥 Domain experts curate — they decide, agents execute</li>
+    </ul>
+    <blockquote>"Built by one person. Who can't code."</blockquote>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>⚡ THE REVEAL · 3 min · Browse live site</span></div>
+    <p>I initiated this build two weeks ago. Same empty project. Same conversation. I reviewed, iterated, kept going. Let me show you where it ended up.</p>
+    <p>[Switch to browser — browse aka.ms/agenticlibrary]</p>
+    <p>A live site for a community. Ten categories, search. Fourteen sources scanned daily — AI discovers content overnight. Agents research, validate, assign, format, ship. Domain experts curate — they decide, agents execute.</p>
+    <p>[pause] Built by one person. Who can't code.</p>
+  </div>
+</div>
+
+<!-- Slide 6: Dark Factory -->
+<div class="slide-row mode-full mode-30min" id="slide-6">
+  <div class="slide-panel" style="background: #FFFFFF">
+    <span class="sn">6/15</span>
+    <h2>The Dark Factory</h2>
+    <h4>Level 7 — the horizon</h4>
+    <p style="margin-top: 0.5em;">Fully autonomous software — systems that build and operate themselves.</p>
+    <p class="highlight-line" style="margin-top: 1em; font-size: 0.75rem;">We're not there yet.<br>But look how close levels 5 and 6 already got us.</p>
+    <p style="margin-top: 1em; font-size: 0.85rem; font-weight: 700; color: #2D6E6D;">Vågar vi?</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 HORIZON · 1 min · Brief, futuristic</span></div>
+    <p>Level 7. The Dark Factory. Fully autonomous software — systems that build and operate themselves. We're not there yet. But look how close levels 5 and 6 already got us. The path is clear. The question is whether we dare walk it. Vågar vi?</p>
+  </div>
+</div>
+
+<!-- ═══ ACT 3 — THE SHIFT ═══ -->
+<div class='act-divider'><h3>Act 3 — The Shift</h3><span class='time'>5 min</span></div>
+
+<!-- Slide 7: The Shift -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-7">
+  <div class="slide-panel" style="background: #FFFFFF">
+    <span class="sn">7/15</span>
+    <h2>AI Was a Great Advisor.<br><span class="accent">Now It Is Also a Great Operator.</span></h2>
+    <ul>
+      <li>AI can now <strong>reason</strong> across complex tasks</li>
+      <li>AI can now <strong>use tools</strong> — MCP, custom skills, extensible toolboxes</li>
+      <li>AI can now <strong>self-correct</strong> — check, iterate, and improve in loops</li>
+    </ul>
+    <p style="font-family: monospace; font-size: 0.55rem; background: rgba(255,255,255,0.05); padding: 0.3em 0.6em; border-radius: 5px; display: inline-block; margin-top: 0.5em;">
+      🧠 Understand → 📋 Plan → 🔧 Act → ✅ Check → 🔄 Iterate
+    </p>
+    <p class="small">Wrapped in: memory · guardrails · human review</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>⚡ THE SPINE · 3 min · This is the WHY</span></div>
+    <p>So why is this happening now? One shift. AI crossed a threshold recently. Coding agents became good enough to ship real work. The ripple effects are everywhere.</p>
+    <p>Three capabilities changed: reasoning across complex tasks, tool use through MCP and custom skills, and self-correction — agents that check, iterate, and improve in loops.</p>
+    <p>The agent loop: understand, plan, act, check, iterate. Wrapped in memory, guardrails, and human review. That's why this is a real system, not a party trick.</p>
+  </div>
+</div>
+
+<!-- Slide 8: Building Blocks -->
+<div class="slide-row mode-full mode-30min" id="slide-8">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">8/15</span>
+    <h2>The Building Blocks</h2>
+    <h4>Start simple. Add power when you need it.</h4>
+    <div style="margin: 0.5em 0; text-align: left;">
+      <div style="background: rgba(46,204,113,0.1); border-left: 3px solid #2ecc71; padding: 0.3em 0.5em; border-radius: 0 5px 5px 0; margin-bottom: 0.3em; font-size: 0.6rem;">
+        <strong>💬 Copilot CLI</strong> <span style="opacity:0.7;">— describe what you want. It plans, acts, checks.</span>
+      </div>
+      <div style="background: rgba(243,156,18,0.1); border-left: 3px solid #f39c12; padding: 0.3em 0.5em; border-radius: 0 5px 5px 0; margin-bottom: 0.3em; margin-left: 1em; font-size: 0.6rem;">
+        <strong>🔌 + Tools</strong> <span style="opacity:0.7;">— MCP, custom skills, specialist agents, extensible toolboxes.</span>
+      </div>
+      <div style="background: rgba(155,89,182,0.1); border-left: 3px solid #9b59b6; padding: 0.3em 0.5em; border-radius: 0 5px 5px 0; margin-left: 2em; font-size: 0.6rem;">
+        <strong>👥 + Team</strong> <span style="opacity:0.7;">— specialists with expertise, memory, and task lists.</span>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 LAYERS · 2 min · Three progressive blocks</span></div>
+    <p>Three layers. Start with Copilot CLI — describe what you want, it plans and executes. Add tools — MCP, custom skills, specialist agents, extensible toolboxes. Then add a team — specialists with expertise, memory, and task lists. What you saw in the demo? That's all three layers working together.</p>
+  </div>
+</div>
+
+<!-- ═══ ACT 4 — VÅGAR VI? ═══ -->
+<div class='act-divider'><h3>Act 4 — Vågar Vi?</h3><span class='time'>9 min</span></div>
+
+<!-- Slide 9: By the Numbers -->
+<div class="slide-row mode-full mode-30min" id="slide-9">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">9/15</span>
+    <h2>By the Numbers</h2>
+    <div class="stat-grid">
+      <div class="stat"><div class="num">2</div><div class="label">evenings to first version</div></div>
+      <div class="stat"><div class="num">8</div><div class="label">specialist agents</div></div>
+      <div class="stat"><div class="num">14</div><div class="label">sources scanned daily</div></div>
+      <div class="stat"><div class="num">75+</div><div class="label">curated entries</div></div>
+      <div class="stat"><div class="num">~15</div><div class="label">min/day to operate</div></div>
+      <div class="stat"><div class="num">1</div><div class="label">non-developer</div></div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 NUMBERS · 2 min · Build to punchline</span></div>
+    <p>Two evenings to the first version. Eight specialist agents. Fourteen sources scanned daily. Seventy-five curated entries. About fifteen minutes a day to operate. And one non-developer. [pause] But I'd be lying if I told you it was all smooth.</p>
+  </div>
+</div>
+
+<!-- Slide 10: Vågar Vi? -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-10">
+  <div class="slide-panel" style="background: #FFF5F5">
+    <span class="sn">10/15</span>
+    <h2>Vågar Vi?</h2>
+    <h4>What happened when I trusted too much</h4>
+    <div class="failure-card">
+      <p style="font-weight: 700; font-size: 0.8em; margin-bottom: 0.2em;">🔥 Day Three</p>
+      <p>One agent. Every task. I asked it to add a link. It added the link — but also "improved" three existing entries I never asked it to touch. The output looked professional. I approved it. The site broke.</p>
+    </div>
+    <p class="highlight-line" style="margin-top: 0.5em; font-size: 0.65rem;">Agent confidence ≠ agent correctness.</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>⚡ CREDIBILITY PEAK · 3 min · Tell as one scene</span></div>
+    <p>Vågar vi? Can we trust them? Let me tell you about day three. I had one agent doing everything. I asked it to add a link. It added the link — but also 'improved' three existing entries I never asked it to touch. The output looked professional. I approved it. The site broke.</p>
+    <p>Agent confidence is not agent correctness. That failure taught me: trust is earned, not assumed.</p>
+  </div>
+</div>
+
+<!-- Slide 11: Trust Spectrum -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-11">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">11/15</span>
+    <h2>The Trust Spectrum</h2>
+    <h4>Not more control. Not less control. The right control.</h4>
+    <div style="display: flex; gap: 0; margin: 0.5em 0; font-size: 0.55rem;">
+      <div style="flex: 1; background: rgba(231,76,60,0.15); padding: 0.4em; border-radius: 5px 0 0 5px; text-align: center;">
+        <p style="font-weight: 700;">🔒 Check Everything</p>
+        <p style="opacity: 0.7;">Safe but slow</p>
+      </div>
+      <div style="flex: 1.5; background: rgba(46,204,113,0.2); padding: 0.4em; text-align: center; border-top: 2px solid #2ecc71;">
+        <p style="font-weight: 700;">✅ Trust but Verify</p>
+        <p style="opacity: 0.7;">Humans at judgment points</p>
+      </div>
+      <div style="flex: 1; background: rgba(243,156,18,0.15); padding: 0.4em; border-radius: 0 5px 5px 0; text-align: center;">
+        <p style="font-weight: 700;">⚡ Let It Run</p>
+        <p style="opacity: 0.7;">Fast but risky</p>
+      </div>
+    </div>
+    <ul style="font-size: 0.6rem;">
+      <li>Specialist agents → narrow scope, fewer surprises</li>
+      <li>Validation layers → agents check each other</li>
+      <li>Human checkpoints → at the decisions that matter</li>
+      <li>Full audit trail → every action logged, every change reversible</li>
+    </ul>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 THE ANSWER · 2 min · Visual scale</span></div>
+    <p>The answer isn't 'don't trust them' or 'trust them completely.' It's a spectrum. On one end: check everything. Safe, but slow. On the other: let it run. Fast, autonomous. The sweet spot: trust but verify. Humans at the judgment points.</p>
+    <p>Four safeguards: specialist agents with narrow scope, validation layers where agents check each other, human checkpoints at the decisions that matter, and a full audit trail.</p>
+  </div>
+</div>
+
+<!-- Slide 12: Guardrails -->
+<div class="slide-row mode-full mode-30min" id="slide-12">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">12/15</span>
+    <h2>The Guardrails That Make It Work</h2>
+    <div class="two-col" style="font-size: 0.6rem; margin-top: 0.5em;">
+      <div class="card">
+        <div class="card-title">🔒 Security &amp; Governance</div>
+        <ul style="font-size: 0.9em;">
+          <li>Human review before production</li>
+          <li>No secrets or sensitive data in prompts</li>
+          <li>Full audit trail · scope limits · rollback</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">🤖 Responsible AI</div>
+        <ul style="font-size: 0.9em;">
+          <li>Agents can be confidently wrong — verify</li>
+          <li>Document what's AI-generated</li>
+          <li>Start small, earn trust, expand scope</li>
+        </ul>
+      </div>
+    </div>
+    <p class="highlight-line" style="margin-top: 0.5em; font-size: 0.6rem;">"Autonomy without guardrails is just chaos with better PR."</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 REASSURANCE · 2 min</span></div>
+    <p>Security and governance on one side — human review before production, no sensitive data in prompts, full audit trail. Responsible AI on the other — agents can be confidently wrong, document what's AI-generated, start small and earn trust. Autonomy without guardrails is just chaos with better PR.</p>
+  </div>
+</div>
+
+<!-- ═══ ACT 5 — THE CLOSE ═══ -->
+<div class='act-divider'><h3>Act 5 — The Close</h3><span class='time'>6 min</span></div>
+
+<!-- Slide 13: What I Learned -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-13">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">13/15</span>
+    <h2>What I Learned</h2>
+    <ul>
+      <li><strong>1. We're already there.</strong> The tools work — well enough to build and operate real systems with human oversight.</li>
+      <li><strong>2. Trust is earned, not assumed.</strong> Start small. Let agents prove themselves. Expand scope as confidence grows.</li>
+      <li><strong>3. The teams that learn to direct agents will move faster.</strong> This is becoming a competitive advantage — and the window is open now.</li>
+    </ul>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>⚡ THREE IDEAS · 2 min</span></div>
+    <p>Three things I learned.</p>
+    <p>One: we're already there. Not someday. Now. The tools work well enough to build and operate real systems.</p>
+    <p>Two: trust is earned. Start small. Let agents prove themselves. Expand as confidence grows.</p>
+    <p>Three: the teams that learn to direct agents will move faster. This is becoming a competitive advantage. The window is open now.</p>
+  </div>
+</div>
+
+<!-- Slide 14: Your Turn -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-14">
+  <div class="slide-panel" style="background: #FFFFFF">
+    <span class="sn">14/15</span>
+    <h2>Your Turn</h2>
+    <p style="font-size: 0.6rem; margin-top: 0.5em;">The people who used to be blocked from building<br>were not blocked by lack of ideas.</p>
+    <p style="font-size: 0.6rem;">They were blocked by access — not by ambition.</p>
+    <p style="font-size: 0.85rem; font-weight: 700; color: #2D6E6D; margin-top: 0.5em;">
+      That access is here now.<br>Vågar du?
+    </p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>⚡ GOOSEBUMPS · 2 min</span></div>
+    <p>The people who used to be blocked from building were not blocked by lack of ideas. They were blocked by access — not by ambition. That access is here now. Vågar du?</p>
+  </div>
+</div>
+
+<!-- Slide 15: Resources -->
+<div class="slide-row mode-full mode-30min mode-lightning" id="slide-15">
+  <div class="slide-panel" style="background: #F8F8F7">
+    <span class="sn">15/15</span>
+    <h2>Resources</h2>
+    <ul>
+      <li>🌐 <strong>Everything:</strong> <span class="accent">bit.ly/agentjohan</span> + QR</li>
+      <li>🔧 <strong>Copilot CLI:</strong> <span style="color: #2D6E6D;">github.com/features/copilot/cli</span></li>
+      <li>👥 <strong>Squad:</strong> <span style="color: #2D6E6D;">github.com/bradygaster/squad</span></li>
+      <li>🎓 <strong>Free course:</strong> <span style="color: #2D6E6D;">developer.microsoft.com/…/get-started-with-github-copilot-cli</span></li>
+      <li>👤 <strong>Contact:</strong> Johan Wallquist — Teams / LinkedIn</li>
+    </ul>
+    <p style="margin-top: 0.6em; font-size: 0.75rem; font-weight: 700;">AI was a great advisor. Now it is also a great operator.<br><span class="accent">What will you operate?</span></p>
+  </div>
+  <div class="script-panel">
+    <div class="meta"><span class='tag tag-15'>15</span> <span class='tag tag-30'>30</span> <span class='tag tag-full'>60</span> <span style='font-size:0.7rem;color:#ff6b35;margin-left:0.5rem;'>🎯 Q&A · Keep on screen</span></div>
+    <p>Everything from this talk — the presentation itself, links, tools, courses, and how to connect with me — all in one place. Scan the QR or visit the link. AI was a great advisor. Now it is also a great operator. What will you operate?</p>
+  </div>
+</div>
+
+<!-- Prep Checklist -->
+<div class="checklist">
+  <h3>📋 Prep Checklist</h3>
+  <table>
+    <tr><th>☐</th><th>Item</th><th>Details</th></tr>
+    <tr><td>☐</td><td>Terminal</td><td>Large font, dark theme, empty folder ready</td></tr>
+    <tr><td>☐</td><td>Squad CLI</td><td>Installed and tested — <code>squad init</code> works</td></tr>
+    <tr><td>☐</td><td>Tab 1</td><td>aka.ms/agenticlibrary — live site</td></tr>
+    <tr><td>☐</td><td>Zoom</td><td>125%+ for audience display</td></tr>
+    <tr><td>☐</td><td>DND</td><td>Teams + Outlook notifications off</td></tr>
+    <tr><td>☐</td><td>Stats</td><td>Verify current numbers (entries, agents, sources)</td></tr>
+    <tr><td>☐</td><td>Fallback</td><td>Demo card has fallback plan if live demo fails</td></tr>
+    <tr><td>☐</td><td>Voice</td><td>Win+H dictation tested and working</td></tr>
+  </table>
+</div>
+
+</div><!-- #slides -->
+</div><!-- .container -->
+
+<script>
+let currentMode = 'full';
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-bar button').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + mode).classList.add('active');
+  
+  // Sorter thumbs
+  document.querySelectorAll('.sorter-thumb').forEach(el => {
+    el.classList.toggle('hidden', !el.classList.contains('mode-' + mode));
+  });
+  
+  // Full slides
+  document.querySelectorAll('.slide-row').forEach(el => {
+    el.classList.toggle('hidden', !el.classList.contains('mode-' + mode));
+  });
+  
+  // Count
+  const visible = document.querySelectorAll('.sorter-thumb:not(.hidden)').length;
+  document.getElementById('slide-count').textContent = visible + ' slides';
+}
+setMode('full');
+</script>
+</body>
+</html>
