@@ -106,7 +106,8 @@ try {
 
     if (-not $Message) { $Message = "Update $Slug talk" }
     $commitMsg = "$Message`n`nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
-    git commit --only -- "$Slug/" -m $commitMsg | Out-Null
+    git commit --only -m $commitMsg -- "$Slug/" | Out-Null
+    if ($LASTEXITCODE -ne 0) { Write-Error "git commit failed (exit $LASTEXITCODE)"; return }
     Write-Host ""
     Write-Host "Committed: $Message" -ForegroundColor Green
 
@@ -116,6 +117,7 @@ try {
     }
 
     git push origin main
+    if ($LASTEXITCODE -ne 0) { Write-Error "git push failed (exit $LASTEXITCODE)"; return }
     Write-Host ""
     Write-Host "Deployed: https://jw-sthlm.github.io/talks/$Slug/" -ForegroundColor Green
 }
