@@ -10,7 +10,7 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
-| 2026-06-04 | Frontier Firms. Why your best customers are already different. | Microsoft Surface Launch, IMA TAK Stockholm | [Open deck](https://jw-sthlm.github.io/talks/frontier-firms-2026/) |
+| 2026-06-04 | Frontier Firms. Why your best customers are already different. | Microsoft Surface Launch, Tak Stockholm | [Open deck](https://jw-sthlm.github.io/talks/frontier-firms-2026/) |
 | 2026-04 | Autonoma Agenter. Vad är det och vågar vi? | Internal Microsoft session | [Open deck](https://jw-sthlm.github.io/talks/agents-2026/) |
 
 ## How talks are published
