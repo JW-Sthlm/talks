@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Presenter · Frontier Firm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:           #0E1116;
+  --bg-elev:      #161B22;
+  --bg-card:      #131820;
+  --fg:           #ECE6DC;
+  --fg-2:         #BAB3A8;
+  --fg-muted:     #6B6760;
+  --fg-weak:      #3F3D38;
+  --border:       #1F252D;
+  --border-soft:  #181D24;
+  --accent:       #E0A971;
+  --accent-soft:  rgba(224,169,113,0.10);
+  --accent-line:  rgba(224,169,113,0.35);
+  --green:        #6FBF8B;
+  --red:          #D88067;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--fg)}
+body{
+  font-family:'Inter',-apple-system,sans-serif;font-size:16px;
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;
+}
+
+/* Top bar */
+.bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 22px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg-elev);
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:12px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--fg-2);
+}
+.bar .left,.bar .right{display:flex;align-items:center;gap:14px}
+.bar .clock{font-size:14px;color:var(--fg);font-weight:500}
+.bar .elapsed{font-size:14px;color:var(--accent);font-weight:500}
+.bar .badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 10px;border-radius:999px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.02);
+  color:var(--fg-2);font-size:10px;letter-spacing:0.14em;
+}
+.bar .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--fg-weak)}
+.bar .badge.live .dot{background:var(--green);box-shadow:0 0 0 3px rgba(111,191,139,0.18)}
+.bar .badge.stale .dot{background:var(--red)}
+.bar .count{font-size:13px;color:var(--fg);font-weight:500}
+.bar .count .now{color:var(--accent);font-weight:600}
+
+/* Body grid — thumbnail panel on left, notes on right (Johan's preference) */
+main{
+  display:grid;grid-template-columns:1fr 1.65fr;
+  flex:1;min-height:0;gap:0;
+}
+.notes{
+  padding:32px 38px;
+  overflow-y:auto;
+  border-left:1px solid var(--border);
+  order:2;
+}
+.side{
+  padding:32px 28px;
+  background:var(--bg-elev);
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:28px;
+  order:1;
+}
+
+/* Notes content */
+.slide-label{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);
+}
+.slide-title-big{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:600;
+  font-size:28px;line-height:1.18;letter-spacing:-0.015em;
+  color:var(--fg);
+  margin-top:6px;margin-bottom:22px;
+  text-wrap:balance;
+}
+
+.do-block{
+  background:rgba(224,169,113,0.06);
+  border-left:2px solid var(--accent);
+  padding:14px 18px;border-radius:0 4px 4px 0;
+  margin-bottom:22px;
+}
+.do-block .lab{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:6px;font-weight:500;
+}
+.do-block .text{font-size:14.5px;line-height:1.55;color:var(--fg-2)}
+
+.say-block{
+  font-family:'Inter', sans-serif;
+}
+.say-block .lab{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--fg-muted);margin-bottom:14px;font-weight:500;
+}
+.say-block .text{
+  font-size:20px;line-height:1.55;color:var(--fg);
+  font-weight:400;
+  text-wrap:pretty;
+}
+.say-block .text p{margin-bottom:14px}
+.say-block .text .pause{
+  display:inline-block;
+  background:rgba(224,169,113,0.10);color:var(--accent);
+  font-family:'JetBrains Mono', monospace;
+  font-size:13px;padding:2px 7px;border-radius:3px;
+  margin:0 2px;
+}
+
+/* Sidebar */
+.side h4{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--fg-muted);font-weight:500;
+  margin-bottom:10px;
+}
+.next-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);border-radius:6px;
+  padding:18px 20px;
+}
+.next-card .lab{
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:8px;
+}
+.next-card .ttl{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:500;
+  font-size:18px;line-height:1.3;color:var(--fg);
+  letter-spacing:-0.01em;
+}
+.next-card.empty .ttl{color:var(--fg-muted);font-style:italic}
+
+.progress{
+  display:flex;flex-direction:column;gap:8px;
+}
+.progress-bar{
+  height:4px;background:var(--bg-card);border-radius:2px;overflow:hidden;
+  border:1px solid var(--border-soft);
+}
+.progress-fill{
+  height:100%;background:var(--accent);
+  transition:width 340ms var(--ease);
+}
+.progress-meta{
+  display:flex;justify-content:space-between;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;color:var(--fg-muted);letter-spacing:0.1em;
+}
+
+.budget{
+  background:var(--bg-card);
+  border:1px solid var(--border);border-radius:6px;
+  padding:16px 18px;
+}
+.budget .row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;color:var(--fg-2);
+  padding:6px 0;
+}
+.budget .row.warn{color:var(--accent)}
+.budget .row.over{color:var(--red)}
+.budget .row .lbl{font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:0.1em;color:var(--fg-muted)}
+.budget .row .val{font-family:'JetBrains Mono', monospace;font-weight:500}
+
+.hints{
+  margin-top:auto;
+  padding-top:18px;
+  border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;color:var(--fg-muted);letter-spacing:0.1em;
+}
+.hints kbd{
+  display:inline-block;padding:2px 6px;margin-right:6px;
+  background:var(--bg-card);border:1px solid var(--border);border-radius:3px;
+  color:var(--fg-2);
+}
+
+/* Current-slide thumbnail (iframe of deck.html?presenter=thumb) */
+.thumb-wrap{display:flex;flex-direction:column;gap:8px}
+.thumb-frame{
+  position:relative;width:100%;
+  aspect-ratio: 16 / 9;
+  border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;background:#000;
+}
+.thumb-frame iframe{
+  position:absolute;inset:0;
+  width:100%;height:100%;border:0;display:block;
+}
+
+@media (max-width: 900px){
+  main{grid-template-columns:1fr}
+  .notes{border-left:none;border-top:1px solid var(--border)}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="left">
+    <span class="clock" id="clock">--:--</span>
+    <span class="badge stale" id="conn"><span class="dot"></span><span id="conn-text">waiting</span></span>
+  </div>
+  <div class="elapsed" id="elapsed">+00:00 / 15:00</div>
+  <div class="right">
+    <span class="count">Slide <span class="now" id="now">--</span> / <span id="total">--</span></span>
+  </div>
+</div>
+
+<main>
+  <section class="notes">
+    <div class="slide-label" id="label">waiting for deck.html</div>
+    <h2 class="slide-title-big" id="title">Press P in the deck to sync, or open deck.html in another tab first.</h2>
+
+    <div class="do-block" id="do-block" style="display:none">
+      <div class="lab">DO</div>
+      <div class="text" id="do-text"></div>
+    </div>
+
+    <div class="say-block">
+      <div class="lab">SAY</div>
+      <div class="text" id="say-text">
+        <p style="color:var(--fg-muted)">No notes synced yet. When deck.html is open and you press P the script will show up here.</p>
+      </div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="thumb-wrap">
+      <h4>Current slide</h4>
+      <div class="thumb-frame">
+        <iframe id="thumb-iframe"
+                src="deck.html?presenter=thumb"
+                sandbox="allow-scripts allow-same-origin"
+                title="Current slide thumbnail"
+                loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div>
+      <h4>Up next</h4>
+      <div class="next-card empty" id="next">
+        <div class="lab" id="next-lab">Slide --</div>
+        <div class="ttl" id="next-ttl">end of talk or waiting for data</div>
+      </div>
+    </div>
+
+    <div>
+      <h4>Progress</h4>
+      <div class="progress">
+        <div class="progress-bar"><div class="progress-fill" id="bar-fill" style="width:0%"></div></div>
+        <div class="progress-meta">
+          <span id="bar-from">--</span>
+          <span id="bar-pct">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h4>Time budget</h4>
+      <div class="budget" id="budget">
+        <div class="row"><span class="lbl">Hard cap</span><span class="val">15:00</span></div>
+        <div class="row" id="row-target"><span class="lbl">Target now</span><span class="val" id="target-time">--</span></div>
+        <div class="row" id="row-delta"><span class="lbl">Diff</span><span class="val" id="delta-time">--</span></div>
+      </div>
+    </div>
+
+    <div class="hints">
+      <span><kbd>←</kbd><kbd>→</kbd> nav</span>
+      <span><kbd>Home</kbd><kbd>End</kbd> start/end</span>
+      <span><kbd>R</kbd> reset timer</span>
+      <span><kbd>S</kbd> request state</span>
+    </div>
+  </aside>
+</main>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   PRESENTER · listens to deck via BroadcastChannel
+   Channel name must match deck.html: surface-frontier-firm-2026
+   ───────────────────────────────────────────────────────────── */
+(function(){
+  const CHANNEL = 'surface-frontier-firm-2026';
+  const channel = new BroadcastChannel(CHANNEL);
+
+  // Per-slide expected duration budget (sec), summed gives ~9:50 with buffer to 12-13 min
+  const slotBudget = [30, 30, 10, 50, 70, 10, 65, 80, 10, 85, 60, 60, 30];
+
+  let currentIdx = 0;
+  let total = slotBudget.length;
+  let startedAt = null;
+  let lastMessage = 0;
+
+  const els = {
+    clock: document.getElementById('clock'),
+    elapsed: document.getElementById('elapsed'),
+    conn: document.getElementById('conn'),
+    connText: document.getElementById('conn-text'),
+    label: document.getElementById('label'),
+    title: document.getElementById('title'),
+    doBlock: document.getElementById('do-block'),
+    doText: document.getElementById('do-text'),
+    sayText: document.getElementById('say-text'),
+    nextCard: document.getElementById('next'),
+    nextLab: document.getElementById('next-lab'),
+    nextTtl: document.getElementById('next-ttl'),
+    now: document.getElementById('now'),
+    total: document.getElementById('total'),
+    barFill: document.getElementById('bar-fill'),
+    barFrom: document.getElementById('bar-from'),
+    barPct: document.getElementById('bar-pct'),
+    targetTime: document.getElementById('target-time'),
+    deltaTime: document.getElementById('delta-time'),
+    rowDelta: document.getElementById('row-delta'),
+  };
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function fmtSec(s){
+    const sign = s < 0 ? '-' : '';
+    s = Math.abs(Math.round(s));
+    return sign + pad(Math.floor(s/60)) + ':' + pad(s%60);
+  }
+
+  function parseNotes(raw){
+    if (!raw) return { doText: '', sayText: '' };
+    let doText = '', sayText = raw;
+    const doMatch = raw.match(/^DO:\s*(.*?)\s*SAY(?:\s*\([^)]*\))?:\s*/is);
+    if (doMatch) {
+      doText = doMatch[1].trim();
+      sayText = raw.substring(doMatch[0].length).trim();
+    } else {
+      const sayMatch = raw.match(/^SAY:\s*/i);
+      if (sayMatch) sayText = raw.substring(sayMatch[0].length).trim();
+    }
+    return { doText, sayText };
+  }
+
+  function formatSay(text){
+    // Split on sentence-ish boundaries, group into paragraphs, highlight pauses
+    if (!text) return '<p style="color:var(--fg-muted)">(no notes)</p>';
+    // Highlight pause / play markers — both old "(Paus.)" forms and new bracket forms
+    let html = text
+      .replace(/\[PAUSE\s+(\d+)\s*sek?\]/gi, '<span class="pause">PAUSE $1s</span>')
+      .replace(/\[PAUSE\s+(\d+)s?\]/gi, '<span class="pause">PAUSE $1s</span>')
+      .replace(/\[PAUSE\]/gi, '<span class="pause">PAUSE</span>')
+      .replace(/\[PLAY\]/gi, '<span class="pause">PLAY CLIP</span>')
+      .replace(/\(Pause\.\)/g, '<span class="pause">PAUSE</span>')
+      .replace(/\(Paus\.\)/g, '<span class="pause">PAUSE</span>')
+      .replace(/\(Play\. Watch\.\)/g, '<span class="pause">PLAY CLIP</span>')
+      .replace(/\(Klicka spela\. Titta\.\)/g, '<span class="pause">PLAY CLIP</span>')
+      .replace(/\(Spela klippet\.\)/g, '<span class="pause">PLAY CLIP</span>')
+      .replace(/\(Let that land\.\)/g, '<span class="pause">LET IT LAND</span>')
+      .replace(/\(Låt det landa\.\)/g, '<span class="pause">LET IT LAND</span>');
+    // Insert paragraph breaks before "SAY (after clip):" markers
+    html = html.replace(/SAY \(after clip\):/g, '</p><p class="pause-row"><span class="pause">AFTER CLIP</span></p><p>');
+    html = html.replace(/SAY \(before clip\):/g, '<span class="pause">BEFORE CLIP</span> ');
+    html = html.replace(/SAY \(efter klipp\):/g, '</p><p class="pause-row"><span class="pause">AFTER CLIP</span></p><p>');
+    html = html.replace(/SAY \(innan klipp\):/g, '<span class="pause">BEFORE CLIP</span> ');
+    // Honour authored paragraph breaks in the data-notes attribute.
+    // Double newline -> paragraph; single newline -> space.
+    html = html.replace(/\r\n|\r/g, '\n');
+    html = html.replace(/\n\s*\n+/g, '</p><p>');
+    html = html.replace(/\n/g, ' ');
+    // Wrap in single paragraph (browser will respect inner <p> if any)
+    return '<p>' + html + '</p>';
+  }
+
+  function update(payload){
+    currentIdx = payload.index;
+    total = payload.total || total;
+
+    const { doText, sayText } = parseNotes(payload.notes);
+
+    els.label.textContent = 'Slide ' + (currentIdx+1) + ' of ' + total;
+    els.title.textContent = payload.label || ('Slide ' + (currentIdx+1));
+
+    if (doText) {
+      els.doBlock.style.display = 'block';
+      els.doText.textContent = doText;
+    } else {
+      els.doBlock.style.display = 'none';
+    }
+    els.sayText.innerHTML = formatSay(sayText);
+
+    els.now.textContent = pad(currentIdx+1);
+    els.total.textContent = pad(total);
+
+    // Next preview
+    if (payload.nextLabel) {
+      els.nextCard.classList.remove('empty');
+      els.nextLab.textContent = 'Slide ' + pad(currentIdx+2);
+      els.nextTtl.textContent = payload.nextLabel;
+    } else {
+      els.nextCard.classList.add('empty');
+      els.nextLab.textContent = '/ end /';
+      els.nextTtl.textContent = 'Step into moderator role';
+    }
+
+    // Progress bar
+    const pct = ((currentIdx+1) / total) * 100;
+    els.barFill.style.width = pct + '%';
+    els.barFrom.textContent = (currentIdx+1) + ' / ' + total;
+    els.barPct.textContent = Math.round(pct) + '%';
+
+    // Target time: sum of slotBudget up to currentIdx (inclusive end)
+    const targetSec = slotBudget.slice(0, currentIdx+1).reduce((a,b)=>a+b, 0);
+    els.targetTime.textContent = '+' + fmtSec(targetSec);
+
+    // Auto-start timer on first non-zero slide change after initial state
+    if (startedAt === null && currentIdx > 0) startedAt = Date.now();
+
+    lastMessage = Date.now();
+    els.conn.classList.remove('stale');
+    els.conn.classList.add('live');
+    els.connText.textContent = 'live';
+  }
+
+  channel.onmessage = (e) => {
+    if (!e.data) return;
+    if (e.data.type === 'slide-change') update(e.data);
+  };
+
+  // Request initial state from the deck on load
+  function requestState(){ try { channel.postMessage({ type:'request-state' }); } catch(e){} }
+  setTimeout(requestState, 300);
+  setTimeout(requestState, 1200);
+
+  // Keyboard drives deck via channel
+  document.addEventListener('keydown', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    let action = null;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ') action = 'next';
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') action = 'prev';
+    else if (k === 'Home') action = 'first';
+    else if (k === 'End') action = 'last';
+    else if (k === 'r' || k === 'R') { startedAt = Date.now(); return; }
+    else if (k === 's' || k === 'S') { requestState(); return; }
+    if (action) { e.preventDefault(); channel.postMessage({ type:'nav', action }); }
+  });
+
+  // Live clock + elapsed + connection health
+  function tick(){
+    const d = new Date();
+    els.clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+
+    if (startedAt) {
+      const elapsed = Math.round((Date.now() - startedAt)/1000);
+      const target = slotBudget.slice(0, currentIdx+1).reduce((a,b)=>a+b, 0);
+      const delta = elapsed - target;
+
+      els.elapsed.textContent = '+' + fmtSec(elapsed) + ' / 15:00';
+      els.deltaTime.textContent = (delta >= 0 ? '+' : '') + fmtSec(delta);
+
+      els.rowDelta.classList.remove('warn', 'over');
+      if (delta > 60) els.rowDelta.classList.add('over');
+      else if (delta > 20) els.rowDelta.classList.add('warn');
+
+      if (elapsed > 900) {
+        els.elapsed.style.color = 'var(--red)';
+      } else if (elapsed > 780) {
+        els.elapsed.style.color = 'var(--accent)';
+      }
+    }
+
+    // Connection health: if no message in 60s, mark stale (unless idle on slide 1)
+    const since = (Date.now() - lastMessage) / 1000;
+    if (lastMessage > 0 && since > 60) {
+      els.conn.classList.remove('live');
+      els.conn.classList.add('stale');
+      els.connText.textContent = 'stale';
+    }
+  }
+  tick();
+  setInterval(tick, 500);
+})();
+</script>
+
+</body>
+</html>

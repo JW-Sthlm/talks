@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storyboard · Frontier Firm · Surface Launch · 4 June 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+
+  .header { background: #1F3540; color: white; padding: 1.5rem 2rem; }
+  .header h1 { font-size: 1.5rem; letter-spacing: -0.01em; }
+  .header p { opacity: 0.9; font-size: 0.85rem; margin-top: 0.25rem; }
+  .header .meta-row { margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 1.2rem; font-size: 0.75rem; opacity: 0.95; }
+  .header .meta-row strong { font-weight: 700; }
+  .header .accent { color: #E0A971; }
+
+  .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem 3rem; }
+
+  /* Nav bar */
+  .nav-bar { background: white; border-bottom: 1px solid #ddd; padding: 0.6rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .nav-bar a { font-size: 0.75rem; color: #1F3540; text-decoration: none; font-weight: 500; }
+  .nav-bar a:hover { text-decoration: underline; color: #C98A4C; }
+  .nav-bar .count { font-size: 0.7rem; color: #999; margin-left: auto; }
+
+  /* Arc strip */
+  .arc { background: white; border-radius: 10px; padding: 1.2rem 1.5rem; margin: 1.5rem 0 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .arc h2 { font-size: 1rem; color: #1F3540; margin-bottom: 0.8rem; }
+  .arc-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.8rem; }
+  .arc-beat { background: #F8F8F7; border-left: 3px solid #E0A971; border-radius: 0 4px 4px 0; padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .arc-beat .no { font-size: 0.6rem; color: #C98A4C; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .arc-beat .ttl { font-size: 0.85rem; font-weight: 700; color: #21211F; line-height: 1.2; }
+  .arc-beat .sl { font-size: 0.65rem; color: #888; margin-top: auto; }
+  .arc-beat .sec { font-size: 0.7rem; color: #C98A4C; font-weight: 600; }
+
+  /* Punch strip */
+  .punch-strip { background: white; border-left: 4px solid #E0A971; padding: 0.9rem 1.2rem; margin: 0 0 2rem; border-radius: 0 6px 6px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .punch-strip .lab { font-size: 0.65rem; color: #C98A4C; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem; }
+  .punch-strip p { font-size: 0.95rem; font-weight: 600; color: #21211F; line-height: 1.4; max-width: 70ch; }
+
+  /* Sorter view */
+  #sorter { padding: 0.5rem 0 1rem; }
+  .sorter-act { margin-bottom: 1.5rem; }
+  .sorter-act h4 { font-size: 0.75rem; color: #1F3540; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  .sorter-act h4 .time { font-weight: 400; color: #999; margin-left: 0.4rem; }
+  .sorter-grid { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .sorter-thumb { width: 220px; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; text-decoration: none; }
+  .sorter-thumb:hover { transform: scale(1.03); box-shadow: 0 3px 12px rgba(0,0,0,0.15); }
+  .sorter-slide { background: #F8F8F7; color: #21211F; padding: 0.7rem 0.8rem; min-height: 130px; display: flex; flex-direction: column; font-size: 0.55rem; overflow: hidden; }
+  .sorter-slide h5 { font-size: 0.7rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.3rem; color: #21211F; }
+  .sorter-slide .num { font-size: 0.55rem; opacity: 0.4; margin-bottom: 0.2rem; letter-spacing: 0.08em; }
+  .sorter-slide .thumb-body { font-size: 0.55rem; opacity: 0.75; line-height: 1.4; color: #4A4A46; }
+  .sorter-slide blockquote { border-left: 2px solid #E0A971; padding-left: 0.4em; font-style: italic; opacity: 0.85; margin: 0.2em 0; font-size: 0.6rem; }
+  .sorter-slide p { margin: 0.1em 0; }
+  .sorter-slide .accent { color: #C98A4C; }
+  .sorter-slide .megastat { font-size: 1.6rem; font-weight: 800; color: #C98A4C; line-height: 1; letter-spacing: -0.03em; margin: 0.1em 0; }
+  .sorter-slide .megastat .p { font-size: 0.9rem; opacity: 0.6; margin-left: 1px; }
+  .sorter-slide .section-mark { font-size: 1.4rem; font-weight: 300; color: #C98A4C; line-height: 1; }
+  .sorter-slide .video-mock { flex: 1; background: linear-gradient(160deg,#11161D,#0B0F14); border-radius: 3px; display: flex; align-items: center; justify-content: center; margin: 0.3rem 0; min-height: 50px; }
+  .sorter-slide .video-mock::after { content: "▶"; color: #E0A971; font-size: 1rem; border: 1px solid #E0A971; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .sorter-tags { display: flex; gap: 0.2rem; padding: 0.25rem 0.5rem; background: white; align-items: center; }
+  .sorter-tags .st { font-size: 0.55rem; padding: 0.05rem 0.3rem; border-radius: 2px; }
+  .tag-full { background: #FFF1E0; color: #C98A4C; font-weight: 600; }
+  .tag-video { background: #EFE7F5; color: #6B5BD3; }
+  .tag-section { background: #EEF4F4; color: #3D7A78; }
+
+  /* Full slides */
+  #slides {}
+  .act-divider { margin: 2rem 0 0.8rem; }
+  .act-divider h3 { font-size: 0.95rem; color: #1F3540; border-bottom: 2px solid #1F3540; display: inline-block; padding-bottom: 0.2rem; font-weight: 700; }
+  .act-divider .time { font-size: 0.7rem; color: #999; margin-left: 0.6rem; }
+  .act-divider .lead { font-size: 0.78rem; color: #666; margin-top: 0.4rem; max-width: 70ch; }
+
+  /* Slide row · 1fr 1fr · slide preview LEFT · script RIGHT */
+  .slide-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 1.5rem; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); scroll-margin-top: 60px; }
+  .slide-panel { background: #F8F8F7; color: #21211F; padding: 1.5rem; min-height: 220px; display: flex; flex-direction: column; position: relative; font-size: 0.82rem; overflow: hidden; }
+  .slide-panel .sn { position: absolute; top: 0.7rem; right: 1rem; font-size: 0.7rem; opacity: 0.35; color: #797971; font-weight: 700; letter-spacing: 0.08em; }
+  .slide-panel .eyebrow { font-size: 0.6rem; color: #C98A4C; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.4rem; }
+  .slide-panel .eyebrow .ac { color: #C98A4C; font-weight: 800; }
+  .slide-panel h2 { font-size: 1.3rem; font-weight: 800; line-height: 1.15; margin-bottom: 0.3rem; color: #21211F; letter-spacing: -0.01em; }
+  .slide-panel h2 em { font-style: italic; color: #C98A4C; }
+  .slide-panel h2 .accent { color: #C98A4C; }
+  .slide-panel .lead { font-size: 0.82rem; line-height: 1.5; color: #444; margin-top: 0.4rem; }
+  .slide-panel .small { font-size: 0.65rem; color: #888; margin-top: 0.4rem; }
+  .slide-panel .hero-mini { display: flex; flex-direction: column; justify-content: center; flex: 1; gap: 0.3rem; }
+  .slide-panel .hero-mini h2 { font-size: 1.7rem; line-height: 1.05; }
+  .slide-panel .author-mini { margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid #E0A971; font-size: 0.7rem; color: #666; }
+  .slide-panel .author-mini strong { color: #21211F; font-weight: 700; }
+  .slide-panel .video-mini { flex: 1; background: linear-gradient(160deg,#11161D,#0B0F14); border-radius: 4px; display: flex; align-items: center; justify-content: center; min-height: 130px; position: relative; margin: 0.3rem 0; }
+  .slide-panel .video-mini::after { content: "▶"; color: #E0A971; font-size: 1.2rem; border: 1.5px solid #E0A971; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+  .slide-panel .video-mini .badge { position: absolute; top: 0.5rem; left: 0.6rem; font-size: 0.55rem; color: #E0A971; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; }
+  .slide-panel .video-mini .cap { position: absolute; bottom: 0.5rem; left: 0.6rem; right: 0.6rem; font-size: 0.6rem; color: #B8C2CC; }
+  .slide-panel .section-stage { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; gap: 0.4rem; }
+  .slide-panel .section-stage .lab { font-size: 0.65rem; color: #C98A4C; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .slide-panel .section-stage .big-no { font-size: 4rem; font-weight: 300; color: #C98A4C; line-height: 1; letter-spacing: -0.04em; }
+  .slide-panel .section-stage .ac-line { width: 60px; height: 2px; background: #C98A4C; }
+  .slide-panel .section-stage h2 { font-size: 1.6rem; }
+  .slide-panel .megastat { font-size: 4.5rem; font-weight: 800; color: #C98A4C; line-height: 0.95; letter-spacing: -0.04em; margin: 0.2rem 0; }
+  .slide-panel .megastat .p { font-size: 2.4rem; opacity: 0.6; margin-left: 1px; }
+  .slide-panel .stat-cap { font-size: 0.9rem; line-height: 1.35; color: #21211F; font-weight: 600; max-width: 30ch; }
+  .slide-panel .source { font-size: 0.6rem; color: #C98A4C; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; margin-top: 0.5rem; }
+  .slide-panel .org-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem; }
+  .slide-panel .org-mini .col { background: white; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.5rem 0.6rem; }
+  .slide-panel .org-mini .col .lb { font-size: 0.55rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; font-weight: 600; }
+  .slide-panel .org-mini .col.new .lb { color: #C98A4C; }
+  .slide-panel .org-mini .tree { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .slide-panel .org-mini .tree .row-cells { display: flex; gap: 3px; }
+  .slide-panel .org-mini .tree .c { width: 12px; height: 8px; background: #d0d0d0; border-radius: 1px; }
+  .slide-panel .org-mini .tree .c.head { width: 18px; background: #888; }
+  .slide-panel .org-mini .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+  .slide-panel .org-mini .flow .c { aspect-ratio: 1; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 700; }
+  .slide-panel .org-mini .flow .c.h { background: #EFE9E0; color: #888; }
+  .slide-panel .org-mini .flow .c.a { background: #FCE5C9; color: #C98A4C; }
+  .slide-panel .trait-mini { display: flex; gap: 1rem; align-items: flex-start; flex: 1; }
+  .slide-panel .trait-mini .num { font-size: 3rem; font-weight: 300; color: #C98A4C; line-height: 1; letter-spacing: -0.04em; }
+  .slide-panel .trait-mini .body { flex: 1; }
+  .slide-panel .compare-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.4rem; }
+  .slide-panel .compare-mini .card { background: white; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.5rem 0.6rem; }
+  .slide-panel .compare-mini .card.good { border-left: 2px solid #C98A4C; }
+  .slide-panel .compare-mini .card .lb { font-size: 0.55rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.3rem; font-weight: 600; }
+  .slide-panel .compare-mini .card.good .lb { color: #C98A4C; }
+  .slide-panel .compare-mini .card h4 { font-size: 0.78rem; font-weight: 700; margin-bottom: 0.3rem; color: #21211F; }
+  .slide-panel .compare-mini .card ul { list-style: none; padding: 0; font-size: 0.65rem; color: #555; line-height: 1.4; }
+  .slide-panel .compare-mini .card li { padding-left: 0.7em; position: relative; margin-bottom: 0.15em; }
+  .slide-panel .compare-mini .card li::before { content: '·'; position: absolute; left: 0; color: #C98A4C; font-weight: 800; }
+  .slide-panel .moves-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.4rem; flex: 1; }
+  .slide-panel .moves-mini .card { background: white; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.6rem 0.7rem; }
+  .slide-panel .moves-mini .card .n { font-size: 0.7rem; color: #C98A4C; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 0.2rem; }
+  .slide-panel .moves-mini .card h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.3rem; color: #21211F; line-height: 1.2; }
+  .slide-panel .moves-mini .card p { font-size: 0.65rem; color: #555; line-height: 1.4; }
+  .slide-panel .takeaways-mini { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+  .slide-panel .takeaways-mini .ta { background: white; border-left: 3px solid #C98A4C; padding: 0.5rem 0.7rem; border-radius: 0 4px 4px 0; }
+  .slide-panel .takeaways-mini .ta .lb { font-size: 0.6rem; color: #C98A4C; font-weight: 800; letter-spacing: 0.1em; }
+  .slide-panel .takeaways-mini .ta p { font-size: 0.78rem; color: #21211F; line-height: 1.35; margin-top: 0.1rem; }
+  .slide-panel .bridge { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #ddd; font-size: 0.75rem; color: #666; }
+  .slide-panel .bridge .ar { color: #C98A4C; font-weight: 700; margin-right: 0.3rem; }
+  .slide-panel .hero-quote { font-size: 1.5rem; font-weight: 800; line-height: 1.1; color: #21211F; letter-spacing: -0.02em; }
+  .slide-panel .hero-quote em { font-style: italic; color: #C98A4C; }
+  .slide-panel .punch-lead { font-size: 0.85rem; color: #C98A4C; margin-top: 0.6rem; font-weight: 600; max-width: 35ch; line-height: 1.4; }
+
+  /* Script panel */
+  .script-panel { background: white; padding: 1.5rem; font-size: 0.85rem; }
+  .script-panel .meta { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; align-items: center; flex-wrap: wrap; }
+  .script-panel .meta .timing { background: #1F3540; color: white; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.7rem; font-weight: 700; }
+  .script-panel .meta .energy { padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.65rem; color: white; font-weight: 600; letter-spacing: 0.04em; }
+  .script-panel .meta .energy-high { background: #ff6b35; }
+  .script-panel .meta .energy-calm { background: #2ecc71; }
+  .script-panel .meta .energy-anchor { background: #3498db; }
+  .script-panel .meta .energy-quiet { background: #95a5a6; }
+  .script-panel .meta .tag { font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 3px; background: #f0f0f0; color: #666; font-weight: 500; }
+  .script-panel .meta .tag.mode-video { background: #EFE7F5; color: #6B5BD3; }
+  .script-panel .meta .tag.mode-pause { background: #FFF1E0; color: #C98A4C; }
+  .script-panel .meta .tag.mode-section { background: #EEF4F4; color: #3D7A78; }
+
+  .script-panel .s-title { font-size: 0.78rem; font-weight: 700; color: #1F3540; margin-bottom: 0.6rem; padding-bottom: 0.4rem; border-bottom: 1px dashed #e0e0e0; line-height: 1.3; }
+  .script-panel .do-note { background: #FFF8F0; border-left: 3px solid #ff6b35; padding: 0.55rem 0.75rem; font-size: 0.78rem; margin-bottom: 0.7rem; border-radius: 0 4px 4px 0; line-height: 1.5; }
+  .script-panel .do-note strong { color: #ff6b35; font-weight: 700; letter-spacing: 0.08em; font-size: 0.7rem; margin-right: 0.3rem; }
+  .script-panel .say-note { font-size: 0.84rem; line-height: 1.6; color: #2D2D2D; }
+  .script-panel .say-note strong.lbl { color: #1F3540; font-weight: 700; letter-spacing: 0.08em; font-size: 0.7rem; margin-right: 0.3rem; }
+  .script-panel .say-note strong.lbl.alt { color: #C98A4C; }
+  .script-panel .say-note p + p { margin-top: 0.45rem; }
+  .script-panel .say-note em { color: #C98A4C; font-style: italic; font-weight: 500; }
+  .script-panel .say-note .pause { display: inline-block; background: #FFF1E0; color: #C98A4C; padding: 0.05rem 0.4rem; border-radius: 3px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; margin: 0 2px; }
+  .script-panel .say-note .play { display: inline-block; background: #FFF0EA; color: #ff6b35; padding: 0.05rem 0.4rem; border-radius: 3px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; margin: 0 2px; }
+  .script-panel .bridge-note { background: #F5F0FA; border-left: 3px solid #6B5BD3; padding: 0.5rem 0.7rem; font-size: 0.74rem; margin-top: 0.7rem; border-radius: 0 4px 4px 0; color: #444; line-height: 1.5; }
+  .script-panel .bridge-note strong { color: #6B5BD3; font-weight: 700; letter-spacing: 0.06em; font-size: 0.65rem; margin-right: 0.3rem; }
+
+  /* Pre/post blocks */
+  section.block { margin-bottom: 2rem; }
+  section.block h2 { font-size: 1.05rem; color: #1F3540; border-bottom: 2px solid #1F3540; display: inline-block; padding-bottom: 0.2rem; margin-bottom: 1rem; font-weight: 700; }
+  .checklist { background: white; border-radius: 10px; padding: 1.2rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .checklist h3 { font-size: 0.9rem; margin-bottom: 0.6rem; color: #21211F; }
+  .checklist h3 .stamp { display: inline-block; background: #FFF1E0; color: #C98A4C; font-size: 0.65rem; padding: 0.1rem 0.5rem; border-radius: 3px; margin-left: 0.5rem; vertical-align: middle; font-weight: 700; letter-spacing: 0.04em; }
+  .checklist ul { list-style: none; padding: 0; }
+  .checklist li { padding: 0.35rem 0; display: flex; align-items: flex-start; gap: 0.55rem; font-size: 0.82rem; border-top: 1px solid #f0f0f0; }
+  .checklist li:first-child { border-top: 0; }
+  .checklist input[type="checkbox"] { width: 16px; height: 16px; margin-top: 0.2rem; accent-color: #C98A4C; cursor: pointer; flex-shrink: 0; }
+  .checklist code { background: #f5f5f5; padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.76rem; color: #1F3540; }
+  .checklist em { font-style: italic; color: #555; }
+  .checklist strong { font-weight: 700; }
+
+  /* Risks block */
+  .risks { background: white; border-radius: 10px; padding: 1rem 1.4rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid #e74c3c; }
+  .risks ul { list-style: none; padding: 0; }
+  .risks li { padding: 0.45rem 0 0.45rem 1.4rem; position: relative; font-size: 0.82rem; border-top: 1px solid #f0f0f0; }
+  .risks li:first-child { border-top: 0; }
+  .risks li::before { content: '⚠'; position: absolute; left: 0; top: 0.45rem; color: #e74c3c; }
+  .risks strong { color: #21211F; font-weight: 700; }
+  .risks em { font-style: italic; color: #555; }
+
+  /* Reset bar */
+  .reset-bar { display: flex; justify-content: flex-end; margin: 0.8rem 0; }
+  .reset-bar button { background: white; border: 1px solid #ddd; color: #666; font-size: 0.7rem; padding: 0.3rem 0.7rem; border-radius: 4px; cursor: pointer; }
+  .reset-bar button:hover { color: #C98A4C; border-color: #C98A4C; }
+
+  @media (max-width: 900px) {
+    .slide-row { grid-template-columns: 1fr; }
+    .sorter-thumb { width: 150px; }
+    .arc-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media print {
+    body { background: white; }
+    .nav-bar, .reset-bar { display: none; }
+    .slide-row { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    .arc, .checklist, .risks, .punch-strip { box-shadow: none; border: 1px solid #ddd; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Storyboard · <span class="accent">Frontier Firm</span></h1>
+  <p>Opening session · Surface Launch · 4 June 2026 · IMA TAK Stockholm</p>
+  <div class="meta-row">
+    <span><strong>Audience:</strong> ~50 Nordic partners</span>
+    <span><strong>Length:</strong> 15 min slot · ~15:00 script</span>
+    <span><strong>Speaker:</strong> Johan Wallquist (also moderator)</span>
+    <span><strong>Language:</strong> Spoken Swedish · slides English</span>
+    <span><strong>After this slot:</strong> back into moderator role for the day</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <span class="count">13 slides · 5 beats · 15:00 min</span>
+  <a href="#pre">↑ Pre-stage</a>
+  <a href="#arc">Arc</a>
+  <a href="#sorter">Sorter</a>
+  <a href="#slides">Full script</a>
+  <a href="#risks">Risks</a>
+</div>
+
+<div class="container">
+
+<div class="reset-bar"><button onclick="resetChecks()">Reset checkboxes</button></div>
+
+<!-- ============================================================ -->
+<!-- PRE-STAGE                                                    -->
+<!-- ============================================================ -->
+<section class="block" id="pre">
+  <h2>Pre-stage</h2>
+  <div class="checklist">
+    <h3>Before you walk on <span class="stamp">2 min before</span></h3>
+    <ul>
+      <li><input type="checkbox"><span>Clicker tested · arrow keys reach the laptop driving the deck.</span></li>
+      <li><input type="checkbox"><span>Presenter view open on phone or second screen · press <code>P</code> from deck.</span></li>
+      <li><input type="checkbox"><span>Slide 2 video confirmed playing · or mock loop visible.</span></li>
+      <li><input type="checkbox"><span>Water within reach. Not on the speaker table where it tips.</span></li>
+      <li><input type="checkbox"><span>Surface device visible on stage if one is staged. Don't bring your own.</span></li>
+      <li><input type="checkbox"><span>Alice has cued the intro line. She's the bridge in.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ARC                                                          -->
+<!-- ============================================================ -->
+<section class="block" id="arc">
+  <h2>The arc</h2>
+  <div class="arc">
+    <h2 style="border:0;margin:0 0 0.4rem;font-size:0.85rem;color:#666;font-weight:500">Five beats. Each one earns the next.</h2>
+    <div class="arc-grid">
+      <div class="arc-beat">
+        <span class="no">Beat 01</span>
+        <span class="ttl">Personal hook</span>
+        <span class="sl">Slides 1–2</span>
+        <span class="sec">60 sec</span>
+      </div>
+      <div class="arc-beat">
+        <span class="no">Beat 02</span>
+        <span class="ttl">What changed</span>
+        <span class="sl">Slides 3–5</span>
+        <span class="sec">130 sec</span>
+      </div>
+      <div class="arc-beat">
+        <span class="no">Beat 03</span>
+        <span class="ttl">What sets them apart</span>
+        <span class="sl">Slides 6–8</span>
+        <span class="sec">155 sec</span>
+      </div>
+      <div class="arc-beat">
+        <span class="no">Beat 04</span>
+        <span class="ttl">Apply + ask</span>
+        <span class="sl">Slides 9–12</span>
+        <span class="sec">215 sec</span>
+      </div>
+      <div class="arc-beat">
+        <span class="no">Beat 05</span>
+        <span class="ttl">Close</span>
+        <span class="sl">Slide 13</span>
+        <span class="sec">60 sec</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="punch-strip">
+    <div class="lab">The talk's punch</div>
+    <p>Your customer is having their first real conversation about agentic work. Be the voice in the room. Not the spreadsheet they get afterwards.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SORTER                                                       -->
+<!-- ============================================================ -->
+<section class="block" id="sorter">
+  <h2>Sorter · 13 slides at a glance</h2>
+
+  <!-- ═══ Beat 1 · Personal hook ═══ -->
+  <div class="sorter-act">
+    <h4>Beat 01 · Personal hook <span class="time">00:00–01:00</span></h4>
+    <div class="sorter-grid">
+
+      <a class="sorter-thumb" href="#slide-1">
+        <div class="sorter-slide">
+          <div class="num">01 · TITLE</div>
+          <h5>I'm not a developer.</h5>
+          <div class="thumb-body">
+            <p>But this deck was written, in code, by an agent on my Surface. Last night. While I drank coffee.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">30s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-2">
+        <div class="sorter-slide">
+          <div class="num">02 · VIDEO</div>
+          <h5>The agent writes. I watch.</h5>
+          <div class="video-mock"></div>
+          <p style="opacity:0.5;margin-top:0.2em;">20-sec clip · Surface</p>
+        </div>
+        <div class="sorter-tags"><span class="st tag-video">30s · video</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══ Beat 2 · What changed ═══ -->
+  <div class="sorter-act">
+    <h4>Beat 02 · What changed <span class="time">01:00–03:10</span></h4>
+    <div class="sorter-grid">
+
+      <a class="sorter-thumb" href="#slide-3">
+        <div class="sorter-slide">
+          <div class="num">03 · SECTION</div>
+          <div class="section-mark">01</div>
+          <h5>What changed.</h5>
+        </div>
+        <div class="sorter-tags"><span class="st tag-section">10s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-4">
+        <div class="sorter-slide">
+          <div class="num">04 · STAT</div>
+          <div class="megastat">80<span class="p">%</span></div>
+          <p>Frontier Professionals producing work they couldn't have done a year ago.</p>
+          <p style="opacity:0.5;margin-top:0.2em;" class="accent">WTI 2026</p>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">50s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-5">
+        <div class="sorter-slide">
+          <div class="num">05 · ORG CHART</div>
+          <h5>New org charts are being drawn.</h5>
+          <div class="thumb-body">
+            <p>Roles in boxes break. Work in flow takes over. Humans and agents in the same row.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">70s</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══ Beat 3 · What sets them apart ═══ -->
+  <div class="sorter-act">
+    <h4>Beat 03 · What sets them apart <span class="time">03:10–05:45</span></h4>
+    <div class="sorter-grid">
+
+      <a class="sorter-thumb" href="#slide-6">
+        <div class="sorter-slide">
+          <div class="num">06 · SECTION</div>
+          <div class="section-mark">02</div>
+          <h5>What sets them apart.</h5>
+        </div>
+        <div class="sorter-tags"><span class="st tag-section">10s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-7">
+        <div class="sorter-slide">
+          <div class="num">07 · TRAIT 1</div>
+          <h5>They think in flows first. Titles come later.</h5>
+          <div class="thumb-body">
+            <p>An agent doesn't care whose title a piece of work used to belong to. People do what they're best at.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">65s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-8">
+        <div class="sorter-slide">
+          <div class="num">08 · TRAIT 2</div>
+          <h5>They give the agent a manager.</h5>
+          <div class="thumb-body">
+            <p>Banal, sure. And the biggest difference between companies that move and companies that just experiment.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">80s</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══ Beat 4 · Apply + ask ═══ -->
+  <div class="sorter-act">
+    <h4>Beat 04 · Apply + ask <span class="time">05:45–09:20</span></h4>
+    <div class="sorter-grid">
+
+      <a class="sorter-thumb" href="#slide-9">
+        <div class="sorter-slide">
+          <div class="num">09 · SECTION</div>
+          <div class="section-mark">03</div>
+          <h5>What others can learn. And what you can do.</h5>
+        </div>
+        <div class="sorter-tags"><span class="st tag-section">10s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-10">
+        <div class="sorter-slide">
+          <div class="num">10 · PATTERN</div>
+          <h5>What moves the business. What stays stuck.</h5>
+          <div class="thumb-body">
+            <p>AI as feature vs AI as colleague. Same Copilot, different leadership decisions.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">85s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-11">
+        <div class="sorter-slide">
+          <div class="num">11 · PUNCH</div>
+          <h5>Your customer's first real conversation about agentic work.</h5>
+          <div class="thumb-body">
+            <blockquote>Be the voice in the room. Not the spreadsheet they get afterwards.</blockquote>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">60s</span></div>
+      </a>
+
+      <a class="sorter-thumb" href="#slide-12">
+        <div class="sorter-slide">
+          <div class="num">12 · TWO MOVES</div>
+          <h5>Two moves. Today.</h5>
+          <div class="thumb-body">
+            <p>01 · Find one Frontier Firm in your customer base.<br>02 · Pick one customer this quarter.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">60s</span></div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ═══ Beat 5 · Close ═══ -->
+  <div class="sorter-act">
+    <h4>Beat 05 · Close <span class="time">14:00–15:00</span></h4>
+    <div class="sorter-grid">
+
+      <a class="sorter-thumb" href="#slide-13">
+        <div class="sorter-slide">
+          <div class="num">13 · CLOSING</div>
+          <h5>Before we move on.</h5>
+          <div class="thumb-body">
+            <p>Frontier Firms exist. With your best customers. Right now.</p>
+            <p style="opacity:0.5;margin-top:0.2em;" class="accent">→ Find them. Learn what they did.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">60s</span></div>
+      </a>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- FULL SCRIPT                                                  -->
+<!-- ============================================================ -->
+<section class="block" id="slides">
+  <h2>Full script · 13 slides</h2>
+
+<!-- ═══ Beat 1 · Personal hook ═══ -->
+<div class="act-divider">
+  <h3>Beat 01 · Personal hook</h3>
+  <span class="time">00:00–01:00 · 60 sec</span>
+  <p class="lead">Earn the right to keep them listening for the next fourteen minutes. One claim. One proof.</p>
+</div>
+
+<!-- SLIDE 1 -->
+<div class="slide-row" id="slide-1">
+  <div class="slide-panel">
+    <span class="sn">01</span>
+    <div class="eyebrow">Frontier Firm · opening session · IMA TAK · 4 June 2026</div>
+    <div class="hero-mini">
+      <h2>I'm not a developer.</h2>
+      <p class="lead">But this deck was written, in code, by an agent on my Surface. Last night. While I drank coffee.</p>
+      <div class="author-mini"><strong>Johan Wallquist</strong> · Partner Solution Architect · Microsoft</div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">00:00 · 30s</span>
+      <span class="energy energy-calm">calm</span>
+      <span class="tag mode-pause">pause to open</span>
+    </div>
+    <div class="s-title">Title · I'm not a developer.</div>
+    <div class="do-note"><strong>DO:</strong> Vänta två slag innan du börjar prata. Titta över rummet. Håll händerna fria. Le när du säger "kaffe".</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Tack för introt. Och hej alla. Jag heter Johan, Partner Solution Architect på Microsoft Sweden.</p>
+      <p>Jag är <em>inte</em> utvecklare. Men det där bakom mig skrevs av en agent på min Surface. Igår kväll. Medan jag drack kaffe. <span class="pause">PAUSE</span></p>
+      <p>Och det är där jag vill att vi börjar. Inte med produkten. Med vardagen.</p>
+    </div>
+    <div class="bridge-note"><strong>BRIDGE:</strong> Klicket till slide 2 är tyst. Klippet talar för sig självt.</div>
+  </div>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide-row" id="slide-2">
+  <div class="slide-panel">
+    <span class="sn">02</span>
+    <div class="eyebrow">Clip · 20 sec</div>
+    <div class="video-mini">
+      <span class="badge">MOCK · click to play</span>
+      <span class="cap">Terminal · PowerShell → Copilot CLI → tool calls → done</span>
+    </div>
+    <p class="lead" style="text-align:center;margin-top:0.4rem">The agent writes. I watch.</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">00:30 · 30s</span>
+      <span class="energy energy-calm">calm</span>
+      <span class="tag mode-video">mode · video</span>
+    </div>
+    <div class="s-title">Video clip · agentic work on Surface</div>
+    <div class="do-note"><strong>DO:</strong> Tryck space en gång och sekvensen är igång. Stå stilla. Titta på klippet med publiken. Två sekunders tystnad efter att den landat.</div>
+    <div class="say-note">
+      <p><strong class="lbl alt">SAY · innan:</strong> Det här är 20 sekunder från min Surface. Inget polerat. En PowerShell. <em>Copilot CLI.</em> Claude i botten.</p>
+      <p>Jag bad om en bild på en siffra. Sen gick jag tillbaka till kaffet. <span class="play">PLAY</span></p>
+      <p><strong class="lbl alt">SAY · efter:</strong> <span class="pause">PAUSE 2s</span> Så där ser min vardag ut mellan möten. Inget exotiskt. Och inget jag hade kunnat göra för ett år sedan.</p>
+    </div>
+    <div class="bridge-note"><strong>BRIDGE:</strong> Hooken är klar. Nu öppnar du Beat 2 med en sektionsmarkör.</div>
+  </div>
+</div>
+
+<!-- ═══ Beat 2 · What changed ═══ -->
+<div class="act-divider">
+  <h3>Beat 02 · What changed</h3>
+  <span class="time">01:00–04:30 · 210 sec</span>
+  <p class="lead">One number that proves the gap is real. Then one picture for how work itself has shifted.</p>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide-row" id="slide-3">
+  <div class="slide-panel">
+    <span class="sn">03</span>
+    <div class="section-stage">
+      <span class="lab">Section one</span>
+      <div class="big-no">01</div>
+      <div class="ac-line"></div>
+      <h2>What changed.</h2>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">01:00 · 15s</span>
+      <span class="energy energy-anchor">anchor</span>
+      <span class="tag mode-section">section</span>
+    </div>
+    <div class="s-title">Section marker · What changed</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Två slag paus. Låt publiken se sektionsmarkören.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Så. Vad förändrades <em>på riktigt</em>?</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide-row" id="slide-4">
+  <div class="slide-panel">
+    <span class="sn">04</span>
+    <div class="eyebrow"><span class="ac">01</span> · What changed</div>
+    <div class="megastat">80<span class="p">%</span></div>
+    <p class="stat-cap">Frontier Professionals producing work they couldn't have created a year ago.</p>
+    <div class="small">For all AI users? <strong style="color:#21211F">58%</strong>. Same market. Same economy.</div>
+    <div class="source">Microsoft Work Trend Index · 2026</div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">01:15 · 75s</span>
+      <span class="energy energy-high">high</span>
+      <span class="tag mode-pause">land the number</span>
+    </div>
+    <div class="s-title">Stat · 80 percent</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Stå stilla. Låt siffran landa i två sekunder innan du säger något. Peka inte. Låt 80:an göra jobbet.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> <em>80 procent.</em> <span class="pause">PAUSE</span></p>
+      <p>Microsoft Work Trend Index. 2026 års rapport, släppt nu i april. Den nyaste vi har.</p>
+      <p>80 procent av dem som rapporten kallar Frontier Professionals säger att de producerar arbete de inte hade kunnat skapa för ett år sedan. <em>Helt nytt arbete.</em> Sånt som tidigare var omöjligt.</p>
+      <p>För alla AI-användare i rapporten? <em>58.</em> För dem som inte använder AI alls? Lägre än så.</p>
+      <p>Och här är det jag fastnar för. Det är inte 5 procents skillnad. Det är <em>22 procentenheter.</em> På ett år.</p>
+      <p>Samma marknad. Samma ekonomi. Samma timmar i kalendern. Skillnaden ligger i <em>hur de jobbar</em>.</p>
+      <p>Det är det jag vill prata om de närmsta tretton minuterna.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide-row" id="slide-5">
+  <div class="slide-panel">
+    <span class="sn">05</span>
+    <div class="eyebrow"><span class="ac">01</span> · What changed</div>
+    <h2>New org charts are being drawn. With more kinds of co-workers in the boxes.</h2>
+    <p class="lead">At Frontier Firms, processes get drawn around the work that actually happens. An agent can own a step where three humans used to share it. Or the other way around. Titles follow later.</p>
+    <div class="org-mini">
+      <div class="col">
+        <div class="lb">Before · roles in boxes</div>
+        <div class="tree">
+          <div class="row-cells"><div class="c head"></div></div>
+          <div class="row-cells"><div class="c"></div><div class="c"></div><div class="c"></div></div>
+          <div class="row-cells"><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div></div>
+        </div>
+      </div>
+      <div class="col new">
+        <div class="lb">Now · work in flow</div>
+        <div class="flow">
+          <div class="c h">H</div><div class="c a">A</div><div class="c h">H</div><div class="c a">A</div><div class="c h">H</div>
+          <div class="c a">A</div><div class="c h">H</div><div class="c a">A</div><div class="c h">H</div><div class="c a">A</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">02:30 · 120s</span>
+      <span class="energy energy-calm">calm</span>
+      <span class="tag">picture + example</span>
+    </div>
+    <div class="s-title">New org charts · work in flow, not boxes</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Stå stilla framför bilden. Gör en lätt gest åt höger när du nämner "arbete i rutorna". Peka inte på enskilda celler i diagrammet.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Det här är det enklaste sättet jag kan rita upp vad som hänt.</p>
+      <p>Förr ritade vi organisationsscheman med roller. HR på övervåningen, sälj i hörnet, ekonomi nere till vänster. Och bakom varje ruta fanns en person med en titel.</p>
+      <p>Det funkar inte längre. Inte för att modellen är fel. Utan för att den inte beskriver verkligheten längre.</p>
+      <p>För när en agent gör en del av jobbet, då räcker inte "titel i en ruta" som beskrivning. Då måste vi separera två saker som vi tidigare behandlade som ett. <em>Arbetet i sig.</em> Och <em>vem som utför det.</em> <span class="pause">PAUSE</span></p>
+      <p>Och därför ser rutorna annorlunda ut nu. De fylls inte längre med roller. De fylls med <em>arbete</em>. Uppgifter. Processteg. Det som faktiskt händer.</p>
+      <p>Och frågan vem som gör det är en separat fråga ovanpå. Svaret kan vara en människa. Det kan vara en agent. Det kan vara två människor med tre agenter som jobbar runt samma steg. <span class="pause">PAUSE</span></p>
+      <p>Konkret exempel. Första utkastet till det här talet skrevs av en agent på min Surface. Och nej, det betyder inte att jag står här och läser AI-text. Min roll har bara <em>flyttat</em>. Jag redigerar och tänker. I stället för att skriva från noll.</p>
+      <p>Det är skillnaden mellan att <em>ha</em> en kollega och att <em>vara</em> den.</p>
+      <p>Och det här är inte science fiction. Det är två klick i Copilot på min Surface. Lokalt. Utan moln. Utan wifi. Den delen, hårdvaran som faktiskt orkar köra det här, det är <em>Lauras</em> jobb senare i eftermiddag. Jag stannar i mjukvarudelen.</p>
+    </div>
+    <div class="bridge-note"><strong>BRIDGE:</strong> Nästa sektion landar de två sakerna som faktiskt skiljer ut Frontier Firms.</div>
+  </div>
+</div>
+
+<!-- ═══ Beat 3 · What sets them apart ═══ -->
+<div class="act-divider">
+  <h3>Beat 03 · What sets them apart</h3>
+  <span class="time">04:30–09:00 · 270 sec</span>
+  <p class="lead">Two traits. They feel contradictory. Both are true. Both come from the field.</p>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide-row" id="slide-6">
+  <div class="slide-panel">
+    <span class="sn">06</span>
+    <div class="section-stage">
+      <span class="lab">Section two</span>
+      <div class="big-no">02</div>
+      <div class="ac-line"></div>
+      <h2>What sets them apart.</h2>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">04:30 · 15s</span>
+      <span class="energy energy-anchor">anchor</span>
+      <span class="tag mode-section">section</span>
+    </div>
+    <div class="s-title">Section marker · What sets them apart</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Ta meningen i två andetag.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Så. Vad utmärker dem? <em>Två saker.</em> Och de motsäger varandra.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7 -->
+<div class="slide-row" id="slide-7">
+  <div class="slide-panel">
+    <span class="sn">07</span>
+    <div class="eyebrow"><span class="ac">02</span> · What sets them apart</div>
+    <div class="trait-mini">
+      <div class="num">01</div>
+      <div class="body">
+        <h2>They think in flows first. Titles come later.</h2>
+        <p class="lead">An agent doesn't care whose title a piece of work used to belong to. It does work. And Frontier Firms draw the process around that. People get to do what they're best at, rather than what their title prescribes.</p>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">04:45 · 135s</span>
+      <span class="energy energy-calm">calm</span>
+      <span class="tag">field example</span>
+    </div>
+    <div class="s-title">Trait one · Flows first, titles later</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Sänk tempot en aning. Det här är det som ska sjunka in. Använd handen i en flödesgest när du säger "flöden först".</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Det första de gör annorlunda är det här.</p>
+      <p>De tänker i <em>flöden först</em>. Titlar kommer sen.</p>
+      <p>Stanna kvar där en sekund. <span class="pause">PAUSE</span></p>
+      <p>För vad händer egentligen när du sätter en agent i mitten av en process? En agent bryr sig inte om vilken titel som brukade äga det här jobbet. Den gör <em>jobbet</em>. Frontier Firms ritar om processen runt det.</p>
+      <p>Människor får göra det de är bäst på. Det som titeln säger att de ska göra kommer i andra hand. <span class="pause">PAUSE</span></p>
+      <p>Konkret exempel. Jag jobbar just nu med ett industribolag, ni känner namnet, men jag säger det inte här. De tog bort "rapport-skrivare" från arbetsuppgiftslistan på fyra olika roller. En agent gör utkastet på fredag kväll. De fyra rollerna granskar och beslutar på måndag morgon.</p>
+      <p>Ingen revolution bakom det. Någon satte sig ner och ritade om processen så att en agent passar in.</p>
+      <p>Det är det jag menar med <em>flöden först</em>. Du ritar inte rutorna baserat på vem som råkar sitta där. Du ritar dem baserat på vad arbetet faktiskt är. Och sen frågar du. Vilken bit kan en agent göra. Vilken bit kräver en människa. Vilken bit kräver båda.</p>
+      <p>Och det här är inte teori. (Det här är fredagsuppföljning.) Den frågan kan ni ställa er om vilket flöde som helst hos era kunder, idag, i eftermiddag.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 -->
+<div class="slide-row" id="slide-8">
+  <div class="slide-panel">
+    <span class="sn">08</span>
+    <div class="eyebrow"><span class="ac">02</span> · What sets them apart</div>
+    <div class="trait-mini">
+      <div class="num">02</div>
+      <div class="body">
+        <h2>They give the agent <em>a manager.</em> And a measurable outcome.</h2>
+        <p class="lead">At Frontier Firms, the agent gets onboarding like any new hire. It gets a role and an owner. Plus a clear outcome the owner reviews every week. Banal, sure. And the biggest difference between companies that move and companies that just experiment.</p>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">07:00 · 120s</span>
+      <span class="energy energy-calm">calm + smile</span>
+      <span class="tag">win the room</span>
+    </div>
+    <div class="s-title">Trait two · The agent has a manager</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Säg "Banalt, jag vet" med ett halvt leende. Le igen när du säger "En chef håller en agent ansvarig". Det är där du vinner rummet.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Och det andra. Det andra som utmärker dem är det här.</p>
+      <p>De ger agenten <em>en chef</em>. <span class="pause">PAUSE</span></p>
+      <p>Banalt, jag vet. Och fortfarande den största skillnaden jag ser ute hos kunder.</p>
+      <p>På Frontier Firms får agenten onboarding precis som vilken nyanställd som helst. Den får en roll. Den får en ägare. Plus ett tydligt utfall som ägaren följer upp varje vecka.</p>
+      <p>Ja, ni hör mig rätt. <em>En chef. Håller en agent. Ansvarig.</em> <span class="pause">PAUSE</span></p>
+      <p>Och det är där de flesta initiativ fastnar. Företag rullar ut Copilot till tusen användare. Hoppas att magin uppstår av sig själv.</p>
+      <p>Magin gör inte det.</p>
+      <p>Magin uppstår när någon faktiskt äger agenten. När någon på fredag eftermiddag tittar på vad agenten producerat under veckan. Vad som var bra. Vad som inte var det. Och justerar. (Den är inte smart. Den gör det du frågar om.) <span class="pause">PAUSE</span></p>
+      <p>Det är två saker. Flöden först. Och en chef åt agenten.</p>
+      <p>Och nu till den knepiga frågan. Vad gör ni med det här på måndag morgon?</p>
+    </div>
+    <div class="bridge-note"><strong>BRIDGE:</strong> Nu pivoterar du från observation till vad rummet kan göra med det.</div>
+  </div>
+</div>
+
+<!-- ═══ Beat 4 · Apply + ask ═══ -->
+<div class="act-divider">
+  <h3>Beat 04 · Apply + ask</h3>
+  <span class="time">09:00–14:00 · 300 sec</span>
+  <p class="lead">From "here's the pattern" to "here's what you do with it on Monday." This is where partners decide if they keep listening.</p>
+</div>
+
+<!-- SLIDE 9 -->
+<div class="slide-row" id="slide-9">
+  <div class="slide-panel">
+    <span class="sn">09</span>
+    <div class="section-stage">
+      <span class="lab">Section three</span>
+      <div class="big-no">03</div>
+      <div class="ac-line"></div>
+      <h2>What others can learn. And what you can do.</h2>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">09:00 · 15s</span>
+      <span class="energy energy-anchor">anchor</span>
+      <span class="tag mode-section">section</span>
+    </div>
+    <div class="s-title">Section marker · Apply + ask</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Höj tempot lite. Publiken börjar känna att det här siktas mot dem.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> OK. <em>Två saker till.</em> Vad andra kan lära. Och vad ni i det här rummet kan göra.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 -->
+<div class="slide-row" id="slide-10">
+  <div class="slide-panel">
+    <span class="sn">10</span>
+    <div class="eyebrow"><span class="ac">03</span> · What others can learn</div>
+    <h2>What moves the business. What stays stuck.</h2>
+    <div class="compare-mini">
+      <div class="card">
+        <div class="lb">What stays stuck</div>
+        <h4>AI as feature</h4>
+        <ul>
+          <li>Bolted on. Measures hours saved.</li>
+          <li>The org chart stays still.</li>
+        </ul>
+      </div>
+      <div class="card good">
+        <div class="lb">What moves</div>
+        <h4>AI as colleague</h4>
+        <ul>
+          <li>Owned. Measured by outcome.</li>
+          <li>The team around it gets redrawn.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="small">Same Copilot in both. Different leadership decision.</p>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">09:15 · 105s</span>
+      <span class="energy energy-anchor">anchor</span>
+      <span class="tag">field pattern</span>
+    </div>
+    <div class="s-title">Pattern · What moves / what stays stuck</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. När du refererar till kolumnerna, gör en liten gest åt vänster och höger. Läs inte upp punkterna en och en. Prata fritt och titta upp.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Det här är vad jag ser ute i fält. Det är mönstret hos de bolag jag jobbar med varje vecka.</p>
+      <p><em>Vänster sida.</em> Mönstret som stannar still.</p>
+      <p>Bolag som plockade in Copilot ovanpå ett befintligt flöde. Inte rört flödet. Inte rört rollerna. Bara lagt ett AI-lager ovanpå. De mäter sparade timmar.</p>
+      <p>De får ut 5 procent, kanske 8. Snygg siffra i en Excel. Liten skillnad på kontoret. Och det är inte fel, det är bara inte det vi pratar om idag. <span class="pause">PAUSE</span></p>
+      <p><em>Höger sida.</em> Mönstret som rör sig.</p>
+      <p>Bolag som gav agenten ägarskap. Och lät teamet runt omkring rita om sitt arbete. Det börjar nästan alltid med ett beslut från ledningen om att tillåta omritningen. Och det syns i resultatet, inte i timrapporten.</p>
+      <p>Vad är skillnaden mellan kolumnerna?</p>
+      <p><em>Inte tekniken.</em> Båda kör Copilot. Båda kör det på liknande hårdvara. Skillnaden är vad ledningen var villig att förändra ovanpå tekniken. <span class="pause">PAUSE</span></p>
+      <p>Och det här är det jag tar med mig till nästa slide. För det är där ni kommer in.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 -->
+<div class="slide-row" id="slide-11">
+  <div class="slide-panel">
+    <span class="sn">11</span>
+    <div class="eyebrow"><span class="ac">04</span> · For everyone in this room</div>
+    <div class="hero-mini" style="justify-content:flex-end">
+      <h2 class="hero-quote">Your customer is having their first real conversation about <em>agentic work</em>.</h2>
+      <p class="punch-lead">Be the voice in the room. Not the spreadsheet they get afterwards.</p>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">11:00 · 90s</span>
+      <span class="energy energy-high">high · then quiet</span>
+      <span class="tag mode-pause">THE punch</span>
+    </div>
+    <div class="s-title">Punch · Your customer's first real conversation</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Sänk tempot kraftigt. Titta över rummet. Det här är talets punch. Säg "första riktiga samtalet" långsamt.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Och här är det jag vill landa hos er.</p>
+      <p>Just nu, runt om i Norden, har era kunder sitt <em>första riktiga samtal</em> om vad agentic work betyder för dem. På riktigt. Som ett beslut. Som siffror i nästa kvartalsrapport.</p>
+      <p>Det samtalet pågår med eller utan er. <span class="pause">PAUSE</span></p>
+      <p>Kunderna söker efter någon som har levt med det här. Någon som vet vad som funkar och vad som inte gör det. Någon som har sett mönstret jag pratade om för en minut sedan.</p>
+      <p><em>Det kan vara ni.</em> Eller så är det konsultbolaget de hyr in veckan efter att ni skrivit på kontraktet.</p>
+      <p>Den positionen, att vara först i rummet, har ni nu. Få har den. <span class="pause">PAUSE 2s</span></p>
+      <p>Den kan tappas bort. Tyst. Utan att ni märker det. Varje gång samtalet börjar någon annanstans, tappas den bort en bit till.</p>
+      <p>Så frågan är inte om samtalet sker. Frågan är <em>vem som leder det</em>.</p>
+    </div>
+    <div class="bridge-note"><strong>BRIDGE:</strong> Du har precis tagit positionen. Nu ger du dem två konkreta saker att göra med den.</div>
+  </div>
+</div>
+
+<!-- SLIDE 12 -->
+<div class="slide-row" id="slide-12">
+  <div class="slide-panel">
+    <span class="sn">12</span>
+    <div class="eyebrow"><span class="ac">04</span> · What you can do</div>
+    <h2>Two moves. Today.</h2>
+    <div class="moves-mini">
+      <div class="card">
+        <div class="n">01</div>
+        <h4>Find a Frontier Firm already in your customer base.</h4>
+        <p>Learn what they did differently. Which roles they redrew. Which process they let go of.</p>
+      </div>
+      <div class="card">
+        <div class="n">02</div>
+        <h4>Pick one customer this quarter.</h4>
+        <p>Show them what week one of agentic work actually looks like. Real decisions around an agent, not a pitch deck.</p>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">12:30 · 90s</span>
+      <span class="energy energy-calm">calm + concrete</span>
+      <span class="tag">CTA</span>
+    </div>
+    <div class="s-title">Two moves · Find one. Show one.</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Gestikulera tydligt mot kort ett. Sen kort två. Säg numren med tyngd: "Ett. Två." Stå still mellan korten.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> OK. Konkret. Två saker. Idag.</p>
+      <p><em>Ett.</em> <span class="pause">PAUSE</span></p>
+      <p>Hitta en Frontier Firm som redan finns i er kundbas. Det finns alltid en. Ofta vet ni redan vem det är. Den kunden som hör av sig med konstiga frågor. Den som flyttat sin Copilot-budget från IT till nån annan.</p>
+      <p>Ta reda på vad de gjorde annorlunda. Vilka roller de ritade om. Vilken process de släppte. Vad ledningen sa <em>ja</em> till. Och vad de sa <em>nej</em> till.</p>
+      <p>Det där är guld. För era andra kunder. För era egna säljsamtal. För hur ni paketerar nästa erbjudande. <span class="pause">PAUSE</span></p>
+      <p><em>Två.</em> <span class="pause">PAUSE</span></p>
+      <p>Plocka ut en kund det här kvartalet. Bara en. Den som ligger närmast.</p>
+      <p>Visa hen hur vecka ett av riktigt agentic work ser ut. Inte demo. Inte slides. Faktiska beslut runt en agent som tar över ett konkret steg i ett verkligt flöde. På deras data. På deras hårdvara.</p>
+      <p>Konkret arbete. Inget snack. <span class="pause">PAUSE</span></p>
+      <p>Den kunden kommer att prata om er. <em>Och nästa kund kommer från det samtalet.</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Beat 5 · Close ═══ -->
+<div class="act-divider">
+  <h3>Beat 05 · Close</h3>
+  <span class="time">14:00–15:00 · 60 sec</span>
+  <p class="lead">Close. Don't summarize. Land the two takeaways and step into your moderator role.</p>
+</div>
+
+<!-- SLIDE 13 -->
+<div class="slide-row" id="slide-13">
+  <div class="slide-panel">
+    <span class="sn">13</span>
+    <div class="eyebrow">Closing</div>
+    <h2>Before we move on.</h2>
+    <div class="takeaways-mini">
+      <div class="ta">
+        <div class="lb">ONE</div>
+        <p>Frontier Firms exist. With your best customers. Right now.</p>
+      </div>
+      <div class="ta">
+        <div class="lb">TWO</div>
+        <p>Find them. Learn what they did. Help the rest catch up.</p>
+      </div>
+    </div>
+  </div>
+  <div class="script-panel">
+    <div class="meta">
+      <span class="timing">14:00 · 60s</span>
+      <span class="energy energy-quiet">quiet · final</span>
+      <span class="tag">close</span>
+    </div>
+    <div class="s-title">Closing · Before we move on</div>
+    <div class="do-note"><strong>DO:</strong> Klicka fram. Sänk tempot till absolut maxlugn. Titta över rummet en sista gång. Två sekunders paus mellan punkterna. Säg "Tack" lugnt och bestämt. Vänta tills första applåd börjar innan du går vidare till nästa punkt på agendan.</div>
+    <div class="say-note">
+      <p><strong class="lbl">SAY:</strong> Innan vi går vidare.</p>
+      <p>Jag är <em>inte</em> utvecklare. Och det var inte planen heller. Men jag använder agenter varje dag, för det är så jag hinner med jobbet. Och det är skälet jag står här idag. <span class="pause">PAUSE</span></p>
+      <p><em>Frontier Firms finns.</em> Hos era bästa kunder. Just nu. De pratar inte högt om det än. De håller på att rita om sina flöden i tystnad.</p>
+      <p>Ert jobb? <em>Hitta dem.</em> Lär er vad de gjorde. Och hjälp resten hinna ikapp. <span class="pause">PAUSE 2s</span></p>
+      <p>Och en sak till. Era kunder behöver inte fler verktyg. De behöver någon som visar dem hur man använder dem som <em>kollegor</em>. Frågan är vem som visar dem hur. <span class="pause">PAUSE</span></p>
+      <p><em>Tack.</em></p>
+    </div>
+    <div class="bridge-note"><strong>BRIDGE:</strong> Du tar ett halvt steg åt sidan, samlar tankarna, och växlar lugnt in i moderatorrollen för nästa punkt på agendan.</div>
+  </div>
+</div>
+
+</section>
+
+<!-- ============================================================ -->
+<!-- RISKS                                                        -->
+<!-- ============================================================ -->
+<section class="block" id="risks">
+  <h2>Risks · what to watch for</h2>
+  <div class="risks">
+    <ul>
+      <li><strong>Slide 2 video doesn't load.</strong> <em>Fallback:</em> the HTML mock loop will play automatically. Don't troubleshoot on stage. Move forward and reference it verbally.</li>
+      <li><strong>Tempo runs hot.</strong> If you reach slide 8 before 5:00, you're rushing the field examples. Slow down. The traits are where partners decide if you're credible.</li>
+      <li><strong>Slide 11 lands flat.</strong> If the room doesn't respond to the punch, hold the pause longer. Don't pivot to slide 12 until you've made eye contact with at least three people.</li>
+      <li><strong>Device questions from the floor.</strong> Not your slot. Defer with "good question, the next session covers that." Don't try to answer Surface SKUs.</li>
+      <li><strong>You blank on the close.</strong> Default: "Frontier Firms finns. Hos era bästa kunder. Just nu. Hitta dem. Tack." Then half-step back. Don't improvise.</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- end .container -->
+
+<script>
+  function resetChecks(){
+    document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+  }
+</script>
+
+</body>
+</html>

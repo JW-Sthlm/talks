@@ -1,0 +1,1532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frontier Firm · Johan Wallquist · Surface Launch 4 June 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   FRONTIER FIRM · Surface Launch · v2 (rebuild)
+   Premium dark palette. Stockholm rooftop dusk.
+   Single restrained accent: warm amber.
+   v2 changes:
+     - .slide now justify-content:center (content sits in optical middle)
+     - .top-row absolute positioned (does not push content down)
+     - Box/card body text bumped to 19-24px range
+   ───────────────────────────────────────────────────────────── */
+
+:root{
+  --bg:           #0E1116;
+  --bg-elev:      #161B22;
+  --bg-soft:      #1A2028;
+  --bg-card:      #131820;
+
+  --fg:           #ECE6DC;
+  --fg-2:         #BAB3A8;
+  --fg-muted:     #6B6760;
+  --fg-weak:      #3F3D38;
+
+  --border:       #1F252D;
+  --border-soft:  #181D24;
+
+  --accent:       #E0A971;
+  --accent-2:     #C98A4C;
+  --accent-soft:  rgba(224,169,113,0.10);
+  --accent-line:  rgba(224,169,113,0.35);
+
+  --shadow-1: 0 1px 0 rgba(255,255,255,0.04), 0 12px 40px rgba(0,0,0,0.5);
+  --shadow-2: 0 0 0 1px var(--border), 0 18px 60px rgba(0,0,0,0.55);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --pad-x: clamp(48px, 7vw, 120px);
+  --pad-y: clamp(40px, 6vh, 80px);
+
+  /* Top-row clearance: top-row height + breathing room */
+  --top-clear:    96px;
+  --bottom-clear: 110px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--fg);overflow:hidden}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:17px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* Subtle grain to lift the dark bg out of "PowerPoint black" */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background-image:
+    radial-gradient(ellipse 80vw 60vh at 15% 8%, rgba(224,169,113,0.06), transparent 60%),
+    radial-gradient(ellipse 60vw 50vh at 95% 92%, rgba(120,90,180,0.04), transparent 60%);
+  mix-blend-mode:screen;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:2;opacity:0.5;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.90  0 0 0 0 0.86  0 0 0 0.025 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:overlay;
+}
+
+/* ── Slide stage ───────────────────────────────────────────── */
+.deck{position:relative;width:100%;height:100vh;z-index:3}
+.slide{
+  position:absolute;inset:0;
+  padding:
+    var(--top-clear)
+    var(--pad-x)
+    var(--bottom-clear);
+  display:none;
+  flex-direction:column;
+  justify-content:center;          /* v2: optical middle */
+  align-items:flex-start;
+  opacity:0;
+  transition:opacity 360ms var(--ease);
+}
+.slide.is-active{display:flex;opacity:1}
+.slide.is-active .reveal{animation:rise 700ms var(--ease) both}
+.slide.is-active .reveal[data-d="1"]{animation-delay:80ms}
+.slide.is-active .reveal[data-d="2"]{animation-delay:180ms}
+.slide.is-active .reveal[data-d="3"]{animation-delay:300ms}
+.slide.is-active .reveal[data-d="4"]{animation-delay:440ms}
+.slide.is-active .reveal[data-d="5"]{animation-delay:600ms}
+@keyframes rise{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Modifier: horizontally centered content (slide 2 video, slide 4 stat optional) */
+.slide.x-center{align-items:center;text-align:left}
+
+/* ── Top-row · absolute positioned so it does NOT push content down ── */
+.top-row{
+  position:absolute;
+  top:var(--pad-y);
+  left:var(--pad-x);
+  right:var(--pad-x);
+  display:flex;justify-content:space-between;align-items:center;
+  margin:0;
+  z-index:5;
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+.eyebrow{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--fg-muted);
+}
+.eyebrow .ac{color:var(--accent)}
+
+h1.hero{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:700;
+  font-size:clamp(54px, 8.4vw, 116px);
+  line-height:1.02;letter-spacing:-0.045em;
+  text-wrap:balance;
+  color:var(--fg);
+}
+h1.slide-title{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:700;
+  font-size:clamp(38px, 4.8vw, 64px);
+  line-height:1.08;letter-spacing:-0.03em;
+  text-wrap:balance;
+  color:var(--fg);
+}
+h1.section-title{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:600;
+  font-size:clamp(44px, 5.6vw, 76px);
+  line-height:1.05;letter-spacing:-0.035em;
+  color:var(--fg);
+}
+.eyebrow-huge{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:300;
+  font-size:clamp(80px, 11vw, 160px);
+  line-height:1;letter-spacing:-0.04em;
+  color:var(--accent);
+  margin-bottom:18px;
+}
+.lead{
+  font-family:'Inter', sans-serif;
+  font-size:clamp(18px, 1.55vw, 22px);
+  line-height:1.5;font-weight:400;
+  color:var(--fg-2);
+  max-width:62ch;
+  text-wrap:pretty;
+}
+.lead.cream{color:var(--fg)}
+
+/* v2: bumped from 17 → 21px so audience can read body inside slides */
+.body{
+  font-size:21px;line-height:1.6;color:var(--fg-2);
+  max-width:58ch;text-wrap:pretty;font-weight:400;
+}
+.muted{color:var(--fg-muted)}
+.ac{color:var(--accent)}
+em.q{color:var(--accent);font-style:normal;font-weight:500}
+.mono{font-family:'JetBrains Mono', ui-monospace, monospace}
+
+/* ── Chips, pills, footers ───────────────────────────────── */
+.event-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--fg-2);
+  padding:7px 14px;border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.015);
+}
+.event-pill::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);
+}
+.author-block{
+  font-size:14px;line-height:1.6;color:var(--fg-2);
+  letter-spacing:0.01em;
+}
+.author-block .name{color:var(--fg);font-weight:500;font-size:15px}
+
+.slide-footer{
+  position:absolute;left:var(--pad-x);right:var(--pad-x);bottom:24px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:10px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--fg-weak);
+  z-index:5;
+}
+.slide-footer .where{color:var(--fg-muted)}
+.slide-footer .count{color:var(--fg-2)}
+.slide-footer .count .now{color:var(--accent)}
+
+/* ── Layout helpers ──────────────────────────────────────── */
+.row{display:flex;gap:48px;align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:24px}
+.fill{flex:1}
+.center{display:flex;flex-direction:column;gap:24px}
+.center-x{align-items:center;text-align:center}
+
+.divider{
+  height:1px;background:var(--accent-line);width:84px;margin:18px 0;
+}
+
+/* ── Section break stage ─────────────────────────────────── */
+.section-stage{
+  display:flex;flex-direction:column;
+  max-width:1100px;
+}
+.section-stage .ac-line{width:120px;height:1px;background:var(--accent);margin:18px 0 24px}
+
+/* ── 80% stat slide ────────────────────────────────────── */
+.megastat{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:700;
+  font-size:clamp(180px, 24vw, 360px);
+  line-height:0.92;letter-spacing:-0.06em;
+  color:var(--accent);
+  display:inline-block;
+}
+.megastat .pct{font-weight:500;opacity:0.7;font-size:0.55em;vertical-align:0.18em;margin-left:-0.08em}
+.stat-sub{
+  margin-top:32px;
+  font-family:'Inter', sans-serif;
+  font-size:clamp(20px, 1.8vw, 26px);
+  line-height:1.45;color:var(--fg);max-width:820px;text-wrap:pretty;
+}
+.stat-source{
+  margin-top:14px;font-size:14px;color:var(--fg-muted);
+}
+
+/* ── Video card (slide 2) ─────────────────────────────────── */
+.video-card{
+  width:min(70vw, 1100px);
+  aspect-ratio:16/9;
+  background:var(--bg-elev);
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;
+  box-shadow:var(--shadow-2);
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.video-card video{width:100%;height:100%;object-fit:cover;display:block}
+.video-card .placeholder{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(224,169,113,0.08), transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(120,90,180,0.06), transparent 60%),
+    linear-gradient(180deg, #11161D 0%, #0B0F14 100%);
+}
+.video-card .play-glyph{
+  width:78px;height:78px;border-radius:50%;
+  border:1.5px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);
+  background:rgba(224,169,113,0.05);
+}
+.video-card .play-glyph svg{width:28px;height:28px;margin-left:5px}
+.video-card .caption-tag{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);
+}
+.video-card .filename{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:13px;color:var(--fg-muted);
+}
+
+/* ── Agent mock (slide 2 placeholder, step-driven on data-step) ─
+   Replace with a real <video> when the screen recording is ready.
+   The whole .agent-mock block can be deleted at that point. */
+.video-card .agent-mock{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg, #0A0D12 0%, #050709 100%);
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  overflow:hidden;
+}
+.agent-mock .mock-badge{
+  position:absolute;top:14px;right:14px;z-index:10;
+  font-size:9px;letter-spacing:0.22em;font-weight:600;
+  padding:5px 10px;border-radius:3px;
+  background:rgba(224,169,113,0.14);
+  color:var(--accent);
+  border:1px solid rgba(224,169,113,0.35);
+}
+.agent-mock .mock-chrome{
+  height:34px;flex-shrink:0;
+  display:flex;align-items:center;gap:8px;
+  padding:0 14px;
+  background:#1A1F26;
+  border-bottom:1px solid #2A2F36;
+}
+.agent-mock .mock-chrome .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.agent-mock .mock-chrome .dot.red{background:#FF5F57}
+.agent-mock .mock-chrome .dot.yellow{background:#FEBC2E}
+.agent-mock .mock-chrome .dot.green{background:#28C840}
+.agent-mock .mock-chrome .chrome-title{
+  margin-left:auto;margin-right:auto;
+  font-size:11px;color:#9CA3AF;letter-spacing:0.04em;
+}
+.agent-mock .mock-stage{flex:1;position:relative;overflow:hidden}
+
+.agent-mock .mock-terminal{
+  padding:24px 30px;
+  display:flex;flex-direction:column;gap:7px;
+  font-size:14px;line-height:1.5;color:#D4D8DC;
+}
+.agent-mock .term-line{
+  display:flex;align-items:baseline;gap:9px;
+  white-space:nowrap;overflow:hidden;
+}
+.agent-mock .term-line .prompt{color:#7FB069;font-weight:600;flex-shrink:0}
+.agent-mock .term-line .typed-cmd{
+  color:#E6E8EA;display:inline-block;
+  overflow:hidden;white-space:nowrap;
+  width:0ch;
+}
+.agent-mock .caret-wrap{display:inline-block;line-height:0;}
+.agent-mock .caret-wrap-ps{opacity:1;}
+.agent-mock .caret-wrap-cp{opacity:0;}
+.agent-mock .term-line .caret{
+  display:inline-block;width:8px;height:15px;
+  background:#7FB069;
+  vertical-align:middle;
+  animation: mock-blink 0.9s steps(2) infinite;
+}
+.agent-mock .caret-wrap-cp .caret{background:#D24FA3;}
+
+/* ── Copilot CLI welcome banner ──────────────────────────── */
+.agent-mock .copilot-banner{
+  margin:8px 0 6px;
+  padding:11px 14px;
+  background:rgba(28,18,28,0.5);
+  border:1.5px solid #C849A1;
+  border-radius:7px;
+  display:flex;flex-direction:row;align-items:center;gap:14px;
+  opacity:0;transform:translateY(-3px);
+}
+.agent-mock .copilot-banner .copilot-logo{
+  width:38px;height:32px;display:block;flex-shrink:0;
+  filter:drop-shadow(0 0 6px rgba(200,73,161,0.35));
+}
+.agent-mock .copilot-banner .brand-stack{
+  display:flex;flex-direction:column;gap:2px;
+}
+.agent-mock .copilot-banner .brand-name{
+  color:#E6E8EA;font-size:13px;font-weight:500;
+  letter-spacing:0.01em;
+}
+.agent-mock .copilot-banner .brand-tag{
+  color:#FACC15;font-size:12px;
+  font-weight:500;letter-spacing:0.005em;
+}
+
+/* ── Status + meta rows ──────────────────────────────────── */
+.agent-mock .copilot-status{
+  display:flex;align-items:center;gap:9px;
+  font-size:13px;color:#C5CBD1;
+  opacity:0;margin-top:4px;padding:0 2px;
+}
+.agent-mock .copilot-status .dot{
+  color:#5E9EFF;font-size:9px;line-height:1;
+}
+.agent-mock .copilot-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12.5px;
+  padding:6px 4px 2px;
+  opacity:0;
+  border-top:1px solid rgba(255,255,255,0.05);
+  margin-top:3px;
+}
+.agent-mock .copilot-meta .cwd{color:#9CA3AF;}
+.agent-mock .copilot-meta .model{color:#C5CBD1;}
+
+/* ── Input box (Phase 3+4) ───────────────────────────────── */
+.agent-mock .copilot-input{
+  padding:7px 14px 8px;
+  border:1px solid rgba(200,73,161,0.5);
+  border-radius:5px;
+  opacity:0;
+  margin-top:3px;
+  background:rgba(28,18,28,0.25);
+}
+.agent-mock .copilot-input .term-line{margin:0;}
+.agent-mock .copilot-input .prompt{
+  color:#D24FA3;font-size:15px;line-height:1;font-weight:700;
+  text-shadow:0 0 6px rgba(200,73,161,0.45);
+}
+.agent-mock .copilot-hint{
+  font-size:11px;color:#6B7280;
+  margin-left:6px;margin-top:3px;
+  opacity:0;letter-spacing:0.02em;
+}
+.agent-mock .copilot-hint strong{color:#9CA3AF;font-weight:600;}
+
+.agent-mock .agent-line{
+  font-size:13.5px;color:#C5CBD1;opacity:0;
+}
+.agent-mock .agent-line .bullet,
+.agent-mock .agent-line .check{
+  display:inline-block;width:14px;font-weight:700;
+}
+.agent-mock .agent-line .bullet{color:var(--accent)}
+.agent-mock .agent-line .check{color:#7FB069}
+.agent-mock .agent-line .tool-tag{
+  display:inline-block;
+  color:#D24FA3;font-weight:600;
+  font-size:11.5px;letter-spacing:0.04em;
+  padding:1px 7px;border-radius:3px;
+  background:rgba(200,73,161,0.10);
+  border:1px solid rgba(200,73,161,0.22);
+  text-transform:lowercase;
+  margin-right:2px;
+}
+
+.agent-mock .mock-browser{
+  position:absolute;top:0;right:0;bottom:0;
+  width:54%;
+  display:flex;flex-direction:column;
+  background:linear-gradient(180deg, #11161D 0%, #0B0F14 100%);
+  border-left:1px solid #2A2F36;
+  box-shadow:-22px 0 50px rgba(0,0,0,0.55);
+  transform:translateX(110%);
+}
+.agent-mock .browser-chrome{
+  height:30px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#161B22;border-bottom:1px solid #2A2F36;
+}
+.agent-mock .browser-chrome .url{
+  background:#0B0F14;border:1px solid #2A2F36;
+  padding:4px 16px;border-radius:3px;
+  font-size:10px;color:#9CA3AF;letter-spacing:0.04em;
+}
+.agent-mock .browser-body{
+  flex:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:28px 22px;text-align:center;
+  font-family:'Plus Jakarta Sans', sans-serif;
+}
+.agent-mock .rendered-stat{
+  font-size:108px;font-weight:900;line-height:1;
+  letter-spacing:-0.04em;color:var(--accent);
+  opacity:0;transform:scale(0.85);
+}
+.agent-mock .rendered-stat .pct{
+  font-size:54px;margin-left:4px;color:#F4ECE0;
+}
+.agent-mock .rendered-cap{
+  margin-top:20px;font-size:13px;color:#E6E8EA;
+  font-weight:500;line-height:1.45;max-width:300px;
+  opacity:0;transform:translateY(8px);
+}
+.agent-mock .rendered-src{
+  margin-top:22px;font-size:10px;letter-spacing:0.22em;
+  text-transform:uppercase;color:#7B8896;
+  opacity:0;
+}
+
+/* ── Step-driven sequence for slide 2 ────────────────────────
+   Slide 2 has data-steps="1".
+   - data-step="0" (initial): empty PowerShell prompt + blinking
+     green caret. Nothing else visible.
+   - data-step="1": the full sequence plays through once with
+     cascaded delays and holds at the final frame. No loop.
+   Stepping back to "0" snaps everything to the initial state. */
+
+@keyframes mock-blink{
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* PS caret fades out once the command has been typed (~2.5s) */
+.slide.is-active[data-step="1"] .agent-mock .caret-wrap-ps{
+  animation: seq-fade-out 0.2s 2.6s ease forwards;
+}
+/* PowerShell command typing - small breath, then slow type */
+.slide.is-active[data-step="1"] .agent-mock .cmd-ps{
+  animation: seq-type-ps 2.0s 0.5s steps(26, end) forwards;
+}
+
+/* Banner + status + meta + input + hint cascade in after PS enter */
+.slide.is-active[data-step="1"] .agent-mock .copilot-banner{
+  animation: seq-fade-in-up 0.45s 3.2s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .copilot-status{
+  animation: seq-fade-in 0.3s 4.0s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .copilot-meta{
+  animation: seq-fade-in 0.3s 4.6s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .copilot-input{
+  animation: seq-fade-in 0.3s 5.2s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .copilot-hint{
+  animation: seq-fade-in 0.3s 5.8s ease forwards;
+}
+
+/* User request types slowly so the audience can read along. */
+.slide.is-active[data-step="1"] .agent-mock .caret-wrap-cp{
+  animation: seq-caret-cp 6.5s 6.5s linear forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .cmd-cp{
+  animation: seq-type-cp 6.0s 6.6s steps(45, end) forwards;
+}
+
+/* Tool-call stream (search / fetch / match) - ~2.8s gaps so each line reads */
+.slide.is-active[data-step="1"] .agent-mock .ln1{
+  animation: seq-fade-in-down 0.32s 14.0s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .ln2{
+  animation: seq-fade-in-down 0.32s 16.8s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .ln3{
+  animation: seq-fade-in-down 0.32s 19.6s ease forwards;
+}
+
+/* Generation stream (write / build / done) - same calmer cadence */
+.slide.is-active[data-step="1"] .agent-mock .ln4{
+  animation: seq-fade-in-down 0.32s 22.6s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .ln5{
+  animation: seq-fade-in-down 0.32s 25.4s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .ln6{
+  animation: seq-fade-in-down 0.32s 28.2s ease forwards;
+}
+
+/* Browser pane slides in, big stat zooms, caption + source reveal */
+.slide.is-active[data-step="1"] .agent-mock .mock-browser{
+  animation: seq-slide-in 0.7s 29.0s cubic-bezier(.2,.7,.2,1) forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .rendered-stat{
+  animation: seq-stat-pop 0.55s 30.5s cubic-bezier(.2,.7,.2,1.4) forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .rendered-cap{
+  animation: seq-fade-in-up-small 0.45s 32.0s ease forwards;
+}
+.slide.is-active[data-step="1"] .agent-mock .rendered-src{
+  animation: seq-fade-in 0.4s 33.0s ease forwards;
+}
+
+/* Sequence keyframes - all play once, forwards, no repeat */
+@keyframes seq-type-ps { from { width:0ch } to { width:26ch } }
+@keyframes seq-type-cp { from { width:0ch } to { width:45ch } }
+@keyframes seq-fade-in { from { opacity:0 } to { opacity:1 } }
+@keyframes seq-fade-out { from { opacity:1 } to { opacity:0 } }
+@keyframes seq-fade-in-up {
+  from { opacity:0; transform:translateY(-3px) }
+  to { opacity:1; transform:translateY(0) }
+}
+@keyframes seq-fade-in-up-small {
+  from { opacity:0; transform:translateY(8px) }
+  to { opacity:1; transform:translateY(0) }
+}
+@keyframes seq-fade-in-down {
+  from { opacity:0; transform:translateY(-2px) }
+  to { opacity:1; transform:translateY(0) }
+}
+@keyframes seq-caret-cp {
+  0% { opacity:1 }
+  92% { opacity:1 }
+  100% { opacity:0 }
+}
+@keyframes seq-slide-in {
+  from { transform:translateX(110%) }
+  to { transform:translateX(0) }
+}
+@keyframes seq-stat-pop {
+  from { opacity:0; transform:scale(0.85) }
+  to { opacity:1; transform:scale(1) }
+}
+
+/* ── Org chart visual (slide 5) ──────────────────────────── */
+.orgvis{display:flex;gap:90px;align-items:flex-start;margin-top:36px}
+.org-col{display:flex;flex-direction:column;gap:18px;flex:1}
+.org-col .col-label{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:12px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--fg-2);margin-bottom:14px;
+}
+.org-col.new .col-label{color:var(--accent)}
+
+.org-tree{display:flex;flex-direction:column;align-items:center;gap:20px}
+.org-tree .lvl{display:flex;gap:18px}
+.org-cell{
+  width:64px;height:42px;
+  background:#222831;
+  border:1.5px solid #4A5260;
+  border-radius:5px;
+}
+.org-cell.head{background:#2E3641;border-color:#5C6573;width:96px}
+
+.org-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.flow-cell{
+  height:52px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:15px;letter-spacing:0.08em;font-weight:600;
+}
+.flow-cell.human{
+  background:#222831;border:1.5px solid #4A5260;color:#E6E8EA;
+}
+.flow-cell.agent{
+  background:rgba(224,169,113,0.18);
+  border:1.5px solid rgba(224,169,113,0.65);
+  color:var(--accent);
+}
+
+/* ── Two-trait slides 7, 8 ───────────────────────────────── */
+.trait-no{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:300;
+  font-size:clamp(48px, 6vw, 80px);
+  line-height:1;letter-spacing:-0.04em;
+  color:var(--accent);
+}
+
+/* ── Two-column comparison (slide 10) ─────────────────────── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px}
+.compare .card{
+  padding:32px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  position:relative;
+}
+.compare .card.good{border-left:2px solid var(--accent)}
+.compare .card .tag{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--fg-muted);margin-bottom:10px;
+}
+.compare .card.good .tag{color:var(--accent)}
+.compare .card h3{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:600;font-size:24px;letter-spacing:-0.012em;
+  color:var(--fg);margin-bottom:18px;
+}
+.compare .card ul{list-style:none}
+/* v2: bumped from 15.5 → 19px */
+.compare .card li{
+  font-size:19px;line-height:1.5;color:var(--fg);
+  padding:11px 0 11px 20px;position:relative;
+  border-top:1px solid var(--border-soft);
+}
+.compare .card li:first-child{border-top:none}
+.compare .card li::before{
+  content:"";position:absolute;left:0;top:22px;
+  width:8px;height:1px;background:var(--fg-muted);
+}
+.compare .card.good li::before{background:var(--accent)}
+
+/* ── Move cards (slide 12) ───────────────────────────────── */
+.moves{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
+.move-card{
+  padding:36px 34px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:6px;
+  display:flex;flex-direction:column;gap:14px;
+  position:relative;
+}
+.move-card .num{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:300;
+  font-size:60px;line-height:1;letter-spacing:-0.03em;
+  color:var(--accent);
+}
+.move-card h3{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:600;font-size:26px;letter-spacing:-0.012em;
+  color:var(--fg);
+}
+/* v2: bumped from 16 → 21px */
+.move-card p{font-size:21px;line-height:1.55;color:var(--fg);max-width:38ch;font-weight:400}
+
+/* ── Wrap slide (13) ─────────────────────────────────────── */
+.takeaways{display:flex;flex-direction:column;gap:18px;margin:30px 0;max-width:840px}
+.takeaway{
+  padding:24px 28px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-left:2px solid var(--accent);
+  border-radius:4px;
+}
+.takeaway .lab{
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:8px;
+}
+/* v2: bumped from 18 → 23px */
+.takeaway p{font-size:23px;line-height:1.45;color:var(--fg);font-weight:400}
+
+/* v2: bridge bumped from 12 → 20px, letter-spacing loosened */
+.bridge{
+  margin-top:20px;
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:20px;letter-spacing:0.04em;
+  color:var(--fg-2);
+}
+.bridge .ar{color:var(--accent);margin-right:12px}
+
+/* ── Help overlay ────────────────────────────────────────── */
+.help{
+  position:fixed;left:50%;bottom:32px;transform:translateX(-50%);
+  display:flex;gap:14px;z-index:10;
+  font-family:'JetBrains Mono', ui-monospace, monospace;
+  font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--fg-muted);
+  opacity:0;transition:opacity 200ms var(--ease);
+  pointer-events:none;
+}
+.help.show{opacity:1}
+.help kbd{
+  display:inline-block;padding:3px 7px;
+  background:var(--bg-elev);border:1px solid var(--border);border-radius:3px;
+  color:var(--fg-2);margin-right:6px;
+}
+
+/* Print fallback */
+@media print{
+  body{overflow:visible}
+  .slide{display:flex !important;opacity:1 !important;position:relative;inset:auto;page-break-after:always;height:100vh}
+  body::before,body::after,.help{display:none}
+}
+
+/* ── Thumb mode · rendered inside presenter.html iframe ────── */
+html[data-mode="thumb"]{background:var(--bg)}
+html[data-mode="thumb"] body{overflow:hidden}
+html[data-mode="thumb"] body::before,
+html[data-mode="thumb"] body::after,
+html[data-mode="thumb"] .help,
+html[data-mode="thumb"] .slide-footer{display:none !important}
+html[data-mode="thumb"] .deck{
+  position:absolute;top:0;left:0;
+  width:1920px;height:1080px;
+  transform-origin:top left;
+}
+html[data-mode="thumb"] .slide{display:none}
+html[data-mode="thumb"] .slide.is-active{display:flex;opacity:1}
+html[data-mode="thumb"] .slide.is-active .reveal{
+  animation:none !important;opacity:1 !important;transform:none !important;
+}
+/* Freeze the agent mock at its peak frame (everything visible) when shown
+   in presenter's thumbnail iframe so it reads as a static preview. */
+html[data-mode="thumb"] .agent-mock *{animation:none !important}
+html[data-mode="thumb"] .agent-mock .cmd-ps{width:26ch !important}
+html[data-mode="thumb"] .agent-mock .cmd-cp{width:45ch !important}
+html[data-mode="thumb"] .agent-mock .caret-wrap-ps,
+html[data-mode="thumb"] .agent-mock .caret-wrap-cp{display:none !important}
+html[data-mode="thumb"] .agent-mock .copilot-banner{opacity:1 !important;transform:none !important}
+html[data-mode="thumb"] .agent-mock .copilot-status{opacity:1 !important}
+html[data-mode="thumb"] .agent-mock .copilot-meta{opacity:1 !important}
+html[data-mode="thumb"] .agent-mock .copilot-input{opacity:1 !important}
+html[data-mode="thumb"] .agent-mock .copilot-hint{opacity:1 !important}
+html[data-mode="thumb"] .agent-mock .agent-line{opacity:1 !important;transform:none !important}
+html[data-mode="thumb"] .agent-mock .mock-browser{transform:translateX(0) !important}
+html[data-mode="thumb"] .agent-mock .rendered-stat{opacity:1 !important;transform:scale(1) !important}
+html[data-mode="thumb"] .agent-mock .rendered-cap{opacity:1 !important;transform:none !important}
+html[data-mode="thumb"] .agent-mock .rendered-src{opacity:1 !important}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 1 · TITLE / HOOK
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Title · I'm not a developer"
+  data-notes="DO: Vänta två slag innan du börjar prata. Titta över rummet. Håll händerna fria. Le när du säger 'kaffe'.
+SAY: Tack för introt. Och hej alla. Jag heter Johan, Partner Solution Architect på Microsoft Sweden.
+
+Jag är inte utvecklare. Men det där bakom mig skrevs av en agent på min Surface. Igår kväll. Medan jag drack kaffe. [PAUSE]
+
+Och det är där jag vill att vi börjar. Inte med produkten. Med vardagen.">
+  <div class="top-row">
+    <span class="event-pill reveal" data-d="1">Surface Launch · IMA TAK · 4 June 2026</span>
+    <span class="eyebrow reveal" data-d="1">Frontier Firm · opening session</span>
+  </div>
+
+  <div class="reveal" data-d="2">
+    <h1 class="hero">I'm not a developer.</h1>
+  </div>
+  <p class="lead cream reveal" data-d="3" style="margin-top:28px;max-width:780px">
+    But this deck was written, in code, by an agent on my Surface. Last night. While I drank coffee.
+  </p>
+  <div class="reveal" data-d="4" style="margin-top:36px">
+    <div class="divider"></div>
+    <div class="author-block">
+      <div class="name">Johan Wallquist</div>
+      <div>Partner Solution Architect · Microsoft</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 2 · PRE-RECORDED VIDEO CLIP (~20s placeholder)
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide x-center" data-steps="1" data-label="Video · Agentic work on Surface"
+  data-notes="DO: Tryck space en gång och sekvensen är igång. Stå stilla. Titta på klippet med publiken. Två sekunders tystnad efter att den landat.
+SAY (innan klipp): Det här är 20 sekunder från min Surface. Inget polerat. En PowerShell. Copilot CLI. Claude i botten.
+
+Jag bad om en bild på en siffra. Sen gick jag tillbaka till kaffet. [PLAY]
+SAY (efter klipp): [PAUSE 2 sek] Så där ser min vardag ut mellan möten. Inget exotiskt. Och inget jag hade kunnat göra för ett år sedan.">
+  <div class="top-row">
+    <span class="eyebrow muted reveal" data-d="1">Clip · 20 sec</span>
+  </div>
+
+  <div class="reveal" data-d="2">
+    <div class="video-card">
+      <!-- ============================================================
+           VIDEO PLACEHOLDER · step-driven agent mock
+           ============================================================
+           Slide 2 has data-steps="1". On entry the terminal shows only
+           a PowerShell prompt with a blinking green caret. The presenter
+           advances once (Space / Right / Down) to trigger the full
+           sequence (PS command → Copilot banner → tool calls → output).
+           Plays through once, holds at final frame, no loop. Advancing
+           again moves to slide 3.
+
+           Johan: when the real screen recording (agent-clip.mp4) is
+           ready, set display:block on the <video> below and DELETE
+           the entire .agent-mock div. The .agent-mock CSS block at
+           the top of the file can also be deleted.
+           ============================================================ -->
+      <video controls preload="metadata" poster="" style="display:none">
+        <source src="agent-clip.mp4" type="video/mp4">
+      </video>
+      <div class="agent-mock" aria-label="Placeholder mock - replace with screen recording">
+        <div class="mock-chrome">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="chrome-title">PowerShell · Surface</span>
+        </div>
+        <div class="mock-stage">
+          <div class="mock-terminal">
+            <!-- Phase 1 · PowerShell prompt + copilot --allow-all-tools -->
+            <div class="term-line">
+              <span class="prompt">PS C:\Users\jwallquist&gt;</span>
+              <span class="typed-cmd cmd-ps">copilot --allow-all-tools</span>
+              <span class="caret-wrap caret-wrap-ps"><span class="caret"></span></span>
+            </div>
+
+            <!-- Phase 2 · GitHub Copilot CLI welcome banner with robot logo -->
+            <div class="copilot-banner">
+              <svg class="copilot-logo" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="8" y="3" width="14" height="14" rx="3" stroke="#4DD0E1" stroke-width="2.5" fill="none"/>
+                <rect x="38" y="3" width="14" height="14" rx="3" stroke="#4DD0E1" stroke-width="2.5" fill="none"/>
+                <rect x="10" y="20" width="10" height="10" fill="#C849A1"/>
+                <rect x="40" y="20" width="10" height="10" fill="#C849A1"/>
+                <rect x="4" y="29" width="52" height="18" rx="3" fill="#C849A1"/>
+                <rect x="22" y="34" width="4" height="8" fill="#39D353"/>
+                <rect x="34" y="34" width="4" height="8" fill="#39D353"/>
+              </svg>
+              <div class="brand-stack">
+                <div class="brand-name">Copilot v1.0.55-0 uses AI.</div>
+                <div class="brand-tag">/experimental</div>
+              </div>
+            </div>
+
+            <!-- Phase 2b · loaded env status -->
+            <div class="copilot-status">
+              <span class="dot">●</span><span>Loaded env: .github/copilot-instructions.md</span>
+            </div>
+
+            <!-- Phase 2c · cwd + model meta -->
+            <div class="copilot-meta">
+              <span class="cwd">~/projects/surface_release</span>
+              <span class="model">claude-opus-4.6</span>
+            </div>
+
+            <!-- Phase 3+4 · Copilot input box with prompt and user request -->
+            <div class="copilot-input">
+              <div class="term-line copilot-line">
+                <span class="prompt">❯</span>
+                <span class="typed-cmd cmd-cp">make a slide for the 80% stat from WTI 2026</span>
+                <span class="caret-wrap caret-wrap-cp"><span class="caret"></span></span>
+              </div>
+            </div>
+            <div class="copilot-hint"><strong>shift+tab</strong> switch mode</div>
+
+            <!-- Phase 5 · agent tool-call + generation stream -->
+            <div class="term-line agent-line ln1"><span class="bullet">✦</span><span class="tool-tag">search</span><span>Loading project context · deck.html</span></div>
+            <div class="term-line agent-line ln2"><span class="bullet">✦</span><span class="tool-tag">fetch</span><span>WTI 2026 data · microsoft-learn</span></div>
+            <div class="term-line agent-line ln3"><span class="check">✓</span><span class="tool-tag">match</span><span>Found: "80% of Frontier Professionals"</span></div>
+            <div class="term-line agent-line ln4"><span class="bullet">✦</span><span class="tool-tag">write</span><span>Generating slide-04-frontier-stat.html</span></div>
+            <div class="term-line agent-line ln5"><span class="check">✓</span><span class="tool-tag">build</span><span>122 lines · styles applied</span></div>
+            <div class="term-line agent-line ln6"><span class="check">✓</span><span class="tool-tag">done</span><span>Slide ready in 7.4s</span></div>
+          </div>
+          <div class="mock-browser">
+            <div class="browser-chrome">
+              <span class="url">localhost:5500 / deck.html</span>
+            </div>
+            <div class="browser-body">
+              <div class="rendered-stat">80<span class="pct">%</span></div>
+              <div class="rendered-cap">Frontier Professionals producing work they could not have done a year ago.</div>
+              <div class="rendered-src">WTI 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="lead muted reveal" data-d="3" style="margin-top:22px;text-align:center">
+    The agent writes. I watch.
+  </p>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 3 · SECTION 01 / WHAT CHANGED
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Section · What changed"
+  data-notes="DO: Klicka fram. Två slag paus. Låt publiken se sektionsmarkören.
+SAY: Så. Vad förändrades på riktigt?">
+  <div class="section-stage">
+    <div class="eyebrow reveal" data-d="1">Section one</div>
+    <div class="eyebrow-huge reveal" data-d="2">01</div>
+    <div class="ac-line reveal" data-d="3"></div>
+    <h1 class="section-title reveal" data-d="3">What changed.</h1>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 4 · 80% STAT (WTI 2026 · Frontier Professionals)
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Stat · 80 percent producing work they could not have created a year ago"
+  data-notes="DO: Klicka fram. Stå stilla. Låt siffran landa i två sekunder innan du säger något. Peka inte. Låt 80:an göra jobbet.
+SAY: 80 procent. [PAUSE]
+
+Microsoft Work Trend Index. 2026 års rapport, släppt nu i april. Den nyaste vi har.
+
+80 procent av dem som rapporten kallar Frontier Professionals säger att de producerar arbete de inte hade kunnat skapa för ett år sedan. Helt nytt arbete. Sånt som tidigare var omöjligt.
+
+För alla AI-användare i rapporten? 58. För dem som inte använder AI alls? Lägre än så.
+
+Och här är det jag fastnar för. Det är inte 5 procents skillnad. Det är 22 procentenheter. På ett år.
+
+Samma marknad. Samma ekonomi. Samma timmar i kalendern. Skillnaden ligger i hur de jobbar.
+
+Det är det jag vill prata om de närmsta tretton minuterna.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">01</span> · What changed</span>
+    <span class="eyebrow muted reveal" data-d="1">Microsoft Work Trend Index 2026</span>
+  </div>
+
+  <div class="megastat reveal" data-d="2">80<span class="pct">%</span></div>
+  <p class="stat-sub reveal" data-d="3">
+    of Frontier Professionals say they are producing work they could not have created a year ago.
+    For all AI users, it's 58.
+  </p>
+  <p class="stat-source reveal" data-d="4">
+    Source: Microsoft Work Trend Index 2026 Annual Report
+  </p>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 5 · NEW ORG CHARTS
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="New org charts are being drawn"
+  data-notes="DO: Klicka fram. Stå stilla framför bilden. Gör en lätt gest åt höger när du nämner 'arbete i rutorna'. Peka inte på enskilda celler i diagrammet.
+SAY: Det här är det enklaste sättet jag kan rita upp vad som hänt.
+
+Förr ritade vi organisationsscheman med roller. HR på övervåningen, sälj i hörnet, ekonomi nere till vänster. Och bakom varje ruta fanns en person med en titel.
+
+Det funkar inte längre. Inte för att modellen är fel. Utan för att den inte beskriver verkligheten längre.
+
+För när en agent gör en del av jobbet, då räcker inte 'titel i en ruta' som beskrivning. Då måste vi separera två saker som vi tidigare behandlade som ett. Arbetet i sig. Och vem som utför det. [PAUSE]
+
+Och därför ser rutorna annorlunda ut nu. De fylls inte längre med roller. De fylls med arbete. Uppgifter. Processteg. Det som faktiskt händer.
+
+Och frågan vem som gör det är en separat fråga ovanpå. Svaret kan vara en människa. Det kan vara en agent. Det kan vara två människor med tre agenter som jobbar runt samma steg. [PAUSE]
+
+Konkret exempel. Första utkastet till det här talet skrevs av en agent på min Surface. Och nej, det betyder inte att jag står här och läser AI-text. Min roll har bara flyttat. Jag redigerar och tänker. I stället för att skriva från noll.
+
+Det är skillnaden mellan att ha en kollega och att vara den.
+
+Och det här är inte science fiction. Det är två klick i Copilot på min Surface. Lokalt. Utan moln. Utan wifi. Den delen, hårdvaran som faktiskt orkar köra det här, det är Lauras jobb senare i eftermiddag. Jag stannar i mjukvarudelen.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">01</span> · What changed</span>
+  </div>
+
+  <h1 class="slide-title reveal" data-d="2" style="max-width:20ch">
+    New org charts are being drawn.<br>With more kinds of co-workers in the boxes.
+  </h1>
+  <p class="body reveal" data-d="3" style="margin-top:18px">
+    At Frontier Firms, processes get drawn around the work that actually happens. An agent can own a step where three humans used to share it. Or the other way around. Titles follow later.
+  </p>
+
+  <div class="orgvis reveal" data-d="4">
+    <div class="org-col old">
+      <div class="col-label">Before · roles in boxes</div>
+      <div class="org-tree">
+        <div class="lvl"><div class="org-cell head"></div></div>
+        <div class="lvl"><div class="org-cell"></div><div class="org-cell"></div><div class="org-cell"></div></div>
+        <div class="lvl"><div class="org-cell"></div><div class="org-cell"></div><div class="org-cell"></div><div class="org-cell"></div><div class="org-cell"></div></div>
+      </div>
+    </div>
+    <div class="org-col new">
+      <div class="col-label">Now · work in flow</div>
+      <div class="org-flow">
+        <div class="flow-cell human">H</div>
+        <div class="flow-cell agent">A</div>
+        <div class="flow-cell human">H</div>
+        <div class="flow-cell agent">A</div>
+        <div class="flow-cell human">H</div>
+        <div class="flow-cell agent">A</div>
+        <div class="flow-cell human">H</div>
+        <div class="flow-cell agent">A</div>
+        <div class="flow-cell human">H</div>
+        <div class="flow-cell agent">A</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 6 · SECTION 02 / WHAT SETS THEM APART
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Section · What sets them apart"
+  data-notes="DO: Klicka fram. Ta meningen i två andetag.
+SAY: Så. Vad utmärker dem? Två saker. Och de motsäger varandra.">
+  <div class="section-stage">
+    <div class="eyebrow reveal" data-d="1">Section two</div>
+    <div class="eyebrow-huge reveal" data-d="2">02</div>
+    <div class="ac-line reveal" data-d="3"></div>
+    <h1 class="section-title reveal" data-d="3">What sets them apart.</h1>
+    <p class="lead muted reveal" data-d="4" style="margin-top:14px">
+      Two things. And they contradict each other.
+    </p>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 7 · TRAIT 1 · FLOWS BEFORE TITLES
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Trait one · Flows first, titles later"
+  data-notes="DO: Klicka fram. Sänk tempot en aning. Det här är det som ska sjunka in. Använd handen i en flödesgest när du säger 'flöden först'.
+SAY: Det första de gör annorlunda är det här.
+
+De tänker i flöden först. Titlar kommer sen.
+
+Stanna kvar där en sekund. [PAUSE]
+
+För vad händer egentligen när du sätter en agent i mitten av en process? En agent bryr sig inte om vilken titel som brukade äga det här jobbet. Den gör jobbet. Frontier Firms ritar om processen runt det.
+
+Människor får göra det de är bäst på. Det som titeln säger att de ska göra kommer i andra hand. [PAUSE]
+
+Konkret exempel. Jag jobbar just nu med ett industribolag, ni känner namnet, men jag säger det inte här. De tog bort 'rapport-skrivare' från arbetsuppgiftslistan på fyra olika roller. En agent gör utkastet på fredag kväll. De fyra rollerna granskar och beslutar på måndag morgon.
+
+Ingen revolution bakom det. Någon satte sig ner och ritade om processen så att en agent passar in.
+
+Det är det jag menar med flöden först. Du ritar inte rutorna baserat på vem som råkar sitta där. Du ritar dem baserat på vad arbetet faktiskt är. Och sen frågar du. Vilken bit kan en agent göra. Vilken bit kräver en människa. Vilken bit kräver båda.
+
+Och det här är inte teori. (Det här är fredagsuppföljning.) Den frågan kan ni ställa er om vilket flöde som helst hos era kunder, idag, i eftermiddag.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">02</span> · What sets them apart</span>
+  </div>
+
+  <div class="row" style="gap:60px;align-items:flex-start">
+    <div class="trait-no reveal" data-d="2">01</div>
+    <div class="col" style="gap:22px;flex:1;max-width:780px">
+      <h1 class="slide-title reveal" data-d="3">
+        They think in flows first.<br>Titles come later.
+      </h1>
+      <p class="body reveal" data-d="4">
+        An agent doesn't care whose title a piece of work used to belong to. It does work. And Frontier Firms draw the process around that. People get to do what they're best at, rather than what their title prescribes.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 8 · TRAIT 2 · THE AGENT HAS A MANAGER
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Trait two · The agent has a manager"
+  data-notes="DO: Klicka fram. Säg 'Banalt, jag vet' med ett halvt leende. Le igen när du säger 'En chef håller en agent ansvarig'. Det är där du vinner rummet.
+SAY: Och det andra. Det andra som utmärker dem är det här.
+
+De ger agenten en chef. [PAUSE]
+
+Banalt, jag vet. Och fortfarande den största skillnaden jag ser ute hos kunder.
+
+På Frontier Firms får agenten onboarding precis som vilken nyanställd som helst. Den får en roll. Den får en ägare. Plus ett tydligt utfall som ägaren följer upp varje vecka.
+
+Ja, ni hör mig rätt. En chef. Håller en agent. Ansvarig. [PAUSE]
+
+Och det är där de flesta initiativ fastnar. Företag rullar ut Copilot till tusen användare. Hoppas att magin uppstår av sig själv.
+
+Magin gör inte det.
+
+Magin uppstår när någon faktiskt äger agenten. När någon på fredag eftermiddag tittar på vad agenten producerat under veckan. Vad som var bra. Vad som inte var det. Och justerar. (Den är inte smart. Den gör det du frågar om.) [PAUSE]
+
+Det är två saker. Flöden först. Och en chef åt agenten.
+
+Och nu till den knepiga frågan. Vad gör ni med det här på måndag morgon?">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">02</span> · What sets them apart</span>
+  </div>
+
+  <div class="row" style="gap:60px;align-items:flex-start">
+    <div class="trait-no reveal" data-d="2">02</div>
+    <div class="col" style="gap:22px;flex:1;max-width:800px">
+      <h1 class="slide-title reveal" data-d="3">
+        They give the agent a manager.<br>And a measurable outcome.
+      </h1>
+      <p class="body reveal" data-d="4">
+        At Frontier Firms, the agent gets onboarding like any new hire. It gets a role and an owner. Plus a clear outcome the owner reviews every week. Banal, sure. And the biggest difference between companies that move and companies that just experiment.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 9 · SECTION 03+04 · LEARN + PARTNER
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Section · What others can learn. And what you can do."
+  data-notes="DO: Klicka fram. Höj tempot lite. Publiken börjar känna att det här siktas mot dem.
+SAY: OK. Två saker till. Vad andra kan lära. Och vad ni i det här rummet kan göra.">
+  <div class="section-stage">
+    <div class="eyebrow reveal" data-d="1">Section three and four</div>
+    <div class="eyebrow-huge reveal" data-d="2">03 / 04</div>
+    <div class="ac-line reveal" data-d="3"></div>
+    <h1 class="section-title reveal" data-d="3">
+      What others can learn.<br>And what you can do.
+    </h1>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 10 · PATTERN · WHAT MOVES vs WHAT STAYS STUCK
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Pattern · What moves the business and what stays stuck"
+  data-notes="DO: Klicka fram. När du refererar till kolumnerna, gör en liten gest åt vänster och höger. Läs inte upp punkterna en och en. Prata fritt och titta upp.
+SAY: Det här är vad jag ser ute i fält. Det är mönstret hos de bolag jag jobbar med varje vecka.
+
+Vänster sida. Mönstret som stannar still.
+
+Bolag som plockade in Copilot ovanpå ett befintligt flöde. Inte rört flödet. Inte rört rollerna. Bara lagt ett AI-lager ovanpå. De mäter sparade timmar.
+
+De får ut 5 procent, kanske 8. Snygg siffra i en Excel. Liten skillnad på kontoret. Och det är inte fel, det är bara inte det vi pratar om idag. [PAUSE]
+
+Höger sida. Mönstret som rör sig.
+
+Bolag som gav agenten ägarskap. Och lät teamet runt omkring rita om sitt arbete. Det börjar nästan alltid med ett beslut från ledningen om att tillåta omritningen. Och det syns i resultatet, inte i timrapporten.
+
+Vad är skillnaden mellan kolumnerna?
+
+Inte tekniken. Båda kör Copilot. Båda kör det på liknande hårdvara. Skillnaden är vad ledningen var villig att förändra ovanpå tekniken. [PAUSE]
+
+Och det här är det jag tar med mig till nästa slide. För det är där ni kommer in.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">03</span> · What others can learn</span>
+  </div>
+
+  <h1 class="slide-title reveal" data-d="2" style="max-width:22ch">
+    What moves the business.<br>What stays stuck.
+  </h1>
+  <div class="compare reveal" data-d="3">
+    <div class="card">
+      <div class="tag">What stays stuck</div>
+      <h3>AI as feature</h3>
+      <ul>
+        <li>Bolted on. Measures hours saved.</li>
+        <li>The org chart stays still.</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <div class="tag">What moves</div>
+      <h3>AI as colleague</h3>
+      <ul>
+        <li>Owned. Measured by outcome.</li>
+        <li>The team around it gets redrawn.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 11 · PUNCH · FIRST REAL CONVERSATION ABOUT AGENTIC WORK
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Punch · Your customer's first real conversation about agentic work"
+  data-notes="DO: Klicka fram. Sänk tempot kraftigt. Titta över rummet. Det här är talets punch. Säg 'första riktiga samtalet' långsamt.
+SAY: Och här är det jag vill landa hos er.
+
+Just nu, runt om i Norden, har era kunder sitt första riktiga samtal om vad agentic work betyder för dem. På riktigt. Som ett beslut. Som siffror i nästa kvartalsrapport.
+
+Det samtalet pågår med eller utan er. [PAUSE]
+
+Kunderna söker efter någon som har levt med det här. Någon som vet vad som funkar och vad som inte gör det. Någon som har sett mönstret jag pratade om för en minut sedan.
+
+Det kan vara ni. Eller så är det konsultbolaget de hyr in veckan efter att ni skrivit på kontraktet.
+
+Den positionen, att vara först i rummet, har ni nu. Få har den. [PAUSE 2 sek]
+
+Den kan tappas bort. Tyst. Utan att ni märker det. Varje gång samtalet börjar någon annanstans, tappas den bort en bit till.
+
+Så frågan är inte om samtalet sker. Frågan är vem som leder det.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">04</span> · What you can do</span>
+  </div>
+
+  <div style="max-width:1100px">
+    <p class="eyebrow reveal" data-d="2" style="margin-bottom:24px;color:var(--accent)">For everyone in this room</p>
+    <h1 class="hero reveal" data-d="3" style="font-size:clamp(44px,5.8vw,84px);max-width:22ch">
+      Your customer is having their first real conversation about <em class="q">agentic work</em>.
+    </h1>
+    <p class="lead cream reveal" data-d="4" style="margin-top:28px;max-width:820px">
+      Be the voice in the room. Not the spreadsheet they get afterwards.
+    </p>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 12 · TWO MOVES · FIND ONE / SHOW ONE
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Two moves · Find one. Show one."
+  data-notes="DO: Klicka fram. Gestikulera tydligt mot kort ett. Sen kort två. Säg numren med tyngd: 'Ett. Två.' Stå still mellan korten.
+SAY: OK. Konkret. Två saker. Idag.
+
+Ett. [PAUSE]
+
+Hitta en Frontier Firm som redan finns i er kundbas. Det finns alltid en. Ofta vet ni redan vem det är. Den kunden som hör av sig med konstiga frågor. Den som flyttat sin Copilot-budget från IT till nån annan.
+
+Ta reda på vad de gjorde annorlunda. Vilka roller de ritade om. Vilken process de släppte. Vad ledningen sa ja till. Och vad de sa nej till.
+
+Det där är guld. För era andra kunder. För era egna säljsamtal. För hur ni paketerar nästa erbjudande. [PAUSE]
+
+Två. [PAUSE]
+
+Plocka ut en kund det här kvartalet. Bara en. Den som ligger närmast.
+
+Visa hen hur vecka ett av riktigt agentic work ser ut. Inte demo. Inte slides. Faktiska beslut runt en agent som tar över ett konkret steg i ett verkligt flöde. På deras data. På deras hårdvara.
+
+Konkret arbete. Inget snack. [PAUSE]
+
+Den kunden kommer att prata om er. Och nästa kund kommer från det samtalet.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1"><span class="ac">04</span> · What you can do</span>
+  </div>
+
+  <h1 class="slide-title reveal" data-d="2">Two moves. Today.</h1>
+  <div class="moves reveal" data-d="3">
+    <div class="move-card">
+      <div class="num">01</div>
+      <h3>Find a Frontier Firm already in your customer base.</h3>
+      <p>
+        Learn what they did differently. Which roles they redrew. Which process they let go of.
+      </p>
+    </div>
+    <div class="move-card">
+      <div class="num">02</div>
+      <h3>Pick one customer this quarter.</h3>
+      <p>
+        Show them what week one of agentic work actually looks like. Real decisions around an agent, not a pitch deck.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ╔════════════════════════════════════════════════════════════
+     SLIDE 13 · WRAP + CLOSE
+     ╚════════════════════════════════════════════════════════════ -->
+<section class="slide" data-label="Closing · Before we move on"
+  data-notes="DO: Klicka fram. Sänk tempot till absolut maxlugn. Titta över rummet en sista gång. Två sekunders paus mellan punkterna. Säg 'Tack' lugnt och bestämt. Vänta tills första applåd börjar innan du går vidare till nästa punkt på agendan.
+SAY: Innan vi går vidare.
+
+Jag är inte utvecklare. Och det var inte planen heller. Men jag använder agenter varje dag, för det är så jag hinner med jobbet. Och det är skälet jag står här idag. [PAUSE]
+
+Frontier Firms finns. Hos era bästa kunder. Just nu. De pratar inte högt om det än. De håller på att rita om sina flöden i tystnad.
+
+Ert jobb? Hitta dem. Lär er vad de gjorde. Och hjälp resten hinna ikapp. [PAUSE 2 sek]
+
+Och en sak till. Era kunder behöver inte fler verktyg. De behöver någon som visar dem hur man använder dem som kollegor. Frågan är vem som visar dem hur. [PAUSE]
+
+Tack.">
+  <div class="top-row">
+    <span class="eyebrow reveal" data-d="1">Closing</span>
+  </div>
+
+  <h1 class="slide-title reveal" data-d="2">Before we move on.</h1>
+
+  <div class="takeaways">
+    <div class="takeaway reveal" data-d="3">
+      <div class="lab">One</div>
+      <p>Frontier Firms exist. With your best customers. Right now.</p>
+    </div>
+    <div class="takeaway reveal" data-d="4">
+      <div class="lab">Two</div>
+      <p>Find them. Learn what they did. Help the rest catch up.</p>
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+
+<!-- Footer overlay rendered into every slide via JS -->
+<div class="help" id="help">
+  <span><kbd>←</kbd><kbd>→</kbd> nav</span>
+  <span><kbd>P</kbd> presenter</span>
+  <span><kbd>?</kbd> help</span>
+</div>
+
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   FRONTIER FIRM DECK · runtime
+   ───────────────────────────────────────────────────────────── */
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+  let presenterWin = null;
+
+  // Thumb mode = rendered inside presenter.html iframe (listen-only)
+  const URL_PARAMS = new URLSearchParams(location.search);
+  const IS_THUMB = URL_PARAMS.get('presenter') === 'thumb';
+  if (IS_THUMB) document.documentElement.setAttribute('data-mode', 'thumb');
+  let thumbStateReceived = false;
+
+  // Channel name is deck-specific so it won't collide with other decks
+  const CHANNEL = 'surface-frontier-firm-2026';
+  const channel = new BroadcastChannel(CHANNEL);
+
+  // Inject footer into each slide
+  slides.forEach((s, i) => {
+    const f = document.createElement('div');
+    f.className = 'slide-footer';
+    f.innerHTML = `
+      <span class="where">Frontier Firm · Johan Wallquist</span>
+      <span class="count"><span class="now">${String(i+1).padStart(2,'0')}</span> / ${String(total).padStart(2,'0')}</span>
+    `;
+    s.appendChild(f);
+  });
+
+  function getSteps(s){ return parseInt(s.getAttribute('data-steps') || '0', 10); }
+  function getStep(s){ return parseInt(s.getAttribute('data-step') || '0', 10); }
+  function setStep(s, n){ s.setAttribute('data-step', String(n)); }
+
+  function show(i){
+    idx = Math.max(0, Math.min(total-1, i));
+    slides.forEach((s,k) => {
+      s.classList.toggle('is-active', k === idx);
+      setStep(s, 0); // reset step state on every slide change
+    });
+    if (!IS_THUMB) broadcast();
+    try{ if (!IS_THUMB) history.replaceState(null, '', '#' + (idx+1)); }catch(e){}
+  }
+  function next(){
+    const s = slides[idx];
+    const cur = getStep(s);
+    if (cur < getSteps(s)) { setStep(s, cur + 1); return; }
+    if (idx < total-1) show(idx+1);
+  }
+  function prev(){
+    const s = slides[idx];
+    const cur = getStep(s);
+    if (cur > 0) { setStep(s, cur - 1); return; }
+    if (idx > 0) show(idx-1);
+  }
+  function first(){ show(0); }
+  function last(){ show(total-1); }
+
+  function broadcast(){
+    const s = slides[idx];
+    const next_s = slides[idx+1] || null;
+    const payload = {
+      type: 'slide-change',
+      index: idx,
+      total,
+      label: s.getAttribute('data-label') || ('Slide ' + (idx+1)),
+      notes: s.getAttribute('data-notes') || '',
+      nextLabel: next_s ? (next_s.getAttribute('data-label') || '') : '',
+    };
+    try { channel.postMessage(payload); } catch(e){}
+  }
+
+  channel.onmessage = (e) => {
+    if (!e.data) return;
+    // Thumb mode is listen-only for slide-change broadcasts
+    if (IS_THUMB) {
+      if (e.data.type === 'slide-change' && typeof e.data.index === 'number') {
+        thumbStateReceived = true;
+        show(e.data.index);
+      }
+      return;
+    }
+    if (e.data.type === 'nav') {
+      const a = e.data.action;
+      if (a === 'next') next();
+      else if (a === 'prev') prev();
+      else if (a === 'first') first();
+      else if (a === 'last') last();
+      else if (a === 'goto' && typeof e.data.index === 'number') show(e.data.index);
+    }
+    if (e.data.type === 'request-state') {
+      broadcast();
+    }
+  };
+
+  const help = document.getElementById('help');
+  let helpTimer = null;
+  function flashHelp(){
+    help.classList.add('show');
+    clearTimeout(helpTimer);
+    helpTimer = setTimeout(() => help.classList.remove('show'), 2400);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (IS_THUMB) return; // thumb mode is non-interactive
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ') { e.preventDefault(); next(); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); prev(); }
+    else if (k === 'Home') { first(); }
+    else if (k === 'End') { last(); }
+    else if (k === 'p' || k === 'P') {
+      e.preventDefault();
+      openPresenter();
+    }
+    else if (k === '?') {
+      flashHelp();
+    }
+    else if (/^[1-9]$/.test(k)) {
+      const want = parseInt(k,10) - 1;
+      if (want < total) show(want);
+    }
+    else if (k === '0') {
+      const want = 9; if (want < total) show(want);
+    }
+  });
+
+  function openPresenter(){
+    if (presenterWin && !presenterWin.closed) {
+      presenterWin.focus();
+      setTimeout(broadcast, 200);
+      return;
+    }
+    presenterWin = window.open(
+      'presenter.html',
+      'surface-frontier-presenter',
+      'width=1180,height=720,menubar=no,toolbar=no,location=no,status=no'
+    );
+    if (presenterWin) {
+      setTimeout(broadcast, 700);
+      setTimeout(broadcast, 1500);
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (IS_THUMB) return;
+    if (e.target.closest('a, button, video, .help, .video-card')) return;
+    next();
+  });
+  document.addEventListener('contextmenu', (e) => {
+    if (IS_THUMB) return;
+    if (e.target.closest('a, button, video, .help, .video-card')) return;
+    e.preventDefault(); prev();
+  });
+
+  // Thumb mode: scale 1920x1080 deck to fit whatever iframe size
+  function updateThumbScale(){
+    if (!IS_THUMB) return;
+    const deck = document.getElementById('deck');
+    if (!deck) return;
+    const sx = window.innerWidth / 1920;
+    const sy = window.innerHeight / 1080;
+    const s = Math.min(sx, sy);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  if (IS_THUMB) {
+    updateThumbScale();
+    window.addEventListener('resize', updateThumbScale);
+  }
+
+  const hashN = parseInt((location.hash || '').replace('#',''), 10);
+  if (!isNaN(hashN) && hashN >= 1 && hashN <= total) {
+    show(hashN - 1);
+  } else {
+    show(0);
+  }
+  if (IS_THUMB) {
+    // Keep polling the live deck until we receive a slide-change.
+    // Fixes the "needs refresh to see thumbnail" race condition where the
+    // iframe loads after the live deck has already broadcast its state.
+    (function pollState(){
+      if (thumbStateReceived) return;
+      try { channel.postMessage({ type:'request-state' }); } catch(e){}
+      setTimeout(pollState, 400);
+    })();
+  } else {
+    flashHelp();
+  }
+})();
+</script>
+
+</body>
+</html>
