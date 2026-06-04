@@ -720,6 +720,41 @@ em.q{color:var(--accent);font-style:normal;font-weight:500}
 /* v2: bumped from 18 → 23px */
 .takeaway p{font-size:23px;line-height:1.45;color:var(--fg);font-weight:400}
 
+/* ── Closing slide · WhatsApp notification (revealed on click) ── */
+.wa-notify{
+  position:absolute;
+  top:108px; right:clamp(48px,7vw,120px);
+  width:min(480px,44vw);
+  display:flex; gap:16px;
+  padding:18px 20px;
+  background:rgba(247,245,240,0.97);
+  border-radius:20px;
+  box-shadow:0 22px 70px rgba(0,0,0,0.6);
+  opacity:0; pointer-events:none;
+  transform:translateY(-30px) scale(0.95);
+  z-index:6;
+}
+.slide.is-active.closing-slide[data-step="1"] .wa-notify{
+  animation:waPop 640ms var(--ease) both;
+}
+@keyframes waPop{
+  0%{opacity:0;transform:translateY(-30px) scale(0.95)}
+  55%{opacity:1;transform:translateY(5px) scale(1.015)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.wa-icon{
+  flex:0 0 auto;width:48px;height:48px;border-radius:13px;
+  background:#25D366;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px rgba(37,211,102,0.42);
+}
+.wa-icon svg{width:30px;height:30px;fill:#fff}
+.wa-body{min-width:0;flex:1}
+.wa-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:3px}
+.wa-app{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.06em;color:#3a4a42;text-transform:uppercase}
+.wa-time{font-size:13px;color:#7a857d;font-weight:500;white-space:nowrap}
+.wa-sender{font-size:18px;font-weight:700;color:#0b1410;margin-bottom:3px;line-height:1.2}
+.wa-msg{font-size:16px;line-height:1.42;color:#222b26;font-weight:400}
+
 /* v2: bridge bumped from 12 → 20px, letter-spacing loosened */
 .bridge{
   margin-top:20px;
@@ -1218,8 +1253,8 @@ Den kunden kommer att prata om er. Och nästa kund kommer från det samtalet.">
 <!-- ╔════════════════════════════════════════════════════════════
      SLIDE 13 · WRAP + CLOSE
      ╚════════════════════════════════════════════════════════════ -->
-<section class="slide" data-label="Closing · Before we move on"
-  data-notes="DO: Klicka fram. Sänk tempot till absolut maxlugn. Titta över rummet en sista gång. Två sekunders paus mellan punkterna. Säg 'Tack' lugnt och bestämt. Vänta tills första applåd börjar innan du går vidare till nästa punkt på agendan.
+<section class="slide closing-slide" data-steps="1" data-label="Closing · Before we move on"
+  data-notes="DO: Klicka fram WhatsApp-pinget. Agenten hörde av sig medan du sov. Sänk tempot till absolut maxlugn. Titta över rummet en sista gång. Två sekunders paus mellan punkterna. Säg 'Tack' lugnt och bestämt. Vänta tills första applåd börjar innan du går vidare till nästa punkt på agendan.
 SAY: Innan vi går vidare.
 
 Jag är inte utvecklare. Och det var inte planen heller. Men jag använder agenter varje dag, för det är så jag hinner med jobbet. Och det är skälet jag står här idag. [PAUSE]
@@ -1245,6 +1280,17 @@ Tack.">
     <div class="takeaway reveal" data-d="4">
       <div class="lab">Two</div>
       <p>Find them. Learn what they did. Help the rest catch up.</p>
+    </div>
+  </div>
+
+  <div class="wa-notify" aria-hidden="true">
+    <div class="wa-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.15c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+    </div>
+    <div class="wa-body">
+      <div class="wa-top"><span class="wa-app">WhatsApp</span><span class="wa-time">now</span></div>
+      <div class="wa-sender">Autopilot Agent</div>
+      <div class="wa-msg">Halcyon's CEO is going bananas on LinkedIn. Looks like you should reach out, I drafted a message.</div>
     </div>
   </div>
 </section>
@@ -1295,6 +1341,31 @@ Tack.">
   function getStep(s){ return parseInt(s.getAttribute('data-step') || '0', 10); }
   function setStep(s, n){ s.setAttribute('data-step', String(n)); }
 
+  // Short WhatsApp-style two-note ping, synthesized (no external asset).
+  // Triggered by a user gesture (click/keypress) so autoplay policy allows it.
+  let _audioCtx = null;
+  function playWaPing(){
+    if (IS_THUMB) return;
+    try{
+      _audioCtx = _audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = _audioCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      const t0 = ctx.currentTime;
+      [{f:1318.5, t:0}, {f:1760, t:0.12}].forEach(n => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.value = n.f;
+        g.gain.setValueAtTime(0.0001, t0 + n.t);
+        g.gain.exponentialRampToValueAtTime(0.26, t0 + n.t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + n.t + 0.34);
+        o.connect(g).connect(ctx.destination);
+        o.start(t0 + n.t);
+        o.stop(t0 + n.t + 0.36);
+      });
+    }catch(e){}
+  }
+
   function show(i){
     idx = Math.max(0, Math.min(total-1, i));
     slides.forEach((s,k) => {
@@ -1308,7 +1379,12 @@ Tack.">
   function next(){
     const s = slides[idx];
     const cur = getStep(s);
-    if (cur < getSteps(s)) { setStep(s, cur + 1); syncBuild(); return; }
+    if (cur < getSteps(s)) {
+      setStep(s, cur + 1);
+      if (s.classList.contains('closing-slide') && cur + 1 === 1) playWaPing();
+      syncBuild();
+      return;
+    }
     if (idx < total-1) show(idx+1);
   }
   function prev(){
