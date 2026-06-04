@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontier Firm · terminal demo · testing ground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     FRONTIER FIRM · terminal demo (testing ground)
+     One integer state (pos 0..10) drives the whole demo:
+       0      launch slide (the slide before alt-tab)
+       1      terminal up, boot prompt only (PS path> + caret)
+       2      copilot --yolo typed + CLI booted
+       3..9   move 1..7
+       10     exit slide (the next slide after the demo)
+     Everything is manual. No auto-advance. A single anim token
+     invalidates stale timers so nothing ever jumps.
+     ========================================================= */
+  :root{
+    --bg:#0E1116; --bg-elev:#161B22; --bg-soft:#1A2028; --bg-card:#131820;
+    --fg:#ECE6DC; --fg-2:#BAB3A8; --fg-muted:#6B6760; --fg-weak:#3F3D38;
+    --border:#1F252D; --border-soft:#181D24;
+    --accent:#E0A971; --accent-2:#C98A4C; --accent-soft:rgba(224,169,113,.10); --accent-line:rgba(224,169,113,.35);
+    --t-green:#7FB069; --t-pink:#D24FA3; --t-pink2:#C849A1; --t-amber:#FACC15; --t-blue:#5E9EFF; --ok:#28C840;
+    --mono:'JetBrains Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+    --disp:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --jak:'Plus Jakarta Sans',sans-serif;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:radial-gradient(1200px 720px at 74% -14%,#171b22 0%,var(--bg) 60%);
+    color:var(--fg);font-family:var(--disp);overflow:hidden}
+
+  /* Microsoft logo, always present */
+  .ms-logo{position:fixed;top:22px;left:26px;display:flex;align-items:center;gap:9px;opacity:.82;z-index:5}
+  .ms-logo span{font-size:15px;font-weight:600;color:#c7ccd6;letter-spacing:.01em}
+
+  /* ---------------- Slides (launch + exit share .prevslide) ---------------- */
+  .stagewrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:6vh 24px}
+  .launch{display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center;animation:fadeUp .5s var(--ease)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .prevslide{width:min(92vw,900px);text-align:left;animation:fadeUp .5s var(--ease)}
+  .prevslide .kick{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:22px}
+  .prevslide .kick b{color:var(--accent);font-weight:600}
+  .prevslide h1{font-family:var(--jak);font-size:clamp(34px,5.4vw,62px);font-weight:800;letter-spacing:-.02em;line-height:1.05;color:var(--fg)}
+  .prevslide h1 .amber{color:var(--accent)}
+  .prevslide .psub{margin-top:20px;font-size:clamp(16px,2vw,20px);color:var(--fg-2);max-width:54ch;line-height:1.5}
+
+  .demo-launch{display:inline-flex;align-items:center;gap:14px;padding:14px 22px;cursor:pointer;
+    background:rgba(224,169,113,.06);border:1.5px solid var(--accent-line);border-radius:14px;color:var(--fg);
+    font-family:var(--disp);transition:transform .15s var(--ease),background .15s,border-color .15s}
+  .demo-launch:hover,.demo-launch:focus-visible{background:rgba(224,169,113,.12);border-color:var(--accent);transform:translateY(-2px);outline:none}
+  .app-icon{width:46px;height:46px;border-radius:11px;background:linear-gradient(160deg,#1B1F24,#0C0E11);
+    border:1px solid rgba(255,255,255,.10);display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:20px;color:var(--t-pink);text-shadow:0 0 12px rgba(210,79,163,.55)}
+  .app-name{font-size:16px;font-weight:650;text-align:left}
+  .app-name small{display:block;font-family:var(--mono);font-size:11px;color:var(--fg-muted);font-weight:500;
+    letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+
+  /* exit slide hidden until pos 10 */
+  #exitSlide{display:none}
+  #exitSlide.show{display:flex}
+
+  /* ---------------- Terminal overlay (alt-tab over the slide) ---------------- */
+  .overlay{position:fixed;inset:0;background:rgba(8,10,14,.58);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+    display:none;align-items:center;justify-content:center;padding:min(5vh,46px) 24px;z-index:30}
+  .overlay.show{display:flex;animation:scrim-in .42s var(--ease)}
+  @keyframes scrim-in{from{opacity:0}to{opacity:1}}
+  /* the terminal window rises in like an alt-tab over the slide behind */
+  .overlay.show .cli{animation:winraise .5s var(--ease) both}
+  @keyframes winraise{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:none}}
+  .stage{position:relative;width:min(96vw,1140px);height:min(84vh,660px);display:flex}
+
+  .cli{flex:1;min-width:0;background:#0a0d12;border:1px solid #2A2F36;border-radius:11px;overflow:hidden;
+    display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.7)}
+  .cli-chrome{height:32px;flex-shrink:0;display:flex;align-items:center;gap:7px;padding:0 13px;background:#1A1F26;border-bottom:1px solid #2A2F36}
+  .cli-chrome .dot{width:10px;height:10px;border-radius:50%}
+  .cli-chrome .dot.r{background:#FF5F57}.cli-chrome .dot.y{background:#FEBC2E}.cli-chrome .dot.g{background:#28C840}
+  .cli-chrome .title{margin:0 auto;font-family:var(--mono);font-size:11px;color:#9CA3AF;letter-spacing:.04em}
+  .cli-term{flex:1;min-height:0;overflow-y:auto;padding:20px 26px 30px;font-family:var(--mono);font-size:14px;line-height:1.55;color:#D4D8DC;
+    scrollbar-width:none;-ms-overflow-style:none;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 34px);mask-image:linear-gradient(to bottom,transparent 0,#000 34px)}
+  .cli-term::-webkit-scrollbar{width:0;height:0;display:none}
+
+  /* boot */
+  .boot-cmd{display:flex;align-items:baseline;gap:9px;margin-bottom:12px}
+  .boot-cmd .ps{color:var(--t-green);font-weight:600;flex-shrink:0}
+  .boot-cmd .typed{color:#E6E8EA;white-space:nowrap;overflow:hidden}
+  .caret{display:inline-block;width:8px;height:15px;background:var(--t-green);vertical-align:middle;margin-left:1px;animation:blink .9s steps(2) infinite}
+  @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .cp-banner{margin:6px 0 4px;padding:10px 13px;background:rgba(28,18,28,.5);border:1.5px solid var(--t-pink2);border-radius:7px;
+    display:flex;align-items:center;gap:13px;opacity:0;transform:translateY(-3px);transition:opacity .35s,transform .35s}
+  .cp-banner.in{opacity:1;transform:none}
+  .cp-logo{width:34px;height:29px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(200,73,161,.35))}
+  .cp-brand .name{color:#E6E8EA;font-size:13px;font-weight:500}
+  .cp-brand .tag{color:var(--t-amber);font-size:12px}
+  .cp-status{display:flex;align-items:center;gap:9px;font-size:13px;color:#C5CBD1;opacity:0;margin-top:6px;transition:opacity .3s}
+  .cp-status.in{opacity:1}
+  .cp-status .dot{color:var(--t-blue);font-size:9px;line-height:1}
+  .cp-meta{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 4px 2px;margin-top:5px;
+    border-top:1px solid rgba(255,255,255,.05);opacity:0;transition:opacity .3s}
+  .cp-meta.in{opacity:1}
+  .cp-meta .cwd{color:#9CA3AF}.cp-meta .model{color:#C5CBD1}
+
+  /* conversation feed */
+  .line{opacity:0;transform:translateY(3px);transition:opacity .3s,transform .3s}
+  .line.in{opacity:1;transform:none}
+  .moveblock{margin-top:20px}
+  .moveblock.first{margin-top:16px}
+  .move-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    margin-bottom:8px;opacity:.85}
+  .move-meta .est{color:var(--fg-muted)}
+  .ask-line{display:flex;align-items:flex-start;gap:9px}
+  .ask-line .ps{color:var(--t-pink);font-weight:700;text-shadow:0 0 5px rgba(210,79,163,.45);flex-shrink:0}
+  .ask-line .ask{color:#E6E8EA;white-space:pre-wrap;word-break:break-word}
+  .think{color:#6B7280;font-style:italic;padding-left:24px;font-size:.92em;margin-top:8px}
+  .think::before{content:'\2731 ';font-style:normal;color:#6B7280}
+  .agl{display:flex;align-items:baseline;gap:9px;margin-top:6px;padding-left:2px}
+  .agl .b{color:var(--accent);font-weight:700;width:13px;flex-shrink:0}
+  .tt{color:var(--t-pink);font-weight:600;font-size:11px;letter-spacing:.04em;padding:1px 7px;border-radius:4px;
+    background:rgba(210,79,163,.10);border:1px solid rgba(210,79,163,.22);flex-shrink:0;text-transform:lowercase}
+  .agl .txt{color:#C5CBD1;font-size:.95em}
+  .res{color:#cfd6e2;padding-left:25px;margin-top:6px;font-size:.95em;position:relative}
+  .res::before{content:'\21B3';position:absolute;left:6px;color:var(--fg-muted)}
+  .modepill{display:inline-block;margin-top:10px;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 11px;border-radius:5px;color:#5ad17e;background:rgba(57,211,83,.10);border:1px solid rgba(57,211,83,.28)}
+
+  /* browser output card (the built deck preview) */
+  .card{margin-top:16px;border:1px solid var(--accent-line);border-radius:12px;overflow:hidden;
+    opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s;font-family:var(--disp)}
+  .card.in{opacity:1;transform:none}
+  .card-chrome{height:30px;display:flex;align-items:center;justify-content:center;background:#161B22;border-bottom:1px solid #2A2F36}
+  .card-chrome .url{background:#0B0F14;border:1px solid #2A2F36;padding:4px 16px;border-radius:3px;
+    font-family:var(--mono);font-size:10.5px;color:#9CA3AF;letter-spacing:.03em}
+  .card-body{background:linear-gradient(180deg,#11161D,#0B0F14);padding:22px 22px 18px}
+  .deckmini{display:flex;gap:8px;margin-bottom:14px}
+  .sl{flex:1;border:1px solid var(--border);border-radius:7px;height:58px;background:rgba(255,255,255,.02);
+    display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;padding:6px}
+  .sl b{font-family:var(--jak);font-size:15px;font-weight:800;color:var(--accent);line-height:1}
+  .sl span{font-size:8.5px;color:var(--fg-muted);text-align:center;line-height:1.2}
+  .sl.story b{color:var(--fg);font-size:11px;font-weight:700}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .card-foot .meta{font-size:12.5px;color:var(--fg-2)}
+  .card-foot .meta b{color:var(--fg);font-weight:600}
+  .ppill{font-family:var(--mono);font-size:12px;color:var(--accent);display:inline-flex;align-items:center;gap:7px;
+    border:1px solid var(--accent-line);border-radius:8px;padding:6px 11px;background:var(--accent-soft)}
+
+  /* ---------------- Presenter view ---------------- */
+  body.presenter .stagewrap,body.presenter .overlay,body.presenter .ms-logo{display:none!important}
+  .pv{display:none;position:fixed;inset:0;background:var(--bg);color:var(--fg);padding:40px 48px;flex-direction:column;gap:20px}
+  body.presenter .pv{display:flex}
+  .pv-top{display:flex;align-items:baseline;gap:16px;border-bottom:1px solid var(--border);padding-bottom:16px}
+  .pv-step{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase}
+  .pv-est{font-family:var(--mono);font-size:13px;color:var(--fg-muted)}
+  .pv-title{font-family:var(--jak);font-size:30px;font-weight:800;letter-spacing:-.01em}
+  .pv-ask{font-family:var(--mono);font-size:16px;color:#E6E8EA;background:var(--bg-card);border:1px solid var(--border);
+    border-left:3px solid var(--t-pink);border-radius:8px;padding:14px 18px;line-height:1.5}
+  .pv-ask .lbl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:7px}
+  .pv-say{font-size:21px;line-height:1.55;color:var(--fg);max-width:62ch}
+  .pv-say .lbl{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:9px}
+  .pv-rail{margin-top:auto;display:flex;gap:7px;flex-wrap:wrap}
+  .pv-rail .pvr{font-family:var(--mono);font-size:11px;padding:5px 11px;border-radius:999px;border:1px solid var(--border);color:var(--fg-muted)}
+  .pv-rail .pvr.done{color:#5ad17e;border-color:rgba(57,211,83,.3)}
+  .pv-rail .pvr.now{color:#1a1205;background:var(--accent);border-color:var(--accent);font-weight:600}
+  .pv-ctrl{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+  .pv-ctrl button{font-family:var(--mono);font-size:13px;padding:10px 18px;border-radius:9px;border:1px solid var(--border);
+    background:rgba(255,255,255,.04);color:var(--fg);cursor:pointer;transition:border-color .15s,color .15s}
+  .pv-ctrl button:hover{border-color:var(--accent);color:var(--accent)}
+  .pv-ctrl button.primary{background:var(--accent);color:#1a1205;border-color:var(--accent);font-weight:700}
+  .pv-ctrl .hint{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--fg-muted);letter-spacing:.05em}
+  .pv-ctrl .hint kbd{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--fg-2);margin:0 2px}
+</style>
+</head>
+<body>
+
+  <div class="ms-logo" aria-label="Microsoft">
+    <svg width="20" height="20" viewBox="0 0 23 23" aria-hidden="true">
+      <rect x="1" y="1" width="10" height="10" fill="#F25022"/><rect x="12" y="1" width="10" height="10" fill="#7FBA00"/>
+      <rect x="1" y="12" width="10" height="10" fill="#00A4EF"/><rect x="12" y="12" width="10" height="10" fill="#FFB900"/>
+    </svg>
+    <span>Microsoft</span>
+  </div>
+
+  <!-- ============ LAUNCH SLIDE (what's on screen before alt-tab) ============ -->
+  <div class="stagewrap" id="launchSlide">
+    <div class="launch">
+      <div class="prevslide">
+        <div class="kick">Frontier Firms 2026 <b>·</b> live build <b>·</b> the next slide</div>
+        <h1>I'll build the next slide <span class="amber">while we talk.</span></h1>
+        <div class="psub">Same Copilot CLI I use every day. No prepared file, no net. I talk, it builds, and you watch the room get modelled in real time.</div>
+      </div>
+      <button class="demo-launch" id="launchBtn" type="button" aria-label="Bring up the terminal">
+        <span class="app-icon" aria-hidden="true">&#10095;_</span>
+        <span class="app-name">Bring up the terminal<small>space &middot; Copilot CLI</small></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ TERMINAL OVERLAY ============ -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="stage">
+      <div class="cli">
+        <div class="cli-chrome"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">copilot &middot; ~/projects/halcyon-advisory</span></div>
+        <div class="cli-term" id="term"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ EXIT SLIDE (the next slide after the demo) ============ -->
+  <div id="exitSlide" class="stagewrap">
+    <div class="prevslide">
+      <div class="kick">After the <b>build</b> &middot; the next slide</div>
+      <h1>That's what <span class="amber">Frontier</span> means.</h1>
+      <p class="psub">Three arguments, one each. The model knew the room. No hand-coding, no compromises. Brief to finished deck in about seventeen minutes, live. And an agent still watching in the background.</p>
+    </div>
+  </div>
+
+  <!-- ============ PRESENTER VIEW ============ -->
+  <div class="pv" id="pv">
+    <div class="pv-top"><span class="pv-step" id="pvStep">Setup</span><span class="pv-est" id="pvEst"></span><span class="pv-title" id="pvTitle">The live build</span></div>
+    <div class="pv-ask" id="pvAskWrap"><span class="lbl">Prompt to send</span><span id="pvAsk"></span></div>
+    <div class="pv-say"><span class="lbl">Say</span><span id="pvSay"></span></div>
+    <div class="pv-rail" id="pvRail"></div>
+    <div class="pv-ctrl">
+      <button id="pvBack" type="button">&#9664; Back</button>
+      <button id="pvNext" class="primary" type="button">Advance &#9654;</button>
+      <button id="pvReset" type="button">Replay</button>
+      <span class="hint"><kbd>space</kbd> advance <kbd>&larr;</kbd> back <kbd>R</kbd> replay <kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+
+<script>
+(function(){
+  /* ===== reskin in one place ===== */
+  const CONFIG = {
+    cwd:"~/projects/halcyon-advisory",
+    model:"claude-opus-4.8",
+    bootCmd:"copilot --yolo",
+    cliVer:"v1.0.59",
+    typeBoot:34, typeAsk:26, lineGap:430, bootGap:230
+  };
+
+  /* ===== the conversation - one move per advance =====
+     line kinds: think | tool | res | mode | card
+     Only the ❯ ask line is the user. Everything else is the CLI. */
+  const MOVES = [
+    { title:"Restate the brief", est:"2 min",
+      ask:"Read the leadership notes in this folder. Don't make slides yet. In one sentence: what does this briefing actually need to do?",
+      lines:[
+        {k:"think", t:"find the notes first. don't guess the point of the meeting\u2026"},
+        {k:"tool", tag:"workiq", t:"search \u00b7 latest Halcyon leadership notes"},
+        {k:"res",  t:"found \u00b7 halcyon-leadership-thursday.md"},
+        {k:"res",  t:"one sentence: the five leaders must leave believing sleeping utilisation, lost architects and lost pitches are one shift, not five separate fires"}
+      ]},
+    { title:"Research with tools", est:"3 min",
+      ask:"Pull from the World Trend Index 2026. Fetch the report and give me the two or three stats that anchor this. Tell me why each one.",
+      lines:[
+        {k:"think", t:"anchor the claim in numbers I can say out loud\u2026"},
+        {k:"tool", tag:"fetch", t:"WTI 2026 \u00b7 microsoft.com/worklab"},
+        {k:"res",  t:"read \u00b7 38-page report \u00b7 cited by page"},
+        {k:"res",  t:"frontier vs the stall gap \u00b7 agents up 15\u00d7 year over year"}
+      ]},
+    { title:"Model the room", est:"2 min",
+      ask:"Model the room. CEO, CFO, Head of Delivery, Head of People, Head of Growth. They want different things. Find one through-line that lands for all five.",
+      lines:[
+        {k:"think", t:"five wants. this one needs real reasoning\u2026"},
+        {k:"tool", tag:"reason", t:"mapping five stakeholders \u00b7 22s"},
+        {k:"res",  t:"map \u00b7 what each leader actually wants, where they disagree"},
+        {k:"res",  t:"not five problems. one shift wearing five masks"}
+      ]},
+    { title:"Outline + critique", est:"3 min",
+      ask:"Propose six slides. One argument each, no bullet lists. CFO leads with a number, CEO leads with a story. Then: what's the weakest slide?",
+      lines:[
+        {k:"think", t:"outline before deck. argue each slide before a single pixel\u2026"},
+        {k:"tool", tag:"plan", t:"outline \u00b7 6 slides \u00b7 one argument each"},
+        {k:"res",  t:"1 number \u00b7 2 story \u00b7 3 the shift \u00b7 4 delivery = business \u00b7 5 the 8-day move \u00b7 6 the ask"},
+        {k:"res",  t:"self-critique \u00b7 slide 4 is weakest \u00b7 the link is asserted, not shown"}
+      ]},
+    { title:"Build the deck", est:"5 min",
+      ask:"Approved. Build it. Frontier style, dark. Match my other deck for the look. Browser + presenter view.",
+      lines:[
+        {k:"mode", t:"Autopilot"},
+        {k:"tool", tag:"write", t:"deck.html \u00b7 6 slides \u00b7 amber on charcoal"},
+        {k:"tool", tag:"write", t:"presenter.html \u00b7 notes + timings"},
+        {k:"res",  t:"build green \u00b7 6 slides ready in 4m 12s"},
+        {k:"card"}
+      ]},
+    { title:"Polish, surgically", est:"2 min",
+      ask:"Two fixes. Slide 4: show the delivery\u2192business link with the WTI stat, don't assert it. Slide 2: cut the copy. Reload.",
+      lines:[
+        {k:"think", t:"small and surgical. don't rewrite what already works\u2026"},
+        {k:"tool", tag:"edit", t:"slide 4 \u00b7 show delivery \u2192 business with the 15\u00d7 stat"},
+        {k:"tool", tag:"edit", t:"slide 2 \u00b7 trim copy 40%"},
+        {k:"res",  t:"reloaded \u00b7 fact-check pass \u00b7 6 slides, presenter synced"}
+      ]},
+    { title:"Set it loose", est:"ongoing",
+      ask:"One more. Set up a background agent to watch LinkedIn and my inbox for any signal about Halcyon. Ping me on WhatsApp when something moves. Run on your own. Pull me in only when it matters.",
+      lines:[
+        {k:"think", t:"this one shouldn't need me. set it up to run, then get out of its way\u2026"},
+        {k:"tool", tag:"connect",  t:"LinkedIn + Outlook \u00b7 Halcyon account"},
+        {k:"tool", tag:"schedule", t:"watch for signals \u00b7 24/7"},
+        {k:"tool", tag:"notify",   t:"WhatsApp \u00b7 ping on signal"},
+        {k:"mode", t:"Background \u00b7 running"},
+        {k:"res",  t:"agent live \u00b7 watching 2 sources \u00b7 silent until it matters"}
+      ]}
+  ];
+
+  /* ===== presenter notes, indexed by pos 0..10 =====
+     ask is only present where there's a prompt to send (boot + moves).
+     The asides that used to clutter the terminal live here now. */
+  const PRES = [
+    { step:"Setup", est:"~17 min", title:"The live build", ask:null,
+      say:"Halcyon Advisory. Five leaders walk into a room and each one thinks they've got a different problem. Sleeping utilisation, architects walking out the door, pitches they keep losing. Eight days to their launch. I'm going to build the deck that lands the real point, live, right here in the terminal. No prepped file. No safety net. Watch what the model does when it can actually reason about the room." },
+    { step:"Terminal", est:"", title:"copilot CLI", ask:null,
+      say:"There's the terminal, straight over the slide. Just my prompt sitting there, blinking. Same Copilot CLI I run every day. Nothing staged." },
+    { step:"Boot", est:"", title:"copilot --yolo", ask:CONFIG.bootCmd,
+      say:"I launch it in yolo mode so it just runs. It picks up my instructions file and we're live. One second." },
+    { step:"Move 1", est:"2 min", title:"Restate the brief", ask:MOVES[0].ask,
+      say:"First move, and notice I don't ask for slides. I ask it what this meeting actually needs to do. One sentence. It reads the notes and hands me the spine. The mess reads itself back to me, cleaner than I could put it." },
+    { step:"Move 2", est:"3 min", title:"Research with tools", ask:MOVES[1].ask,
+      say:"Now I anchor it in something real. World Trend Index, the actual report. I want two or three numbers I can say out loud, each one tied to a page. And I let it decide how many. It'll push back if only one really fits." },
+    { step:"Move 3", est:"2 min", title:"Model the room", ask:MOVES[2].ask,
+      say:"Five people, five different wants. This is the hard one, so it sits and thinks. Then it lands it. One shift wearing five masks. While it reasons I can switch tabs. It pings me when it needs me." },
+    { step:"Move 4", est:"3 min", title:"Outline + critique", ask:MOVES[3].ask,
+      say:"Still no slides. We argue the outline first, one argument per slide. Then I ask it the question nobody asks their own deck. Which slide is weakest. And it tells me, straight." },
+    { step:"Move 5", est:"5 min", title:"Build the deck", ask:MOVES[4].ask,
+      say:"Now it builds. Six slides, my Frontier look, and a presenter view with notes and timings. I walk away and come back to a finished deck. Press P and you get this." },
+    { step:"Move 6", est:"2 min", title:"Polish, surgically", ask:MOVES[5].ask,
+      say:"Two fixes, not a rewrite. Show the link instead of claiming it. Cut the copy on slide two. Reload. Fact-check at the end, because now it's cheap to redo. Ship it." },
+    { step:"Move 7", est:"ongoing", title:"Set it loose", ask:MOVES[6].ask,
+      say:"Last one, and this is the real shift. I don't hand it a task. I give it a standing job. Watch LinkedIn and my inbox for this client, run on its own, ping me on WhatsApp only when something moves. Then I close the laptop. It keeps working while I sleep." },
+    { step:"Next slide", est:"", title:"That's Frontier", ask:null,
+      say:"And that's the deck. Three arguments, the model knew the room, no hand-coding. Brief to finished deck in about seventeen minutes, live. Plus an agent still watching in the background. That's what Frontier actually means." }
+  ];
+
+  /* ===== position model =====
+     0 launch · 1 boot prompt · 2 yolo boot · 3..9 moves · 10 exit */
+  const FIRST_MOVE_POS = 3;
+  const LAST_MOVE_POS  = FIRST_MOVE_POS + MOVES.length - 1; // 9
+  const EXIT_POS       = LAST_MOVE_POS + 1;                 // 10
+  const LAST_POS       = EXIT_POS;
+  function moveIndexFor(pos){ return pos - FIRST_MOVE_POS; }
+
+  /* ===== presenter sync ===== */
+  const CHANNEL='frontier-build-2026';
+  const isPresenter = location.search.indexOf('presenter')!==-1;
+  let channel=null; try{ channel=new BroadcastChannel(CHANNEL); }catch(e){}
+
+  /* ---- shared refs ---- */
+  const overlay=document.getElementById('overlay');
+  const term=document.getElementById('term');
+  const launchSlide=document.getElementById('launchSlide');
+  const exitSlide=document.getElementById('exitSlide');
+
+  /* ===== state ===== */
+  let curPos=0, animating=false, animToken=0;
+  let timers=[];
+  function T(fn,ms){ const id=setTimeout(fn,ms); timers.push(id); return id; }
+  function clearT(){ timers.forEach(clearTimeout); timers=[]; }
+  function scroll(){ term.scrollTop=term.scrollHeight; }
+
+  /* ===== html builders ===== */
+  const CPLOGO='<svg class="cp-logo" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+    '<rect x="8" y="3" width="14" height="14" rx="3" stroke="#4DD0E1" stroke-width="2.5" fill="none"/>'+
+    '<rect x="38" y="3" width="14" height="14" rx="3" stroke="#4DD0E1" stroke-width="2.5" fill="none"/>'+
+    '<rect x="10" y="20" width="10" height="10" fill="#C849A1"/><rect x="40" y="20" width="10" height="10" fill="#C849A1"/>'+
+    '<rect x="4" y="29" width="52" height="18" rx="3" fill="#C849A1"/>'+
+    '<rect x="22" y="34" width="4" height="8" fill="#39D353"/><rect x="34" y="34" width="4" height="8" fill="#39D353"/></svg>';
+
+  function bootPromptHTML(typed,caret){
+    return '<div class="boot-cmd"><span class="ps">PS '+CONFIG.cwd+'&gt;</span>'+
+      '<span class="typed" id="bootTyped">'+(typed||'')+'</span>'+
+      (caret?'<span class="caret"></span>':'')+'</div>';
+  }
+  function bannerHTML(vis){
+    const c=vis?' in':'';
+    return '<div class="cp-banner'+c+'">'+CPLOGO+'<div class="cp-brand"><div class="name">Copilot '+CONFIG.cliVer+' uses AI.</div><div class="tag">/experimental</div></div></div>'+
+      '<div class="cp-status'+c+'"><span class="dot">\u25CF</span><span>Loaded env: .github/copilot-instructions.md</span></div>'+
+      '<div class="cp-meta'+c+'"><span class="cwd">'+CONFIG.cwd+'</span><span class="model">'+CONFIG.model+'</span></div>';
+  }
+  function cardHTML(vis){
+    return '<div class="card'+(vis?' in':'')+'"><div class="card-chrome"><span class="url">localhost:5500 / deck.html</span></div>'+
+      '<div class="card-body"><div class="deckmini">'+
+        '<div class="sl"><b>1\u00d7</b><span>the number</span></div>'+
+        '<div class="sl story"><b>Story</b><span>the room</span></div>'+
+        '<div class="sl"><b>1</b><span>the shift</span></div>'+
+        '<div class="sl story"><b>=</b><span>delivery=business</span></div>'+
+        '<div class="sl"><b>8d</b><span>the move</span></div>'+
+        '<div class="sl story"><b>Ask</b><span>the ask</span></div>'+
+      '</div><div class="card-foot"><span class="meta"><b>6 slides</b> \u00b7 Frontier style \u00b7 notes + timings</span>'+
+      '<span class="ppill">\u2328 press P \u00b7 presenter view</span></div></div></div>';
+  }
+  function lineHTML(l,vis){
+    const v=vis?' in':'';
+    if(l.k==='think') return '<div class="line think'+v+'">'+l.t+'</div>';
+    if(l.k==='res')   return '<div class="line res'+v+'">'+l.t+'</div>';
+    if(l.k==='mode')  return '<div class="line modepill'+v+'">\u25CF '+l.t+'</div>';
+    if(l.k==='tool')  return '<div class="line agl'+v+'"><span class="b">\u2726</span><span class="tt">'+l.tag+'</span><span class="txt">'+l.t+'</span></div>';
+    if(l.k==='card')  return cardHTML(vis);
+    return '';
+  }
+  function moveHTML(m,i,vis){
+    let h='<div class="moveblock'+(i===0?' first':'')+'" data-move="'+i+'">';
+    h+='<div class="move-meta">Move '+(i+1)+' \u00b7 '+m.title+' <span class="est">\u00b7 '+m.est+'</span></div>';
+    h+='<div class="ask-line"><span class="ps">\u276F</span><span class="ask">'+(vis?m.ask:'')+'</span></div>';
+    m.lines.forEach(function(l){ h+=lineHTML(l,vis); });
+    h+='</div>';
+    return h;
+  }
+
+  /* full instant terminal content for a position (everything visible) */
+  function termHTML(pos){
+    if(pos<1) return '';
+    let h = bootPromptHTML(pos>=2?CONFIG.bootCmd:'', pos<2);
+    if(pos>=2) h += bannerHTML(true);
+    const last=Math.min(moveIndexFor(pos), MOVES.length-1);
+    for(let i=0;i<=last;i++){ h += moveHTML(MOVES[i],i,true); }
+    return h;
+  }
+
+  function typewrite(node,text,speed,tok,done){
+    let i=0; node.textContent='';
+    (function tick(){
+      if(tok!==animToken) return;
+      if(i<=text.length){ node.textContent=text.slice(0,i); i++; scroll(); T(tick,speed); }
+      else if(done) done();
+    })();
+  }
+
+  /* ===== screen visibility ===== */
+  function updateScreens(pos){
+    const wantOverlay = pos>=1 && pos<=LAST_MOVE_POS;
+    launchSlide.style.display = (pos<=LAST_MOVE_POS)?'flex':'none';
+    if(wantOverlay){
+      if(!overlay.classList.contains('show')){ overlay.classList.add('show'); overlay.setAttribute('aria-hidden','false'); }
+    } else {
+      overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true');
+    }
+    exitSlide.classList.toggle('show', pos===EXIT_POS);
+  }
+
+  /* ===== the one render entry point ===== */
+  function renderTo(pos,animate){
+    pos=Math.max(0,Math.min(LAST_POS,pos));
+    animToken++; const tok=animToken; clearT(); animating=false;
+    curPos=pos;
+    updateScreens(pos);
+
+    if(pos===0){ broadcast(); return; }
+
+    // instant render (back / jump / boot prompt / exit slide).
+    // Only the boot command (pos 2) and the moves (3..9) get an animated reveal.
+    if(!animate || pos===1 || pos>LAST_MOVE_POS){
+      term.innerHTML = termHTML(pos);
+      scroll(); broadcast(); return;
+    }
+
+    // animated: show prior state instant, then play this step
+    term.innerHTML = termHTML(pos-1);
+    scroll();
+
+    if(pos===2){ animateBoot(tok); }
+    else { animateMove(moveIndexFor(pos),tok); }
+    broadcast();
+  }
+
+  function animateBoot(tok){
+    animating=true;
+    // term shows the boot prompt (empty typed + caret). append banner hidden, then type command.
+    const banner=document.createElement('div'); banner.innerHTML=bannerHTML(false);
+    while(banner.firstChild) term.appendChild(banner.firstChild);
+    const typed=document.getElementById('bootTyped');
+    typewrite(typed, CONFIG.bootCmd, CONFIG.typeBoot, tok, function(){
+      if(tok!==animToken) return;
+      const caret=term.querySelector('.boot-cmd .caret'); if(caret) caret.remove();
+      const items=term.querySelectorAll('.cp-banner,.cp-status,.cp-meta');
+      let d=0;
+      items.forEach(function(n){ d+=CONFIG.bootGap; T(function(){ if(tok!==animToken) return; n.classList.add('in'); scroll(); }, d); });
+      T(function(){ if(tok!==animToken) return; animating=false; broadcast(); }, d+60);
+    });
+  }
+
+  function animateMove(i,tok){
+    animating=true;
+    const wrap=document.createElement('div'); wrap.innerHTML=moveHTML(MOVES[i],i,false);
+    const node=wrap.firstChild; term.appendChild(node); scroll();
+    const askSpan=node.querySelector('.ask');
+    typewrite(askSpan, MOVES[i].ask, CONFIG.typeAsk, tok, function(){
+      if(tok!==animToken) return;
+      const reveals=node.querySelectorAll('.line, .card');
+      let d=0;
+      reveals.forEach(function(n){ d+=CONFIG.lineGap; T(function(){ if(tok!==animToken) return; n.classList.add('in'); scroll(); }, d); });
+      T(function(){ if(tok!==animToken) return; animating=false; broadcast(); }, d+60);
+    });
+  }
+
+  /* ===== drive ===== */
+  function advance(){
+    if(isPresenter) return;
+    if(animating){ renderTo(curPos,false); return; } // finish current step, don't skip ahead
+    renderTo(curPos+1,true);
+  }
+  function back(){
+    if(isPresenter) return;
+    if(animating){ renderTo(curPos,false); return; }
+    renderTo(curPos-1,false);
+  }
+  function resetDemo(){ renderTo(0,false); }
+
+  /* ===== presenter broadcast / view ===== */
+  function broadcast(){ if(!channel) return; try{ channel.postMessage({type:'state', idx:curPos}); }catch(e){} }
+
+  function renderPV(idx){
+    const s=PRES[idx]||PRES[0];
+    document.getElementById('pvStep').textContent=s.step;
+    document.getElementById('pvEst').textContent=s.est?('\u00b7 '+s.est):'';
+    document.getElementById('pvTitle').textContent=s.title;
+    const askWrap=document.getElementById('pvAskWrap');
+    if(s.ask){ askWrap.style.display=''; document.getElementById('pvAsk').textContent=s.ask; }
+    else { askWrap.style.display='none'; }
+    document.getElementById('pvSay').textContent=s.say;
+    const r=document.getElementById('pvRail'); r.innerHTML='';
+    const active = (idx>=FIRST_MOVE_POS && idx<=LAST_MOVE_POS) ? moveIndexFor(idx) : -1;
+    const done   = (idx>LAST_MOVE_POS) ? MOVES.length : Math.max(0, idx-FIRST_MOVE_POS);
+    MOVES.forEach(function(m,i){
+      const el=document.createElement('span'); el.className='pvr';
+      if(i<done) el.classList.add('done');
+      if(i===active) el.classList.add('now');
+      el.textContent=(i+1)+' \u00b7 '+m.title;
+      r.appendChild(el);
+    });
+  }
+
+  function sendCmd(action){ if(channel){ try{ channel.postMessage({type:'cmd', action:action}); }catch(e){} } }
+
+  /* ===== wire up ===== */
+  if(isPresenter){
+    document.body.classList.add('presenter');
+    renderPV(0);
+    document.getElementById('pvNext').addEventListener('click', function(){ sendCmd('advance'); });
+    document.getElementById('pvBack').addEventListener('click', function(){ sendCmd('back'); });
+    document.getElementById('pvReset').addEventListener('click', function(){ sendCmd('reset'); });
+    if(channel){
+      channel.onmessage=function(e){ if(e.data&&e.data.type==='state'){ renderPV(e.data.idx); } };
+      try{ channel.postMessage({type:'request'}); }catch(e){}
+    }
+  } else {
+    document.getElementById('launchBtn').addEventListener('click', function(){ advance(); });
+    if(channel){ channel.onmessage=function(e){
+      if(!e.data) return;
+      if(e.data.type==='request'){ broadcast(); return; }
+      if(e.data.type==='cmd'){
+        if(e.data.action==='advance') advance();
+        else if(e.data.action==='back') back();
+        else if(e.data.action==='reset') resetDemo();
+      }
+    }; }
+    updateScreens(0); broadcast();
+  }
+
+  function openPresenter(){ const w=window.open(location.pathname+'?presenter=1','frontierPresenter','width=1180,height=720'); if(w){ T(broadcast,500); T(broadcast,1200); } }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='p'||e.key==='P'){ if(!isPresenter){ e.preventDefault(); openPresenter(); } return; }
+    if(isPresenter){
+      if(e.key===' '||e.key==='Enter'||e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); sendCmd('advance'); }
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); sendCmd('back'); }
+      else if(e.key==='r'||e.key==='R'){ e.preventDefault(); sendCmd('reset'); }
+      return;
+    }
+    if(e.key==='r'||e.key==='R'){ e.preventDefault(); resetDemo(); return; }
+    if(e.key==='Escape'){ e.preventDefault(); resetDemo(); return; }
+    if(e.key===' '||e.key==='Enter'||e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); advance(); }
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); back(); }
+  });
+})();
+</script>
+</body>
+</html>

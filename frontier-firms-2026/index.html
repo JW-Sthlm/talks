@@ -95,6 +95,9 @@ body::after{
 .slide.is-active .reveal[data-d="3"]{animation-delay:300ms}
 .slide.is-active .reveal[data-d="4"]{animation-delay:440ms}
 .slide.is-active .reveal[data-d="5"]{animation-delay:600ms}
+/* click-driven reveal: hidden until the slide's first step */
+.click-reveal{opacity:0;transform:translateY(18px)}
+.slide.is-active[data-step="1"] .click-reveal{animation:rise 700ms var(--ease) both}
 @keyframes rise{
   from{opacity:0;transform:translateY(18px)}
   to{opacity:1;transform:translateY(0)}
@@ -786,7 +789,7 @@ html[data-mode="thumb"] .agent-mock .rendered-src{opacity:1 !important}
 <!-- ╔════════════════════════════════════════════════════════════
      SLIDE 1 · TITLE / HOOK
      ╚════════════════════════════════════════════════════════════ -->
-<section class="slide" data-label="Title · I'm not a developer"
+<section class="slide" data-steps="1" data-label="Title · I'm not a developer"
   data-notes="DO: Vänta två slag innan du börjar prata. Titta över rummet. Håll händerna fria. Le när du säger 'kaffe'.
 SAY: Tack för introt. Och hej alla. Jag heter Johan, Partner Solution Architect på Microsoft Sweden.
 
@@ -801,7 +804,7 @@ Och det är där jag vill att vi börjar. Inte med produkten. Med vardagen.">
   <div class="reveal" data-d="2">
     <h1 class="hero">I'm not a developer.</h1>
   </div>
-  <p class="lead cream reveal" data-d="3" style="margin-top:28px;max-width:780px">
+  <p class="lead cream click-reveal" style="margin-top:28px;max-width:780px">
     But this deck was written, in code, by an agent on my Surface. Last night. While I drank coffee.
   </p>
   <div class="reveal" data-d="4" style="margin-top:36px">
