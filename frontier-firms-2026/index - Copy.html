@@ -285,13 +285,6 @@ em.q{color:var(--accent);font-style:normal;font-weight:500}
   font-size:13px;color:var(--fg-muted);
 }
 
-/* ── Live-build card (slide 2 iframe embed) ───────────────── */
-.build-card{width:min(88vw,1340px)}
-.build-card .build-frame{
-  position:absolute;inset:0;width:100%;height:100%;
-  border:0;display:block;background:#0E1116;
-}
-
 /* ── Agent mock (slide 2 placeholder, step-driven on data-step) ─
    Replace with a real <video> when the screen recording is ready.
    The whole .agent-mock block can be deleted at that point. */
@@ -827,25 +820,110 @@ Och det är där jag vill att vi börjar. Inte med produkten. Med vardagen.">
 <!-- ╔════════════════════════════════════════════════════════════
      SLIDE 2 · PRE-RECORDED VIDEO CLIP (~20s placeholder)
      ╚════════════════════════════════════════════════════════════ -->
-<section class="slide x-center build-slide" data-steps="9" data-label="Live build · Copilot CLI on Surface"
-  data-notes="DO: Space ett drag i taget. Ett tryck, ett move. Prata medan terminalen jobbar. Vänta inte på den.
-SAY (start): Det här är ingen video. Det är Copilot CLI på min Surface, live. Jag bygger nästa slide medan vi pratar. Ingen färdig fil, inget nät.
-SAY (under): Och märk en sak. Jag ber den inte om slides först. Jag ber den förstå rummet. Sen research. Sen modellen. Sen bygget.
-SAY (slut): Brief till färdig deck på runt sjutton minuter. Plus en agent som fortsätter bevaka i bakgrunden. Det är vad Frontier betyder.">
+<section class="slide x-center" data-steps="1" data-label="Video · Agentic work on Surface"
+  data-notes="DO: Tryck space en gång och sekvensen är igång. Stå stilla. Titta på klippet med publiken. Två sekunders tystnad efter att den landat.
+SAY (innan klipp): Det här är 20 sekunder från min Surface. Inget polerat. En PowerShell. Copilot CLI. Claude i botten.
+
+Jag bad om en bild på en siffra. Sen gick jag tillbaka till kaffet. [PLAY]
+SAY (efter klipp): [PAUSE 2 sek] Så där ser min vardag ut mellan möten. Inget exotiskt. Och inget jag hade kunnat göra för ett år sedan.">
   <div class="top-row">
-    <span class="eyebrow muted reveal" data-d="1">Live build · Copilot CLI</span>
+    <span class="eyebrow muted reveal" data-d="1">Clip · 20 sec</span>
   </div>
 
   <div class="reveal" data-d="2">
-    <!-- ============================================================
-         LIVE BUILD · embeds the standalone terminal demo
-         (frontier-terminal-demo.html). The deck's data-step engine
-         drives it: each forward step posts a goto over the
-         'frontier-build-2026' BroadcastChannel. pos 0 launch ·
-         1 terminal · 2 boot · 3..9 the seven moves.
-         ============================================================ -->
-    <div class="video-card build-card">
-      <iframe class="build-frame" src="frontier-terminal-demo.html?embed=1" title="Live build · Copilot CLI on Surface"></iframe>
+    <div class="video-card">
+      <!-- ============================================================
+           VIDEO PLACEHOLDER · step-driven agent mock
+           ============================================================
+           Slide 2 has data-steps="1". On entry the terminal shows only
+           a PowerShell prompt with a blinking green caret. The presenter
+           advances once (Space / Right / Down) to trigger the full
+           sequence (PS command → Copilot banner → tool calls → output).
+           Plays through once, holds at final frame, no loop. Advancing
+           again moves to slide 3.
+
+           Johan: when the real screen recording (agent-clip.mp4) is
+           ready, set display:block on the <video> below and DELETE
+           the entire .agent-mock div. The .agent-mock CSS block at
+           the top of the file can also be deleted.
+           ============================================================ -->
+      <video controls preload="metadata" poster="" style="display:none">
+        <source src="agent-clip.mp4" type="video/mp4">
+      </video>
+      <div class="agent-mock" aria-label="Placeholder mock - replace with screen recording">
+        <div class="mock-chrome">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="chrome-title">PowerShell · Surface</span>
+        </div>
+        <div class="mock-stage">
+          <div class="mock-terminal">
+            <!-- Phase 1 · PowerShell prompt + copilot --allow-all-tools -->
+            <div class="term-line">
+              <span class="prompt">PS C:\Users\jwallquist&gt;</span>
+              <span class="typed-cmd cmd-ps">copilot --allow-all-tools</span>
+              <span class="caret-wrap caret-wrap-ps"><span class="caret"></span></span>
+            </div>
+
+            <!-- Phase 2 · GitHub Copilot CLI welcome banner with robot logo -->
+            <div class="copilot-banner">
+              <svg class="copilot-logo" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="8" y="3" width="14" height="14" rx="3" stroke="#4DD0E1" stroke-width="2.5" fill="none"/>
+                <rect x="38" y="3" width="14" height="14" rx="3" stroke="#4DD0E1" stroke-width="2.5" fill="none"/>
+                <rect x="10" y="20" width="10" height="10" fill="#C849A1"/>
+                <rect x="40" y="20" width="10" height="10" fill="#C849A1"/>
+                <rect x="4" y="29" width="52" height="18" rx="3" fill="#C849A1"/>
+                <rect x="22" y="34" width="4" height="8" fill="#39D353"/>
+                <rect x="34" y="34" width="4" height="8" fill="#39D353"/>
+              </svg>
+              <div class="brand-stack">
+                <div class="brand-name">Copilot v1.0.55-0 uses AI.</div>
+                <div class="brand-tag">/experimental</div>
+              </div>
+            </div>
+
+            <!-- Phase 2b · loaded env status -->
+            <div class="copilot-status">
+              <span class="dot">●</span><span>Loaded env: .github/copilot-instructions.md</span>
+            </div>
+
+            <!-- Phase 2c · cwd + model meta -->
+            <div class="copilot-meta">
+              <span class="cwd">~/projects/surface_release</span>
+              <span class="model">claude-opus-4.6</span>
+            </div>
+
+            <!-- Phase 3+4 · Copilot input box with prompt and user request -->
+            <div class="copilot-input">
+              <div class="term-line copilot-line">
+                <span class="prompt">❯</span>
+                <span class="typed-cmd cmd-cp">make a slide for the 80% stat from WTI 2026</span>
+                <span class="caret-wrap caret-wrap-cp"><span class="caret"></span></span>
+              </div>
+            </div>
+            <div class="copilot-hint"><strong>shift+tab</strong> switch mode</div>
+
+            <!-- Phase 5 · agent tool-call + generation stream -->
+            <div class="term-line agent-line ln1"><span class="bullet">✦</span><span class="tool-tag">search</span><span>Loading project context · deck.html</span></div>
+            <div class="term-line agent-line ln2"><span class="bullet">✦</span><span class="tool-tag">fetch</span><span>WTI 2026 data · microsoft-learn</span></div>
+            <div class="term-line agent-line ln3"><span class="check">✓</span><span class="tool-tag">match</span><span>Found: "80% of Frontier Professionals"</span></div>
+            <div class="term-line agent-line ln4"><span class="bullet">✦</span><span class="tool-tag">write</span><span>Generating slide-04-frontier-stat.html</span></div>
+            <div class="term-line agent-line ln5"><span class="check">✓</span><span class="tool-tag">build</span><span>122 lines · styles applied</span></div>
+            <div class="term-line agent-line ln6"><span class="check">✓</span><span class="tool-tag">done</span><span>Slide ready in 7.4s</span></div>
+          </div>
+          <div class="mock-browser">
+            <div class="browser-chrome">
+              <span class="url">localhost:5500 / deck.html</span>
+            </div>
+            <div class="browser-body">
+              <div class="rendered-stat">80<span class="pct">%</span></div>
+              <div class="rendered-cap">Frontier Professionals producing work they could not have done a year ago.</div>
+              <div class="rendered-src">WTI 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <p class="lead muted reveal" data-d="3" style="margin-top:22px;text-align:center">
@@ -1303,18 +1381,17 @@ Tack.">
     });
     if (!IS_THUMB) broadcast();
     try{ if (!IS_THUMB) history.replaceState(null, '', '#' + (idx+1)); }catch(e){}
-    syncBuild();
   }
   function next(){
     const s = slides[idx];
     const cur = getStep(s);
-    if (cur < getSteps(s)) { setStep(s, cur + 1); syncBuild(); return; }
+    if (cur < getSteps(s)) { setStep(s, cur + 1); return; }
     if (idx < total-1) show(idx+1);
   }
   function prev(){
     const s = slides[idx];
     const cur = getStep(s);
-    if (cur > 0) { setStep(s, cur - 1); syncBuild(); return; }
+    if (cur > 0) { setStep(s, cur - 1); return; }
     if (idx > 0) show(idx-1);
   }
   function first(){ show(0); }
@@ -1332,28 +1409,6 @@ Tack.">
       nextLabel: next_s ? (next_s.getAttribute('data-label') || '') : '',
     };
     try { channel.postMessage(payload); } catch(e){}
-  }
-
-  // ── Live-build demo bridge (slide 2 embeds frontier-terminal-demo.html) ──
-  // The deck's data-step engine drives the embedded terminal: each step
-  // posts an absolute 'goto' over a dedicated BroadcastChannel. Forward
-  // steps animate; (re)entry and back steps render instantly.
-  const buildChannel = (function(){ try { return new BroadcastChannel('frontier-build-2026'); } catch(e){ return null; } })();
-  let lastBuildPos = -1;
-  function syncBuild(resend){
-    if (IS_THUMB || !buildChannel) return;
-    const s = slides[idx];
-    if (!s || !s.classList.contains('build-slide')) { lastBuildPos = -1; return; }
-    const pos = getStep(s);
-    const animate = !resend && lastBuildPos !== -1 && pos > lastBuildPos;
-    lastBuildPos = pos;
-    try { buildChannel.postMessage({ type:'cmd', action:'goto', pos: pos, animate: animate }); } catch(e){}
-  }
-  if (buildChannel) {
-    buildChannel.onmessage = (e) => {
-      // When the iframe finishes loading it announces itself; resend current state.
-      if (!IS_THUMB && e.data && e.data.type === 'embed-ready') { lastBuildPos = -1; syncBuild(true); }
-    };
   }
 
   channel.onmessage = (e) => {

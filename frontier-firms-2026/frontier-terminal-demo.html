@@ -37,6 +37,7 @@
 
   /* Microsoft logo, always present */
   .ms-logo{position:fixed;top:22px;left:26px;display:flex;align-items:center;gap:9px;opacity:.82;z-index:5}
+  body.embed .ms-logo{display:none}
   .ms-logo span{font-size:15px;font-weight:600;color:#c7ccd6;letter-spacing:.01em}
 
   /* ---------------- Slides (launch + exit share .prevslide) ---------------- */
@@ -350,6 +351,7 @@
   /* ===== presenter sync ===== */
   const CHANNEL='frontier-build-2026';
   const isPresenter = location.search.indexOf('presenter')!==-1;
+  const isEmbed = location.search.indexOf('embed')!==-1;
   let channel=null; try{ channel=new BroadcastChannel(CHANNEL); }catch(e){}
 
   /* ---- shared refs ---- */
@@ -551,7 +553,8 @@
       try{ channel.postMessage({type:'request'}); }catch(e){}
     }
   } else {
-    document.getElementById('launchBtn').addEventListener('click', function(){ advance(); });
+    if(isEmbed) document.body.classList.add('embed');
+    document.getElementById('launchBtn').addEventListener('click', function(){ if(!isEmbed) advance(); });
     if(channel){ channel.onmessage=function(e){
       if(!e.data) return;
       if(e.data.type==='request'){ broadcast(); return; }
@@ -559,14 +562,17 @@
         if(e.data.action==='advance') advance();
         else if(e.data.action==='back') back();
         else if(e.data.action==='reset') resetDemo();
+        else if(e.data.action==='goto') renderTo(e.data.pos, !!e.data.animate);
       }
     }; }
     updateScreens(0); broadcast();
+    if(isEmbed && channel){ try{ channel.postMessage({type:'embed-ready'}); }catch(e){} }
   }
 
   function openPresenter(){ const w=window.open(location.pathname+'?presenter=1','frontierPresenter','width=1180,height=720'); if(w){ T(broadcast,500); T(broadcast,1200); } }
 
   document.addEventListener('keydown', function(e){
+    if(isEmbed) return;
     if(e.key==='p'||e.key==='P'){ if(!isPresenter){ e.preventDefault(); openPresenter(); } return; }
     if(isPresenter){
       if(e.key===' '||e.key==='Enter'||e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); sendCmd('advance'); }
