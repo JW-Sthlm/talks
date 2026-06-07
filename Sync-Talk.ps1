@@ -1,15 +1,15 @@
 # Sync-Talk.ps1 — Copy local presentation to GitHub Pages and deploy
 param([switch]$WhatIf)
 
-$source = "C:\Users\jwallquist\work\agentic-ai-partner-library\outputs\external\agents-7shades.html"
-$dest = "C:\Users\jwallquist\talks\agents-2026\index.html"
-$repoDir = "C:\Users\jwallquist\talks"
+$source = "C:\Users\jwallquist\projects\agentic-ai-partner-library\outputs\external\agents-7shades.html"
+$dest = "C:\Users\jwallquist\projects\talks\agents-2026\index.html"
+$repoDir = "C:\Users\jwallquist\projects\talks"
 
 if (-not (Test-Path $source)) { Write-Error "Source not found: $source"; return }
 
 Copy-Item $source $dest -Force
 # Also sync QR image
-Copy-Item "C:\Users\jwallquist\work\agentic-ai-partner-library\outputs\external\qr-agentjohan.png" "$repoDir\agents-2026\qr-agentjohan.png" -Force
+Copy-Item "C:\Users\jwallquist\projects\agentic-ai-partner-library\outputs\external\qr-agentjohan.png" "$repoDir\agents-2026\qr-agentjohan.png" -Force
 
 if ($WhatIf) {
     Write-Host "Would deploy:" -ForegroundColor Yellow

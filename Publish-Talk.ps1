@@ -24,7 +24,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$repoDir = "C:\Users\jwallquist\talks"
+$repoDir = "C:\Users\jwallquist\projects\talks"
 $dest    = Join-Path $repoDir $Slug
 
 # Validate inputs

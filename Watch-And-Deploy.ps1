@@ -1,7 +1,7 @@
 # Watch-And-Deploy.ps1 — Auto-deploy presentation to GitHub Pages on save
-$source = "C:\Users\jwallquist\work\agentic-ai-partner-library\outputs\external"
-$dest = "C:\Users\jwallquist\talks\agents-2026"
-$repoDir = "C:\Users\jwallquist\talks"
+$source = "C:\Users\jwallquist\projects\agentic-ai-partner-library\outputs\external"
+$dest = "C:\Users\jwallquist\projects\talks\agents-2026"
+$repoDir = "C:\Users\jwallquist\projects\talks"
 $files = @("agents-7shades.html", "agents-7shades-presenter.html", "qr-agentjohan.png")
 
 $watcher = New-Object System.IO.FileSystemWatcher $source, "agents-7shades*.html"
@@ -12,9 +12,9 @@ $watcher.NotifyFilter = [System.IO.NotifyFilters]::LastWrite
 $action = {
     Start-Sleep -Seconds 2  # debounce
     $files = @("agents-7shades.html", "agents-7shades-presenter.html", "qr-agentjohan.png")
-    $source = "C:\Users\jwallquist\work\agentic-ai-partner-library\outputs\external"
-    $dest = "C:\Users\jwallquist\talks\agents-2026"
-    $repoDir = "C:\Users\jwallquist\talks"
+    $source = "C:\Users\jwallquist\projects\agentic-ai-partner-library\outputs\external"
+    $dest = "C:\Users\jwallquist\projects\talks\agents-2026"
+    $repoDir = "C:\Users\jwallquist\projects\talks"
     
     foreach ($f in $files) {
         $src = Join-Path $source $f
