@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storyboard v5: KPMG Learning Days</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+
+  .header { background: #2D6E6D; color: white; padding: 1.5rem 2rem; }
+  .header h1 { font-size: 1.5rem; }
+  .header p { opacity: 0.85; font-size: 0.85rem; }
+
+  .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem 3rem; }
+
+  /* Sorter view */
+  #sorter { padding: 1.5rem 0; }
+  .sorter-act { margin-bottom: 1.5rem; }
+  .sorter-act h4 { font-size: 0.75rem; color: #2D6E6D; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .sorter-grid { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .sorter-thumb { width: 260px; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .sorter-thumb:hover { transform: scale(1.03); box-shadow: 0 3px 12px rgba(0,0,0,0.15); }
+  .sorter-slide { background: #F8F8F7; color: #21211F; padding: 0.7rem; min-height: 150px; display: flex; flex-direction: column; font-size: 0.5rem; overflow: hidden; }
+  .sorter-slide h5 { font-size: 0.65rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.3rem; color: #21211F; }
+  .sorter-slide .num { font-size: 0.5rem; opacity: 0.4; margin-bottom: 0.2rem; }
+  .sorter-slide .thumb-body { font-size: 0.48rem; opacity: 0.7; line-height: 1.4; overflow: hidden; color: #4A4A46; }
+  .sorter-slide .thumb-body ul { list-style: none; padding: 0; }
+  .sorter-slide .thumb-body li { padding-left: 0.8em; position: relative; margin-bottom: 0.1em; }
+  .sorter-slide .thumb-body li::before { content: '→'; position: absolute; left: 0; color: #2D6E6D; }
+  .sorter-slide .thumb-body blockquote { border-left: 2px solid #2D6E6D; padding-left: 0.4em; font-style: italic; opacity: 0.6; margin: 0.2em 0; }
+  .sorter-slide .thumb-body p { margin: 0.1em 0; }
+  .sorter-tags { display: flex; gap: 0.15rem; padding: 0.2rem 0.3rem; background: white; }
+  .sorter-tags .st { font-size: 0.45rem; padding: 0.05rem 0.2rem; border-radius: 2px; }
+
+  /* Full slides */
+  #slides { }
+  .act-divider { margin: 2rem 0 0.5rem; }
+  .act-divider h3 { font-size: 0.85rem; color: #2D6E6D; border-bottom: 2px solid #2D6E6D; display: inline-block; padding-bottom: 0.2rem; }
+  .act-divider .time { font-size: 0.7rem; color: #999; margin-left: 0.5rem; }
+
+  .slide-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 2rem; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .slide-panel { background: #F8F8F7; color: #21211F; padding: 1.5rem; min-height: 260px; display: flex; flex-direction: column; position: relative; font-size: 0.8rem; overflow: hidden; }
+  .slide-panel .sn { position: absolute; top: 0.5rem; right: 0.7rem; font-size: 0.6rem; opacity: 0.3; color: #797971; }
+  .slide-panel h2 { font-size: 1.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.2rem; color: #21211F; }
+  .slide-panel h4 { font-size: 0.7rem; opacity: 0.6; margin-bottom: 0.5rem; color: #4A4A46; }
+  .slide-panel ul { list-style: none; padding: 0; font-size: 0.7rem; }
+  .slide-panel li { padding: 0.15rem 0 0.15rem 1rem; position: relative; }
+  .slide-panel li::before { content: '→'; position: absolute; left: 0; color: #2D6E6D; font-size: 0.7rem; }
+  .slide-panel blockquote { border-left: 3px solid #2D6E6D; padding: 0.3rem 0.6rem; font-style: italic; opacity: 0.85; font-size: 0.7rem; margin: 0.4rem 0; background: rgba(45,110,109,0.06); }
+  .slide-panel p { font-size: 0.7rem; }
+  .slide-panel .accent { color: #2D6E6D; }
+  .slide-panel .small { font-size: 0.55rem; opacity: 0.4; }
+  .slide-panel .highlight-line { font-weight: 700; color: #2D6E6D; }
+  .slide-panel .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4em; margin: 0.5em 0; }
+  .slide-panel .stat { text-align: center; }
+  .slide-panel .stat .num { font-size: 1.4em; font-weight: 700; color: #2D6E6D; line-height: 1; }
+  .slide-panel .stat .label { font-size: 0.5em; opacity: 0.8; }
+  .slide-panel .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em; }
+  .slide-panel .card { background: rgba(255,255,255,0.06); padding: 0.4em 0.5em; border-radius: 5px; }
+  .slide-panel .card-title { font-weight: 700; font-size: 0.6rem; margin-bottom: 0.15em; }
+  .slide-panel .card p { font-size: 0.55rem; }
+  .slide-panel .internal-badge { background: rgba(231,76,60,0.3); color: #e74c3c; padding: 0.1em 0.4em; border-radius: 4px; font-size: 0.45rem; font-weight: 700; display: inline-block; margin-bottom: 0.3em; border: 2px solid #e74c3c; }
+
+  .script-panel { background: white; padding: 1.5rem; font-size: 0.85rem; }
+  .script-panel .meta { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; align-items: center; }
+  .script-panel .meta .timing { background: #2D6E6D; color: white; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; }
+  .script-panel .meta .energy { padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; color: white; }
+  .script-panel .meta .energy-high { background: #ff6b35; }
+  .script-panel .meta .energy-calm { background: #2ecc71; }
+  .script-panel .meta .tag { font-size: 0.55rem; padding: 0.1rem 0.3rem; border-radius: 3px; }
+  .tag-full { background: #EEF4F4; color: #2D6E6D; }
+  .script-panel p { margin-bottom: 0.5rem; line-height: 1.5; }
+
+  /* Demo card */
+  .demo-card { margin-bottom: 2rem; background: white; border: 2px solid #e74c3c; border-radius: 10px; padding: 1.5rem; }
+  .demo-card h3 { color: #e74c3c; font-size: 1rem; margin-bottom: 0.6rem; }
+  .demo-card h4 { color: #333; font-size: 0.85rem; margin: 1rem 0 0.4rem; font-weight: 700; }
+  .demo-step { display: flex; gap: 0.6rem; margin-bottom: 0.4rem; font-size: 0.8rem; }
+  .demo-num { background: #e74c3c; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; flex-shrink: 0; }
+  .demo-prompt { background: #EEF4F4; border-left: 4px solid #2D6E6D; padding: 0.8rem 1rem; margin: 0.5rem 0 0.5rem 2rem; border-radius: 0 6px 6px 0; font-size: 0.82rem; }
+  .demo-prompt p { font-style: italic; line-height: 1.6; margin: 0; }
+  .demo-prompt .prompt-label { font-weight: 700; font-style: normal; margin-bottom: 0.3rem; }
+  .demo-talk { background: #FFF8F0; border-left: 4px solid #ff6b35; padding: 0.6rem 1rem; margin: 0.5rem 0 0.5rem 2rem; border-radius: 0 6px 6px 0; font-size: 0.78rem; }
+  .demo-talk .talk-label { font-weight: 700; color: #ff6b35; font-size: 0.7rem; }
+  .demo-key-msg { background: #f9f9f9; border-radius: 6px; padding: 0.8rem 1rem; margin-top: 1rem; font-size: 0.78rem; }
+  .demo-key-msg table { width: 100%; border-collapse: collapse; }
+  .demo-key-msg th, .demo-key-msg td { padding: 0.25rem 0.5rem; text-align: left; border-bottom: 1px solid #eee; font-size: 0.75rem; }
+  .demo-key-msg th { font-weight: 700; color: #2D6E6D; }
+
+  /* Nav links */
+  .nav-bar { background: white; border-bottom: 1px solid #ddd; padding: 0.6rem 2rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 0.5rem; }
+  .nav-bar .count { font-size: 0.7rem; color: #999; margin-left: auto; }
+  .nav-bar a { font-size: 0.75rem; color: #2D6E6D; text-decoration: none; }
+
+  @media (max-width: 900px) { .slide-row { grid-template-columns: 1fr; } .sorter-thumb { width: 110px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>What happens when AI joins the project team?</h1>
+  <p>KPMG Learning Days &middot; 27 August 2026 &middot; Johan Wallquist, Partner Tech Strategist, Microsoft &middot; v5 &middot; 18 slides &middot; 33:45 content plus 10 minutes discussion</p>
+</div>
+
+<div class="nav-bar">
+  <span class="count">v5 &middot; 18 slides &middot; 33:45 scripted</span>
+  <a href="#sorter">↑ Sorter</a>
+  <a href="#slides">↓ Full script</a>
+</div>
+
+<div class="container">
+<div id='sorter'>
+
+<div class="sorter-act"><h4>Act one. Consulting delivery is being rebuilt &middot; 13:00</h4><div class="sorter-grid"><a class="sorter-thumb" href="#s1" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">01 &middot; 1:00 &middot; 2 clicks</div>
+          <h5>What happens when AI joins the project team?</h5>
+          <div class="thumb-body">
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s2" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">02 &middot; 1:30 &middot; 1 clicks</div>
+          <h5>Consulting delivery is being rebuilt right now.</h5>
+          <div class="thumb-body"><p>Not the advice or value, but the way the advice gets produced. Somebody is already quoting your client a faster version of the same pre-study, with the same rigour, at a lower price.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s3" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">03 &middot; 1:30</div>
+          <h5>The economics of the work changed.</h5>
+          <div class="thumb-body"><ul><li>280× cheaper to run the AI reasoning behind that work in two years</li><li>&gt;25% faster through the same consulting task list</li><li>&gt;40% higher quality, scored by human graders</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s4" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">04 &middot; 1:45 &middot; 3 clicks</div>
+          <h5>Your clients are about to ask three new questions.</h5>
+          <div class="thumb-body"><ul><li>01What did you automate on this engagement, and what did it save m</li><li>02Who checked the output before it reached my board?</li><li>03Your firm got faster this year. Why is my fee the same?</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s5" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">05 &middot; 2:00 &middot; 6 clicks</div>
+          <h5>AI works across the whole assignment.</h5>
+          <div class="thumb-body">
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s6" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">06 &middot; 1:45 &middot; 4 clicks</div>
+          <h5>What actually changes.</h5>
+          <div class="thumb-body">
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s7" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">07 &middot; 1:45 &middot; 2 clicks</div>
+          <h5>When the delivery model changes, the business model changes with it.</h5>
+          <div class="thumb-body">
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s8" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">08 &middot; 1:45 &middot; 4 clicks</div>
+          <h5>Move now. Your career will thank you.</h5>
+          <div class="thumb-body"><ul><li>Clients will expect it They are running their own pilots. Soon the</li><li>Someone is learning faster Maybe not a competitor you watch. A sma</li><li>Senior time gets more valuable Less of a senior's week spent on wo</li><li>Learning curves change Reading, drafting and being corrected built</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a></div></div><div class="sorter-act"><h4>Act two. Pick a mode, learn the pattern &middot; 2:05</h4><div class="sorter-grid"><a class="sorter-thumb" href="#s9" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">09 &middot; 2:05 &middot; 7 clicks</div>
+          <h5>Choose by the job.</h5>
+          <div class="thumb-body"><ul><li>Help nowMicrosoft 365 CopilotSummarise the steering meeting. Draft</li><li>Task with clear outcomeCoworkReview fourteen interviews and draft </li><li>Continous workScoutWatch the engagement for new evidence, rerun th</li><li>Build my own toolboxCopilot CLIA repeatable opportunity hunter, on</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a></div></div><div class="sorter-act"><h4>Act three. One realistic consulting engagement &middot; 13:50</h4><div class="sorter-grid"><a class="sorter-thumb" href="#s10" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">10 &middot; 1:15</div>
+          <h5>Let's apply it.</h5>
+          <div class="thumb-body"><p>A pre-study you have all run.</p><ul><li>14 interviews, 41 long documents</li><li>Six weeks</li><li>Steering group, 18 September</li><li>Evidence, options, one recommendation</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s11" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">11 &middot; 8:20</div>
+          <h5>Demo. Scout on a real pre-study</h5>
+          <div class="thumb-body"><p><strong>15 presenter-driven states</strong></p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">demo</span></div>
+      </a><a class="sorter-thumb" href="#s12" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">12 &middot; 1:15 &middot; 3 clicks</div>
+          <h5>The next jump is from personal Autopilot to project agent.</h5>
+          <div class="thumb-body">
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s13" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">13 &middot; 1:45</div>
+          <h5>The consultant still owns the recommendation.</h5>
+          <div class="thumb-body"><ul><li>ContextWhat this client can absorb, and what the board will not he</li><li>QualityWhich evidence is good enough to carry the firm's name.</li><li>The callThe recommendation itself, plus the risk of being wrong in</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s14" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">14 &middot; 1:15</div>
+          <h5>Your methodology can run.</h5>
+          <div class="thumb-body"><p>This is how AI-driven delivery becomes a competitive advantage: every reviewed engagement improves the next.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a></div></div><div class="sorter-act"><h4>Act four. From one consultant to an enterprise capability &middot; 2:30</h4><div class="sorter-grid"><a class="sorter-thumb" href="#s15" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">15 &middot; 1:15 &middot; 1 clicks</div>
+          <h5>The next bottleneck is coordination.</h5>
+          <div class="thumb-body"><p>More agents create an estate. Orchestration makes the estate work as one system.</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s16" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">16 &middot; 1:15 &middot; 5 clicks</div>
+          <h5>Multiple ways to orchestrate. One control plane.</h5>
+          <div class="thumb-body"><p>Several ways to build. Standard ways to connect. One control plane.</p><ul><li>Work surfaces Microsoft 365 CopilotCoworkScoutTeamsBusiness apps</li><li>Build &amp; orchestrate Copilot StudioPower AutomateFoundry workflowsA</li><li>Connect MCPA2AActivity Protocol</li><li>Govern Agent 365Identity · access · visibility · protection · life</li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a></div></div><div class="sorter-act"><h4>Act five. KPMG already has the pieces &middot; 2:20</h4><div class="sorter-grid"><a class="sorter-thumb" href="#s17" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">17 &middot; 1:05</div>
+          <h5>KPMG is already building the foundations.</h5>
+          <div class="thumb-body"><p>A work surface, a platform to build on, and governance across the estate. The pieces from the previous slide, already in place here.</p><ul><li>Jun 2025PlatformWorkbench launched as a multi-agent platform built</li><li>Jun 2026Work surfaceMicrosoft 365 Copilot deployed across more tha</li><li>Jun 2026GovernanceAgent 365 adopted to deploy, monitor and secure </li></ul>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a><a class="sorter-thumb" href="#s18" style="text-decoration:none;color:inherit">
+        <div class="sorter-slide">
+          <div class="num">18 &middot; 1:15 &middot; 1 clicks</div>
+          <h5>Your IP used to sit in slides. Now it can run.</h5>
+          <div class="thumb-body"><p>Pick one role or workflow to test next week. What should it learn each time the team corrects it?</p>
+          </div>
+        </div>
+        <div class="sorter-tags"><span class="st tag-full">content</span></div>
+      </a></div></div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- FULL SLIDES                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<div id='slides'>
+
+<div class="act-divider"><h3>Act one. Consulting delivery is being rebuilt</h3><span class="time">13:00</span></div><div class="slide-row" id="s1">
+        <div class="slide-panel"><span class="sn">01 / 18</span><h2>What happens when AI joins the project team?</h2>
+
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:00</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Title</span>
+            <span class="tag tag-full">2 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Start on the nearly black screen. Click once for the question and let it sit for two seconds. Click again for your name before you move into the setup.</p>
+
+          <p>That is the question. Not whether AI is coming. It is already in the building.</p><p>What I want to work out with you is what happens to an engagement when there are four of them working alongside you. Who does what. Who decides. Who signs off.</p><p>I am going to show you my actual working setup, not a product tour. Some of it you can use this afternoon. Some of it needs your technology organisation. I will be clear about which is which.</p><p>Thirty three minutes. Then ten for the argument.</p>
+        </div>
+      </div><div class="slide-row" id="s2">
+        <div class="slide-panel"><span class="sn">02 / 18</span><h2>Consulting delivery is being rebuilt right now.</h2><h4>Where this is going</h4>
+           <p>Not the advice or value, but the way the advice gets produced. Somebody is already quoting your client a faster version of the same pre-study, with the same rigour, at a lower price.</p><p>Whoever moves first sets what a project is worth. Everyone else negotiates against their number.</p>
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:30</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Premise · delivery is being rebuilt</span>
+            <span class="tag tag-full">1 click</span>
+          </div>
+          <p><strong>DO</strong><br>Say the first line and stop. Then click for the last block and slow right down.</p>
+
+          <p>Let us put the real tension on the table right away, because everything after this depends on it.</p><p>Your advice is not what is under pressure. Your judgement is fine, and your client relationships are fine.</p><p>What is under pressure is <span class="highlight-line">how the advice gets produced</span>. The reading, the synthesis, building the pack. Those three weeks between the kick-off and the first real conversation.</p><p>And somebody out there is already quoting your client a shorter version of the same pre-study. Same rigour. Different price.</p><p>(Click.)</p><p>Take this back to your leadership. The firms that learn to deliver this way first are the ones who decide what a pre-study is worth. Everybody else ends up negotiating against a number that somebody else picked.</p><p>That is the whole reason I am standing here.</p>
+        </div>
+      </div><div class="slide-row" id="s3">
+        <div class="slide-panel"><span class="sn">03 / 18</span><h2>The economics of the work changed.</h2><h4>Why this is happening now</h4>
+
+           <ul><li>280× cheaper to run the AI reasoning behind that work in two years</li><li>&gt;25% faster through the same consulting task list</li><li>&gt;40% higher quality, scored by human graders</li></ul>
+           <p class="small">Price: Stanford HAI AI Index using Epoch AI data, November 2022 to October 2024. Performance: Dell'Acqua, Lakhani and others, Harvard Digital Data Design Institute with Boston Consulting Group, 2023, on 758 consultants and 2023 models.</p></div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:30</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">Economics · what changed underneath</span>
+
+          </div>
+          <p><strong>DO</strong><br>Do not explain tokens. Land the middle two numbers, they are about your audience's job.</p>
+
+          <p>So why now, and not three years ago?</p><p>Two things moved. The cost of running machine reasoning fell by a factor of <span class="highlight-line">two hundred and eighty</span> in two years. You do not need the technical detail behind that. It means work that was once too expensive to touch became work nobody thinks twice about.</p><p>The other two numbers matter more to you, because they were measured on your job.</p><p>Harvard and BCG took seven hundred and fifty-eight consultants and randomly assigned them to work with or without a frontier model on eighteen realistic consulting tasks. Over twenty-five percent faster. Over forty percent better, scored by human graders.</p><p>Be honest about the timeline here. Both numbers are older than they look. The price figure stops at the end of 2024 and has kept falling since. The study ran in 2023 on models two generations behind today, so treat the exact percentages loosely. <span class="highlight-line">The direction has not reversed.</span></p>
+        </div>
+      </div><div class="slide-row" id="s4">
+        <div class="slide-panel"><span class="sn">04 / 18</span><h2>Your clients are about to ask three new questions.</h2><h4>What arrives from outside</h4>
+
+           <ul><li>01What did you automate on this engagement, and what did it save me?</li><li>02Who checked the output before it reached my board?</li><li>03Your firm got faster this year. Why is my fee the same?</li></ul>
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:45</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Client expectations</span>
+            <span class="tag tag-full">3 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Title lands. Pause. Click for one. Let it sit. Click for two. Click for three, then wait properly.</p>
+
+          <p>These are not hypothetical. Your clients sit in the same conferences you do, and some of them are further along than the firm advising them.</p><p>(Click.)</p><p>What did you automate on this engagement, and what did that save me? Procurement will ask that one in writing.</p><p>(Click.)</p><p>Who checked the output before it reached my board? That comes from a risk committee, and it is a very good question.</p><p>(Click.)</p><p>Then this. Your firm got faster this year. Why is my fee the same?</p><p>(Pause. Look at the room.)</p><p>Three years ago none of these came up. Somebody in this room has already been asked one of them across a table. I would rather you had an answer ready than improvise it.</p>
+        </div>
+      </div><div class="slide-row" id="s5">
+        <div class="slide-panel"><span class="sn">05 / 18</span><h2>AI works across the whole assignment.</h2><h4>Across the whole engagement</h4>
+
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">2:00</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">AI across the engagement</span>
+            <span class="tag tag-full">6 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Click through the five phases. Do not read every cell. Click once more for the bottom line, land it and stop.</p>
+
+          <p>People hear AI and picture one task, a summary or a draft email. That is too narrow. It runs across the whole assignment.</p><p>Prepare: it reads the context and shows what matters for you to decide.</p><p>Interview: it transcribes, highlights contradictions and keeps you focused while you are still in the room.</p><p>Analyse: it preserves the evidence and sources so you can judge what is good enough.</p><p>Recommend: it drafts options and trade-offs. You make the call.</p><p>Present: it prepares questions and follow-up. You take the pushback.</p><p>The split stays simple. <span class="highlight-line">The volume goes. The judgement stays</span>, and the recommendation keeps your name on it.</p>
+        </div>
+      </div><div class="slide-row" id="s6">
+        <div class="slide-panel"><span class="sn">06 / 18</span><h2>What actually changes.</h2><h4>What that opens up</h4>
+
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:45</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">The opportunity</span>
+            <span class="tag tag-full">4 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Click through the four rows. Read the task first, then the right-hand result. Keep the pace up.</p>
+
+          <p>So what changes in a pre-study?</p><p>Fourteen interview transcripts. Today, four get read properly. With agents, all fourteen get themes and contradictions flagged.</p><p>Market benchmarks. Today, whatever you can dig up in two days. With agents, you get a sourced set, the method checked, and weak references dropped.</p><p>The steering pack is usually assembled by hand the night before. With agents, it starts from the evidence. You still edit the argument.</p><p>Between engagements, the evidence base keeps running instead of going quiet until the next tender.</p><p><span class="highlight-line">Same six weeks. Different amount of work inside them.</span></p>
+        </div>
+      </div><div class="slide-row" id="s7">
+        <div class="slide-panel"><span class="sn">07 / 18</span><h2>When the delivery model changes, the business model changes with it.</h2><h4>Hard truths</h4>
+
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:45</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Commercial model</span>
+            <span class="tag tag-full">2 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Read the left panel first. Then the commercial panel. Pause on capabilities compounding.</p>
+
+          <p>The delivery model is already changing the business model.</p><p>If a pre-study takes half the calendar time, you cannot keep pricing it the same way and expect the model to hold.</p><p>The delivery team changes first. A smaller senior team directs a fleet of agents instead of a pyramid doing the assembly work.</p><p>Then the economics change. Compressed timelines force you to price the outcome rather than the hours. Prompts, methods and agents improve between deliveries. That is IP. It compounds.</p><p>The relationship does not have to stop when the work is delivered. A retainer keeps the evidence, benchmarks and advisory work moving.</p><p>This is not a blueprint every firm should copy. But the old model cannot remain the default once the delivery engine changes. Decide how you will capture that compounding IP: retainer, outcome pricing or licensing.</p>
+        </div>
+      </div><div class="slide-row" id="s8">
+        <div class="slide-panel"><span class="sn">08 / 18</span><h2>Move now. Your career will thank you.</h2><h4>The individual choice</h4>
+
+           <ul><li>Clients will expect it They are running their own pilots. Soon they will ask what you changed in the delivery.</li><li>Someone is learning faster Maybe not a competitor you watch. A smaller AI-native firm with less to unlearn.</li><li>Senior time gets more valuable Less of a senior's week spent on work that never needed senior judgement.</li><li>Learning curves change Reading, drafting and being corrected built judgement. If the machine takes that work, juniors need a new way to learn it.</li></ul>
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:45</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Why move now</span>
+            <span class="tag tag-full">4 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Make this personal. First three fast. Slow right down on the last one.</p>
+
+          <p>This is the personal part. What happens to your career if the work changes and you do not?</p><p>Your clients will expect it. They are running their own pilots, and soon they will ask what you changed in the delivery.</p><p>Someone is learning faster. Maybe not a competitor you watch. A smaller firm with less to unlearn.</p><p>Your senior time gets more valuable. Less of your week goes on work that never needed your judgement.</p><p>And then the one that reaches your own career.</p><p>Reading, drafting and being corrected built judgement. If the machine takes that work, you need a new way to learn it.</p><p>I do not have a finished answer. Nobody I work with has a proven one. But the choice is becoming clear. Start now, while you can learn the new way of working with support, or wait until it is simply expected of you.</p><p>Your title may stay the same for a while. The work underneath it will not.</p><p>With this many AI products changing every month, where should a consultant even begin?</p>
+        </div>
+      </div><div class="act-divider"><h3>Act two. Pick a mode, learn the pattern</h3><span class="time">2:05</span></div><div class="slide-row" id="s9">
+        <div class="slide-panel"><span class="sn">09 / 18</span><h2>Choose by the job.</h2><h4>Where to start</h4>
+
+           <ul><li>Help nowMicrosoft 365 CopilotSummarise the steering meeting. Draft the client follow-up.</li><li>Task with clear outcomeCoworkReview fourteen interviews and draft the first steering pack, while I do something else.</li><li>Continous workScoutWatch the engagement for new evidence, rerun the checks, and tell me when the risk changes.</li><li>Build my own toolboxCopilot CLIA repeatable opportunity hunter, on our own data, with specialist agents underneath.</li></ul>
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">2:05</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Choose by the job</span>
+            <span class="tag tag-full">7 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Say the first line, then let the tool names sit for a beat. Explain the jobs, not every product. Click once per job lane. Then click for the proof overlay, Chat and Cowork. Keep this bridge short.</p>
+
+          <p>There is a ladder here, from chat to agents that keep working. But it is not a product ladder. The tools overlap. Start with the job.</p><p>Microsoft 365 Copilot is the familiar door. Ask for help in Word, Teams or Outlook, and keep moving.</p><p>Cowork is for a bounded outcome. Hand over the goal, review what comes back, and approve anything sensitive.</p><p>Scout is for work that should continue. It can keep the engagement context, watch for change and delegate to specialist agents.</p><p>Copilot CLI is where I build my own toolbox. Claude Code and Codex are well-known examples of the same build-oriented end of the spectrum. You can create skills, connect tools and shape a repeatable workflow without starting from a blank chat.</p><p>The question is not which product wins. How much do you want to configure, control and leave running?</p><p>(Click.)</p><p>I need help now. Microsoft 365 Copilot.</p><p>(Click.)</p><p>Hand off the outcome. Cowork.</p><p>(Click.)</p><p>Keep the work moving. Scout. <span class="highlight-line">Persistence is the difference</span>, not intelligence.</p><p>(Click.)</p><p>Build my own toolbox. Copilot CLI, Claude Code or Codex. The job is to make the toolbox itself.</p><p>(Click.)</p><p>This is what happened when I kept going.</p><p>These are examples from my own role: Partner Cockpit, Opportunity Hunter, Matchmaking, Signal and AI Chief of Staff. Different jobs, same principle. <span class="highlight-line">Start with a real problem, not a software roadmap.</span></p><p>(Click.)</p><p>Before the case, look at the two tabs.</p><p>Chat is familiar. I stay in the conversation and decide the next move.</p><p>(Click.)</p><p>Cowork changes the hand-off. I give it a bounded task, then review what comes back. The plan, files, skills and tools stay visible.</p><p>Cowork could carry much of the case I am about to show. Scout is for a project that should persist, with a heartbeat, specialist agents and a stop when the evidence needs my judgement.</p><p>Now let us put the choice into a real engagement.</p>
+        </div>
+      </div><div class="act-divider"><h3>Act three. One realistic consulting engagement</h3><span class="time">13:50</span></div><div class="slide-row" id="s10">
+        <div class="slide-panel"><span class="sn">10 / 18</span><h2>Let's apply it.</h2><h4>One case, all the way through</h4>
+           <p>A pre-study you have all run.</p>
+           <ul><li>14 interviews, 41 long documents</li><li>Six weeks</li><li>Steering group, 18 September</li><li>Evidence, options, one recommendation</li></ul>
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:15</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">The assignment</span>
+
+          </div>
+          <p><strong>DO</strong><br>Read the client question out loud. Then say the honesty line about the demo before you switch screens. None of that is on the slide.</p>
+
+          <p>Those four modes were about your own week. Now put one inside a real engagement, the kind every one of you has actually run.</p><p>Nordic industrial group. Four service organisations. The board wants to know whether they should be one. Fourteen interviews, forty one documents, six weeks, and a steering group on the eighteenth of September that will not move.</p><p>It is invented. Nothing about it is unfamiliar.</p><p>One thing before I switch screens. I want to be straight with you, and this is not on the slide.</p><p>What matters here is why it can start in the right place. The project folder carries the context: the brief, the source material, the method, and the instruction files. Custom agents add the roles and rules for the work. Copilot is not starting from a blank chat. It can see the purpose of the engagement and the boundaries you gave it.</p>
+        </div>
+      </div><div class="slide-row" id="s11">
+        <div class="slide-panel"><span class="sn">11 / 18</span><h2>Demo. Scout on a real pre-study</h2><h4>inline in the deck &middot; 15 states</h4>
+           <ul><li><strong>1. Scout, project ready</strong></li><li><strong>2. Microphone live</strong></li><li><strong>3. Dictation captured</strong></li><li><strong>4. Scout confirms the boundary</strong></li><li><strong>5. Short plan lands</strong></li><li><strong>6. Conceptual view opens · evidence and market start</strong></li><li><strong>7. Evidence hands off to patterns</strong></li><li><strong>8. Market finishes, challenge still queued</strong></li><li><strong>9. Patterns return, three options, challenge starts</strong></li><li><strong>10. Challenge finds the conflict, Scout pauses</strong></li><li><strong>11. Back to Scout, conflict explained</strong></li><li><strong>12. Microphone live, human decision</strong></li><li><strong>13. Decision captured</strong></li><li><strong>14. Decision submitted, pack builder starts</strong></li><li><strong>15. Pack ready, nothing sent</strong></li></ul>
+           <p class="small">Space steps. Backspace back. R resets. No external file, no network.</p></div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">8:20</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Demo · Scout on a real pre-study</span>
+
+          </div>
+          <p><strong>DO</strong><br>Space steps the demo. Fifteen states. Backspace steps back. R resets.<br>The panel below shows the line for each state. Both decisions are spoken while the waveform moves, then appear in the composer on the next step.</p>
+
+          <p>(Per-state script is in the panel. Advance with Space.)</p>
+        </div>
+      </div><div class="demo-card"><h3>Demo script, state by state</h3><h4>1. Scout, project ready</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Let the project header sit for a beat. Do not explain the rail navigation.</p></div>
+            <p>We are six weeks into the pre-study. Fourteen interviews are recorded and transcribed. The client documents, the KPMG method and the external material are already inside the project. Now the hard part starts.</p><h4>2. Microphone live</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>The composer is empty and zoomed in. Read the prompt below while the waveform moves. Do not advance until the approval sentence.</p></div>
+            <p>The interviews are complete. Analyse all fourteen transcripts for recurring themes, contradictions and evidence gaps. Compare leadership and operational perspectives. Apply our transformation assessment model and give me three options with a recommendation. Do not contact the client or publish anything without my approval.</p><h4>3. Dictation captured</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Press Space. The prompt now appears in the input field. Let the audience read it, then explain what the assessment model already contains.</p></div>
+            <p>The assessment model already has the scoring method, the specialist-agent roles and the rule that every finding links back to a source. I do not need to dictate the operating manual every time. I give Scout the task, the outcome and the boundary.</p><h4>4. Scout confirms the boundary</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Read Scout’s reply once. Let the approval line land before moving on.</p></div>
+            <p>Now I submit it. Look at the first thing Scout confirms: Nordic Industry Group sources only, and my approval before it contacts the client or publishes anything. Autonomy starts with a clear stop.</p><h4>5. Short plan lands</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Read the four specialist-agent names once. Do not over-explain them yet, the steps panel will track them.</p></div>
+            <p>Four specialist agents. Evidence and market can start together. Pattern analysis waits for evidence. Challenge waits until there is something worth challenging. Scout gives me one recommendation, or stops earlier if it needs me.</p><h4>6. Conceptual view opens · evidence and market start</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>This overlay is explanatory, not a real product screen. Say so once, then trace evidence and market starting together.</p></div>
+            <p>This is not literally what Scout shows you. I am making the coordination underneath visible for one minute. Evidence and market start together from the same project context.</p><h4>7. Evidence hands off to patterns</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Point at the evidence bar finishing, then follow the packet into patterns.</p></div>
+            <p>Evidence finishes first. Claims, quotes, timestamps, all linked back to an interview. The moment that packet is ready, patterns starts comparing leadership with operations.</p><h4>8. Market finishes, challenge still queued</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Point at market finishing on its own schedule. Note that challenge has nothing to do yet.</p></div>
+            <p>Market finishes on its own timeline and tests the model against comparable groups outside the client. Patterns keeps going. Challenge stays queued because there is nothing to challenge yet.</p><h4>9. Patterns return, three options, challenge starts</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Read the three options being drafted, then point as challenge finally activates.</p></div>
+            <p>Patterns comes back with themes and a split between leadership and operations. Scout drafts three options. Now challenge finally has something worth testing.</p><h4>10. Challenge finds the conflict, Scout pauses</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Slow all the way down here. This is the moment the slide exists for.</p></div>
+            <p>Challenge finds a real conflict. Leadership and operations agree on the direction, but two markets cannot support it yet. Scout does not guess. It stops.</p><h4>11. Back to Scout, conflict explained</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>The overlay closes. Pause and let the audience read Scout’s conflict message. Do not narrate the transition.</p></div>
+            <p></p><h4>12. Microphone live, human decision</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>The composer is empty and zoomed in again. Read the decision below while the waveform moves.</p></div>
+            <p>Go with one shared operating model, two documented exception paths, and a twelve-month review. Norway and Germany keep the exceptions until the shared model is proven there too.</p><h4>13. Decision captured</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Press Space. The decision appears in the input field. Let the audience read it before you continue.</p></div>
+            <p>The reasoning stays with the decision. That matters later, when somebody asks why Norway and Germany were treated differently.</p><h4>14. Decision submitted, pack builder starts</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Submit the decision. Let Scout acknowledge it, then leave the activity line visible for a beat.</p></div>
+            <p>Now I submit it. Scout adds the decision to the project record and starts building the steering material: evidence map, three options, recommendation and source trail.</p><h4>15. Pack ready, nothing sent</h4>
+            <div class="demo-talk"><span class="talk-label">DO</span><p>Point at the note at the bottom of the card last. That line matters more than the pack itself.</p></div>
+            <p>The pack is ready. Fourteen interviews, seven external sources, one human decision, zero claims without a source behind them. Nothing has been sent. Nothing has been published.</p><div class="demo-prompt"><p class="prompt-label">Spoken prompt, state 2</p><p></p></div></div><div class="slide-row" id="s12">
+        <div class="slide-panel"><span class="sn">12 / 18</span><h2>The next jump is from personal Autopilot to project agent.</h2><h4>From one consultant to the engagement</h4>
+
+
+           <p class="small">What you just watched was personal Scout, running on Johan's own permissions. A shared project role is a different, separately published and governed agent.</p></div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:15</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">From personal Autopilot to project agent</span>
+            <span class="tag tag-full">3 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Make the product boundary explicit. The demo was personal Scout, on my permissions, for one task. The right-hand side is the operating-model direction, not a claim about today.</p>
+
+          <p>Everything you just watched was personal. Scout worked for me, on my machine and under my permissions.</p><p>The next jump is from personal Autopilot to project agent.</p><p>A governed agent in the project channel can serve the partner, engagement manager and workstream leads from the same place. It might own the morning evidence check, keep the decision log current or watch the client actions everybody forgot after Tuesday's meeting.</p><p>This pattern is already emerging in Teams and Slack. People use the agent, then correct it inside the flow of work. They improve its instructions, add examples and tighten the checks. Over time, it becomes part of how the team operates.</p><p>One useful middle step was released last week. GitHub Copilot can now start a collaborative cloud-agent session from a Teams thread, where the team can see and steer the work while the issue or pull request stays connected to the discussion. I have already picked that pattern up in one of my own Teams workflows, using GitHub for the collaboration and review trail.</p><p>But be precise about what you saw. <span class="highlight-line">That was not Scout serving a team.</span> Scout is personal today. A shared project role needs a separately published and governed agent.</p>
+        </div>
+      </div><div class="slide-row" id="s13">
+        <div class="slide-panel"><span class="sn">13 / 18</span><h2>The consultant still owns the recommendation.</h2><h4>Where the value moved</h4>
+
+           <ul><li>ContextWhat this client can absorb, and what the board will not hear this quarter.</li><li>QualityWhich evidence is good enough to carry the firm's name.</li><li>The callThe recommendation itself, plus the risk of being wrong in front of the steering group.</li></ul>
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:45</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Human judgement</span>
+
+          </div>
+          <p><strong>DO</strong><br>Point back to the conflict Scout could not resolve on its own. Keep this practical and personal.</p>
+
+          <p>Scout stopped a minute ago because leadership, operations and market evidence pointed one way and challenge pointed another. That pause is not a limitation to apologise for. It is the point.</p><p>If the machine carries the volume, what exactly are you being paid for?</p><p>Three things. These are the expensive ones.</p><p>Context. What this client can actually absorb, and what the board will refuse to hear this quarter. No model in the room knows that.</p><p>Quality. Which evidence is strong enough to carry the firm's name. That judgement is about risk. A statement can be technically accurate and still be unsafe to use.</p><p>And the call. You own the recommendation itself, together with the risk of being wrong in front of a steering group with the CFO in it.</p><p>That is why the stop in the demo matters. A confident answer is cheap. Knowing when the evidence needs a human call is the valuable part.</p>
+        </div>
+      </div><div class="slide-row" id="s14">
+        <div class="slide-panel"><span class="sn">14 / 18</span><h2>Your methodology can run.</h2><h4>The IP changes form</h4>
+           <p>This is how AI-driven delivery becomes a competitive advantage: every reviewed engagement improves the next.</p>
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:15</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">Methodology that runs</span>
+
+          </div>
+          <p><strong>DO</strong><br>Move clockwise. Keep this about consulting IP, not model training. The correction you just chose on the conflict is the raw material for this loop.</p>
+
+          <p>Consulting firms have always had IP: method decks, interview guides, benchmark databases, quality checklists. Useful, but passive. Somebody still has to remember where those assets are and apply them properly.</p><p>Agents change the form of that IP.</p><p>Project work produces evidence, decisions and outcomes. The choice you just watched, one operating model with two exceptions, becomes a correction. Those corrections become better instructions, stronger examples and tighter checks. The next engagement starts from a reviewed capability instead of an empty chat window.</p><p>The model is not secretly learning from client data. The firm is deliberately improving an asset it controls.</p><p>That makes IP more important. When everybody can generate another app or another analysis, the advantage is the delivery system that improves every time your people review it.</p><p>That is how AI-driven delivery becomes a competitive advantage. The next team does not start from scratch. It starts from what the firm already learned.</p>
+        </div>
+      </div><div class="act-divider"><h3>Act four. From one consultant to an enterprise capability</h3><span class="time">2:30</span></div><div class="slide-row" id="s15">
+        <div class="slide-panel"><span class="sn">15 / 18</span><h2>The next bottleneck is coordination.</h2><h4>Enterprise zoom-out</h4>
+           <p>More agents create an estate. Orchestration makes the estate work as one system.</p>
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:15</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">The coordination bottleneck</span>
+            <span class="tag tag-full">1 click</span>
+          </div>
+          <p><strong>DO</strong><br>Let the scattered labels sit for a beat before the click. On the click, watch the room, not the slide. Land the line underneath and stop.</p>
+
+          <p>Zoom out from one engagement to the whole firm.</p><p>Models here. Agents there. Data somewhere else. A workflow tool nobody fully owns. Human decisions scattered across email threads. Governance added afterwards. Most firms are already living here, whether they planned it or not.</p><p>(Click.)</p><p>The same six things now need to work together.</p><p><span class="highlight-line">More agents create an estate.</span> A pile of capable tools is not an operating model. <span class="highlight-line">Orchestration is what makes the estate work as one system</span>, not six.</p>
+        </div>
+      </div><div class="slide-row" id="s16">
+        <div class="slide-panel"><span class="sn">16 / 18</span><h2>Multiple ways to orchestrate. One control plane.</h2><h4>The Microsoft landscape, simplified</h4>
+           <p>Several ways to build. Standard ways to connect. One control plane.</p>
+           <ul><li>Work surfaces Microsoft 365 CopilotCoworkScoutTeamsBusiness apps</li><li>Build &amp; orchestrate Copilot StudioPower AutomateFoundry workflowsAgent Framework</li><li>Connect MCPA2AActivity Protocol</li><li>Govern Agent 365Identity · access · visibility · protection · lifecycle · accountability</li></ul>
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:15</span>
+            <span class="energy energy-calm">calm</span>
+            <span class="tag tag-full">One control plane</span>
+            <span class="tag tag-full">5 clicks</span>
+          </div>
+          <p><strong>DO</strong><br>Read layer by layer, top to bottom on screen. Do not read every product name in the connect row. Land the closing line and stop, this slide has to stay under 75 seconds.</p>
+
+          <p>Somebody in this room will ask me after the session how this fits together at KPMG scale. Here is the honest map.</p><p>At the top, the surfaces people actually work in. Microsoft 365 Copilot, Cowork, Scout, Teams, your own business applications.</p><p>Underneath, the places you build and orchestrate multi-step work. Copilot Studio, Power Automate, Foundry workflows, and the Microsoft Agent Framework for code-first teams.</p><p>Then a thin connecting layer, mostly invisible to you. MCP connects tools and data. Agent-to-agent messaging handles coordination. The Activity protocol reaches Microsoft 365 channels.</p><p>And at the base, one thing, not four. Agent 365. It does not orchestrate your recommendation. It watches the whole estate: identity, access, visibility, protection, lifecycle, and who is accountable when an agent gets something wrong.</p><p>Several ways to build. Standard ways to connect. <span class="highlight-line">One control plane</span>, not one engine pretending to be everything.</p><p>One honest caveat, because somebody will check. Foundry workflows are still in preview, and Microsoft's own documentation already points new work toward the Agent Framework.</p>
+        </div>
+      </div><div class="act-divider"><h3>Act five. KPMG already has the pieces</h3><span class="time">2:20</span></div><div class="slide-row" id="s17">
+        <div class="slide-panel"><span class="sn">17 / 18</span><h2>KPMG is already building the foundations.</h2><h4>Public announcements only</h4>
+           <p>A work surface, a platform to build on, and governance across the estate. The pieces from the previous slide, already in place here.</p>
+           <ul><li>Jun 2025PlatformWorkbench launched as a multi-agent platform built on Azure AI Foundry.</li><li>Jun 2026Work surfaceMicrosoft 365 Copilot deployed across more than 276,000 people.</li><li>Jun 2026GovernanceAgent 365 adopted to deploy, monitor and secure agents.</li></ul>
+           <p class="small">KPMG Workbench launch, 25 June 2025. KPMG and Microsoft joint announcement, 9 June 2026. Both public.</p></div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:05</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">KPMG is building it</span>
+
+          </div>
+          <p><strong>DO</strong><br>Say public twice. Do not speculate about the Workbench roadmap. Point at each tag as you say the word, quietly.</p>
+
+          <p>I am a guest here, so every line on this slide is public.</p><p>Workbench gives KPMG a multi-agent platform, the piece you build on. Copilot is deployed across more than two hundred and seventy-six thousand people, the surface people work in. Agent 365 is being adopted to govern the agents themselves and watch the estate.</p><p>Work surface. Platform. Governance. The same parts from the map I just showed you. This time they are already funded, live and named in public.</p><p>The question for this room is what you build on top of them. Which roles will agents take? Which methods will they run? Which services become possible?</p><p>And which parts of KPMG's expertise improve every time the system runs?</p>
+        </div>
+      </div><div class="slide-row" id="s18">
+        <div class="slide-panel"><span class="sn">18 / 18</span><h2>Your IP used to sit in slides. Now it can run.</h2><h4>One question before yours</h4>
+           <p>Pick one role or workflow to test next week. What should it learn each time the team corrects it?</p>
+
+           </div>
+        <div class="script-panel">
+          <div class="meta">
+            <span class="timing">1:15</span>
+            <span class="energy energy-high">high</span>
+            <span class="tag tag-full">Close · make the method operational</span>
+            <span class="tag tag-full">1 click</span>
+          </div>
+          <p><strong>DO</strong><br>Ask the question. Pause. Then click for the Teams notification and leave it there.</p>
+          <p><strong>COPY</strong><br><code>https://www.linkedin.com/in/johanwallquist</code><br><code>jwallquist@microsoft.com</code></p>
+          <p>One question before I take yours.</p><p>Pick one role or workflow to test next week. Not a strategy, one recurring task with a clear owner and a clear boundary.</p><p>Then ask what it should learn each time the team corrects it.</p><p>Your IP used to sit in slides. Now it can run.</p><p>(Click.)</p><p>This is a published project agent, not personal Scout, reporting inside the team's own channel: what changed, what it did, and what still needs a human.</p><p>That notification is the direction, not a claim that personal Scout already serves a whole project team.</p><p>Thank you.</p>
+        </div>
+      </div>
+
+</div><!-- end #slides -->
+</div><!-- end .container -->
+
+</body>
+</html>
