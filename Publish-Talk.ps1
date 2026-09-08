@@ -24,7 +24,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$repoDir = "C:\Users\jwallquist\projects\talks"
+$repoDir = $PSScriptRoot
 $dest    = Join-Path $repoDir $Slug
 
 # Validate inputs

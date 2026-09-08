@@ -1,6 +1,6 @@
 # Talks
 
-Public presentations by Johan Wallquist. Partner Solution Architect, Microsoft.
+Public presentations by Johan Wallquist.
 
 Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
@@ -27,10 +27,14 @@ The root [`index.html`](./index.html) is a card-based landing page that mirrors 
 
 When adding a new talk:
 
-1. Build the deck locally under `C:\Users\jwallquist\projects\_speaking\<topic>\` (or wherever) with `deck.html`, `presenter.html`, `storyboard.html`.
+1. Build the deck in any local source folder with `deck.html`, `presenter.html`, and `storyboard.html`.
 2. Run `.\Publish-Talk.ps1 -Source <source-folder> -Slug <topic>-<year>`. The script renames `deck.html` to `index.html`, rewrites internal `src=`/`href=` path references, copies the other files, then commits and pushes.
 3. Add the row to the talks table above.
 4. Add a matching card to the root `index.html` landing page.
 5. GitHub Pages picks it up within a minute.
 
 For tweaks to an already-published talk, re-run the same `Publish-Talk.ps1` command. Use `-WhatIf` for a dry run, `-Message "..."` to override the commit subject, `-NoPush` to commit locally only.
+
+## License
+
+Original scripts and site code are MIT licensed. Original presentation text and diagrams are available under CC BY 4.0. Microsoft and third-party trademarks, screenshots, logos, and externally owned material are excluded. See [LICENSE.md](LICENSE.md).
