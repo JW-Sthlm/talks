@@ -1,38 +1,430 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talks — Johan Wallquist</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Inter:opsz,wght@14..32,400;14..32,500&display=swap" rel="stylesheet">
-<style>
-  body { font-family: 'Inter', system-ui, sans-serif; background: #F8F8F7; color: #21211F; margin: 0; padding: 60px 40px; }
-  .container { max-width: 640px; margin: 0 auto; }
-  h1 { font-family: 'Plus Jakarta Sans', system-ui; font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-  .subtitle { color: #797971; font-size: 15px; margin-bottom: 48px; }
-  .talk { display: block; background: #fff; border: 1px solid #E2E2DF; border-radius: 12px; padding: 24px; margin-bottom: 16px; text-decoration: none; color: inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: all 0.2s; }
-  .talk:hover { border-color: #2D6E6D; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
-  .talk-title { font-family: 'Plus Jakarta Sans'; font-weight: 700; font-size: 18px; margin-bottom: 4px; }
-  .talk-meta { font-size: 13px; color: #797971; }
-  .talk-meta span { color: #2D6E6D; font-weight: 500; }
-</style>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Public talks and presentation material by Johan Wallquist.">
+  <meta property="og:title" content="Talks by Johan Wallquist">
+  <meta property="og:description" content="Agentic work, consulting delivery, and practical AI. Open the decks, presenter views, and storyboards.">
+  <meta property="og:image" content="https://jw-sthlm.github.io/talks/assets/agentic-future-title.jpg">
+  <link rel="icon" href="assets/agentic-future-title.jpg">
+  <title>Talks by Johan Wallquist</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.55;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; }
+    :focus-visible {
+      outline: 3px solid var(--cp-accent);
+      outline-offset: 4px;
+      border-radius: 0.25rem;
+    }
+    .shell {
+      width: min(1180px, calc(100% - 2rem));
+      margin-inline: auto;
+    }
+    header {
+      border-bottom: 1px solid var(--cp-border);
+      background: var(--cp-overlay);
+      backdrop-filter: blur(16px);
+    }
+    nav {
+      min-height: 4.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      font-weight: 780;
+      letter-spacing: -0.025em;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-links a {
+      color: var(--cp-text-soft);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 650;
+    }
+    .nav-links a:hover { color: var(--cp-text); }
+    .theme-toggle {
+      width: 2.5rem;
+      height: 2.5rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--cp-border);
+      border-radius: 50%;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      cursor: pointer;
+    }
+    .theme-toggle svg { width: 1.1rem; height: 1.1rem; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.55fr);
+      gap: clamp(2rem, 7vw, 7rem);
+      align-items: end;
+      padding-block: clamp(5rem, 10vw, 9rem);
+    }
+    .hero h1 {
+      max-width: 8ch;
+      margin: 0;
+      font-size: clamp(4rem, 10vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      text-wrap: balance;
+    }
+    .hero p {
+      max-width: 48ch;
+      margin: 0;
+      color: var(--cp-text-soft);
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      text-wrap: pretty;
+    }
+    .hero p strong {
+      display: block;
+      margin-bottom: 0.75rem;
+      color: var(--cp-accent);
+      font-size: 0.92rem;
+    }
+    main {
+      padding-bottom: clamp(5rem, 9vw, 9rem);
+    }
+    .lead-talk {
+      display: block;
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--cp-surface);
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--cp-text) 12%, transparent);
+    }
+    .lead-talk img,
+    .talk-card img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 16 / 9;
+    }
+    .lead-talk img { height: auto; }
+    .lead-talk .talk-content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 2rem;
+      align-items: end;
+    }
+    .lead-talk .actions {
+      max-width: 300px;
+      justify-content: flex-end;
+    }
+    .talk-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .pill {
+      display: inline-flex;
+      min-height: 1.75rem;
+      align-items: center;
+      padding: 0.25rem 0.55rem;
+      border: 1px solid var(--cp-border);
+      border-radius: 999px;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-soft);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    h2 {
+      margin: 1.25rem 0 0.75rem;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+    .talk-content p {
+      max-width: 52ch;
+      margin: 0;
+      color: var(--cp-text-soft);
+      text-wrap: pretty;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 2rem;
+    }
+    .button {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .button:hover { border-color: var(--cp-accent); }
+    .button.primary {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+    .button.primary:hover { background: var(--cp-accent-hover); }
+    .talk-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .talk-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--cp-surface);
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--cp-text) 12%, transparent);
+    }
+    .talk-card .talk-content { flex: 1; }
+    .talk-card h2 { font-size: clamp(1.7rem, 3vw, 2.55rem); }
+    .source-note {
+      display: grid;
+      grid-template-columns: minmax(0, 0.75fr) minmax(260px, 0.5fr);
+      gap: 2rem;
+      margin-top: clamp(4rem, 8vw, 7rem);
+      padding-top: 2rem;
+      border-top: 1px solid var(--cp-border-strong);
+    }
+    .source-note h2 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+    .source-note p {
+      margin: 0;
+      color: var(--cp-text-soft);
+    }
+    footer {
+      padding-block: 2rem;
+      border-top: 1px solid var(--cp-border);
+      color: var(--cp-text-soft);
+      font-size: 0.9rem;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-inner p { margin: 0; }
+    @media (max-width: 820px) {
+      .hero,
+      .source-note {
+        grid-template-columns: 1fr;
+      }
+      .lead-talk .talk-content { grid-template-columns: 1fr; }
+      .lead-talk .actions {
+        max-width: none;
+        justify-content: flex-start;
+      }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 1.25rem, 1180px); }
+      .nav-links a:not(:last-of-type) { display: none; }
+      .hero { padding-block: 4rem; }
+      .hero h1 { font-size: clamp(4rem, 22vw, 6rem); }
+      .talk-grid { grid-template-columns: 1fr; }
+      .talk-content { padding: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>Talks</h1>
-  <p class="subtitle">Johan Wallquist · Partner Solution Architect · Microsoft</p>
-  <a href="agentic-future-2026/" class="talk">
-    <div class="talk-title">What happens when AI joins the project team?</div>
-    <div class="talk-meta"><span>August 2026</span> · KPMG Learning Days · Consulting delivery in the agentic era</div>
-  </a>
-  <a href="frontier-firms-2026/" class="talk">
-    <div class="talk-title">Frontier Firms. Why your best customers are already different.</div>
-    <div class="talk-meta"><span>June 2026</span> · Microsoft Surface Launch · Frontier Firm opening keynote</div>
-  </a>
-  <a href="agents-2026/" class="talk">
-    <div class="talk-title">Autonoma Agenter – vad är det och vågar vi?</div>
-    <div class="talk-meta"><span>April 2026</span> · Autonomous agents, real systems, and the trust question</div>
-  </a>
-</div>
+  <header>
+    <nav class="shell" aria-label="Main navigation">
+      <a class="brand" href="./">Johan Wallquist · Talks</a>
+      <div class="nav-links">
+        <a href="https://jw-sthlm.github.io/">Project library</a>
+        <a href="https://github.com/JW-Sthlm/talks">Source</a>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a9 9 0 1 0 9 9c0-.6-.06-1.18-.17-1.74A7 7 0 0 1 12 3Z"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero shell">
+    <h1>Talks built to be used.</h1>
+    <p>
+      <strong>Public decks and working material</strong>
+      Open the talk. Follow the argument. Use the presenter view or storyboard when you want to understand how it was built.
+    </p>
+  </section>
+
+  <main class="shell">
+    <article class="lead-talk">
+      <img src="assets/agentic-future-title.jpg" alt="Title slide: What happens when AI joins the project team?">
+      <div class="talk-content">
+        <div>
+          <div class="meta">
+            <span class="pill">August 2026</span>
+            <span class="pill">KPMG Learning Days</span>
+            <span class="pill">English</span>
+          </div>
+          <h2>What happens when AI joins the project team?</h2>
+          <p>Consulting delivery changes when agents work across the assignment. The volume moves to the machine. Judgment, evidence quality, and the recommendation stay with the consultant.</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="agentic-future-2026/">Open the talk</a>
+          <a class="button" href="agentic-future-2026/storyboard.html">View storyboard</a>
+          <a class="button" href="agentic-future-2026/kpmg-learning-days-v5.pdf">Open PDF</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="talk-grid">
+      <article class="talk-card">
+        <img src="assets/frontier-firms-title.png" alt="Title slide: I'm not a developer.">
+        <div class="talk-content">
+          <div>
+            <div class="meta">
+              <span class="pill">June 2026</span>
+              <span class="pill">Surface Launch</span>
+              <span class="pill">English</span>
+            </div>
+            <h2>Frontier Firms. Why your best customers are already different.</h2>
+            <p>A field report on how people and agents work together, what changes inside the organization, and what the audience can try immediately.</p>
+          </div>
+          <div class="actions">
+            <a class="button primary" href="frontier-firms-2026/">Open the talk</a>
+            <a class="button" href="frontier-firms-2026/presenter.html">Presenter view</a>
+            <a class="button" href="frontier-firms-2026/storyboard.html">Storyboard</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="talk-card">
+        <img src="assets/agents-title.png" alt="Title slide: Autonoma Agenter, vad är det och vågar vi?">
+        <div class="talk-content">
+          <div>
+            <div class="meta">
+              <span class="pill">April 2026</span>
+              <span class="pill">Seven shades of agents</span>
+              <span class="pill">Swedish</span>
+            </div>
+            <h2>Autonoma Agenter. Vad är det och vågar vi?</h2>
+            <p>Seven levels of agentic work, from familiar assistance to systems that keep operating. The hard part is deciding when trust has been earned.</p>
+          </div>
+          <div class="actions">
+            <a class="button primary" href="agents-2026/">Open the talk</a>
+            <a class="button" href="agents-2026/agents-7shades-presenter-sv.html">Presenter view</a>
+            <a class="button" href="agents-2026/agents-7shades-storyboard.html">Storyboard</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <section class="source-note">
+      <h2>The card comes from the actual first slide.</h2>
+      <p>Each overview image is captured from the current talk source and checked in beside it. When a title slide changes, the thumbnail must change in the same commit. No separate photo library.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner shell">
+      <p>Original talk content by Johan Wallquist. See the repository for reuse terms.</p>
+      <p><a href="https://www.linkedin.com/in/johanwallquist/">LinkedIn</a> · <a href="https://github.com/JW-Sthlm/talks">GitHub</a></p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector(".theme-toggle").addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      document.documentElement.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    });
+  </script>
 </body>
 </html>
