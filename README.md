@@ -25,6 +25,10 @@ an audience-only `audience.pdf`, and a title-slide thumbnail. Speaker notes and
 rehearsal files are excluded. The approved files are also preserved under
 `releases/v0.11-20260922/`; an existing release must not be overwritten.
 
+The mobile update is archived under `releases/v0.11-mobile-20260922/`.
+It keeps the full slide visible on small screens and adds touch navigation.
+The original release remains unchanged.
+
 Copy only these reviewed public files when updating this talk. Do not use the
 legacy publisher below for an audience-only release: it also copies presenter
 and storyboard files. Files remain public even when the library does not link
