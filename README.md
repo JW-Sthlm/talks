@@ -10,10 +10,26 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
+| 2026 | When Projects Move Faster, Who Captures the Upside? | Partner Day / Frontier Consultancy | [Open talk](https://jw-sthlm.github.io/talks/frontier-partner-day-2026/) |
+| 2026-08 | What happens when AI joins the project team? | KPMG Learning Days | [Open deck](https://jw-sthlm.github.io/talks/agentic-future-2026/) |
 | 2026-06-04 | Frontier Firms. Why your best customers are already different. | Microsoft Surface Launch, Tak Stockholm | [Open deck](https://jw-sthlm.github.io/talks/frontier-firms-2026/) |
 | 2026-04 | Autonoma Agenter. Vad är det och vågar vi? | Internal Microsoft session | [Open deck](https://jw-sthlm.github.io/talks/agents-2026/) |
 
 ## How talks are published
+
+### Partner Day audience release
+
+The Partner Day folder contains a landing page, the interactive `deck.html`,
+an audience-only `audience.pdf`, and a title-slide thumbnail. Speaker notes and
+rehearsal files are excluded. The approved files are also preserved under
+`releases/v0.11-20260922/`; an existing release must not be overwritten.
+
+Copy only these reviewed public files when updating this talk. Do not use the
+legacy publisher below for an audience-only release: it also copies presenter
+and storyboard files. Files remain public even when the library does not link
+to them.
+
+### Earlier decks
 
 Each talk lives in its own folder named `<topic>-<year>` (e.g. `frontier-firms-2026`). Inside the folder:
 
