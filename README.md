@@ -10,6 +10,7 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
+| 2026 | När AI börjar göra jobbet | Nexer kundevent (Swedish, with Sara Kiraly) | [Open talk](https://jw-sthlm.github.io/talks/nexer-frontier-event-2026/) |
 | 2026 | What happens when AI joins your project team? | Capgemini / Graduate consulting | [Open talk](https://jw-sthlm.github.io/talks/capgemini-graduate-consulting-2026/) |
 | 2026 | When Projects Move Faster, Who Captures the Upside? | Partner Day / Frontier Consultancy | [Open talk](https://jw-sthlm.github.io/talks/frontier-partner-day-2026/) |
 | 2026-08 | What happens when AI joins the project team? | KPMG Learning Days | [Open deck](https://jw-sthlm.github.io/talks/agentic-future-2026/) |
