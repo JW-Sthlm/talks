@@ -22,8 +22,8 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 ### Nexer audience release
 
 The Nexer folder contains the public landing page, interactive audience deck,
-PDF and title thumbnail. Version 3.6 is archived under
-`releases/v3.6-20261007/`; versions 3.5, 3.4, 3.3, 3.2 and 3.1 remain available for rollback.
+PDF and title thumbnail. Version 3.7 is archived under
+`releases/v3.7-20261007/`; versions 3.6 through 3.1 remain available for rollback.
 
 ### Partner Day audience release
 
