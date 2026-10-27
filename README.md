@@ -10,6 +10,7 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
+| 2026-10-28 | Microsoft IQ: why context wins the AI deal | Knowit Nordic (English, Johan's sections with Ben Gibbs handovers) | [Open deck](https://jw-sthlm.github.io/talks/knowit-microsoft-iq-2026/) |
 | 2026 | När AI börjar göra jobbet | Nexer kundevent (Swedish, with Sara Kiraly) | [Open talk](https://jw-sthlm.github.io/talks/nexer-frontier-event-2026/) |
 | 2026 | What happens when AI joins your project team? | Capgemini / Graduate consulting | [Open talk](https://jw-sthlm.github.io/talks/capgemini-graduate-consulting-2026/) |
 | 2026 | When Projects Move Faster, Who Captures the Upside? | Partner Day / Frontier Consultancy | [Open talk](https://jw-sthlm.github.io/talks/frontier-partner-day-2026/) |
@@ -18,6 +19,17 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 | 2026-04 | Autonoma Agenter. Vad är det och vågar vi? | Internal Microsoft session | [Open deck](https://jw-sthlm.github.io/talks/agents-2026/) |
 
 ## How talks are published
+
+### Knowit Microsoft IQ audience release
+
+The Knowit folder contains Johan's final presentation sections, with handover
+cards for Ben Gibbs' live demonstrations and AI FinOps. The IQ sphere is part
+of the presentation flow and is also available as a standalone illustration.
+The customer and business data in the illustration are fictional.
+
+Only reviewed audience files, the audience PDF and title image are published.
+Private speaker scripts, rehearsal pages, raw research and meeting transcripts
+remain in the speaking source workspace.
 
 ### Nexer audience release
 
