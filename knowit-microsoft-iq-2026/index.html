@@ -1,0 +1,1308 @@
+<!doctype html><html lang="en" data-theme="clean"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Microsoft IQ: why context wins the AI deal</title><style>
+
+
+
+
+
+[data-theme="clean"] {
+  
+  --bg: #F8F8F7;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #F1F1EF;
+  --bg-code: #F1F1EF;
+  --bg-overlay: rgba(33, 33, 31, 0.78);
+
+  
+  --fg: #21211F;
+  --fg-secondary: #4A4A46;
+  --fg-muted: #797971;
+  --fg-weak: #A9A9A3;
+  --fg-on-accent: #FFFFFF;
+
+  
+  --border: #E2E2DF;
+  --border-light: #ECECEA;
+  --border-strong: #C9C9C4;
+
+  
+  --accent-primary: #2D6E6D;        
+  --accent-primary-hover: #388988;
+  --accent-primary-soft: rgba(45, 110, 109, 0.08);
+  --accent-secondary: #FF5858;      
+  --accent-secondary-soft: rgba(255, 88, 88, 0.10);
+  --accent-tertiary: #791A3F;       
+  --accent-tertiary-soft: rgba(121, 26, 63, 0.08);
+
+  
+  --green: #43A584;
+  --blue: #4790FF;
+  --purple: #7B61FF;
+  --amber: #D89B2F;
+  --red: #E14B4B;
+
+  
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-xl: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.05);
+
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 100em;
+
+  
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  
+  --logo-color: rgba(33, 33, 31, 0.42);
+  --logo-color-hover: rgba(33, 33, 31, 0.72);
+}
+
+
+[data-theme="clean"] .slide[data-layout="hero"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 50% at 80% 20%, var(--accent-primary-soft), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 10% 80%, var(--accent-secondary-soft), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.2vw, 22px);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+
+.stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.deck {
+  position: relative;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  background: var(--bg);
+  overflow: hidden;
+}
+
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  padding: 5vmin 7vmin;
+  opacity: 0;
+  transition: opacity .25s var(--ease-out);
+}
+.slide.is-active { display: flex; opacity: 1; }
+
+
+.slide-header,
+.slide-footer {
+  position: absolute;
+  left: 7vmin;
+  right: 7vmin;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: clamp(11px, 0.85vw, 14px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+.slide-header { top: 4vmin; justify-content: space-between; gap: 16px; }
+.slide-footer { bottom: 4vmin; justify-content: space-between; gap: 16px; }
+
+.slide-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2.5vmin;
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+
+.slide:has(details.foldout) .slide-body,
+.slide[data-anchor="top"] .slide-body { justify-content: flex-start; padding-top: 4vmin; }
+
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5.5vw, 80px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--fg);
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 3.6vw, 54px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: var(--fg);
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 1.8vw, 30px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--fg);
+}
+
+.hero h1 {
+  font-size: clamp(64px, 8vw, 132px);
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  max-width: 20ch;
+}
+
+.lead {
+  font-size: clamp(22px, 1.6vw, 28px);
+  line-height: 1.5;
+  max-width: 56ch;
+  color: var(--fg-secondary);
+  font-weight: 400;
+  text-wrap: pretty;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: clamp(12px, 0.9vw, 16px);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.muted { color: var(--fg-muted); }
+.secondary { color: var(--fg-secondary); }
+
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+
+.ms-logo {
+  position: absolute;
+  bottom: 3.5vmin;
+  right: 4vmin;
+  width: clamp(56px, 4vw, 80px);
+  height: auto;
+  opacity: 1;
+  z-index: 5;
+  transition: opacity .2s var(--ease-out);
+  pointer-events: none;
+}
+.ms-logo path { fill: var(--logo-color); transition: fill .2s var(--ease-out); }
+
+
+.pill {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: clamp(12px, 0.85vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--accent-primary-soft);
+  color: var(--accent-primary);
+  border: 1px solid transparent;
+}
+.pill.secondary { background: var(--accent-secondary-soft); color: var(--accent-secondary); }
+.pill.tertiary { background: var(--accent-tertiary-soft); color: var(--accent-tertiary); }
+.pill.outline { background: transparent; border-color: var(--border); color: var(--fg-secondary); }
+
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 3vmin;
+  box-shadow: var(--shadow-sm);
+}
+.card-grid { display: grid; gap: 2.5vmin; grid-template-columns: repeat(var(--cols, 3), 1fr); align-items: start; }
+.card-grid-2 { display: grid; gap: 2.5vmin; grid-template-columns: repeat(2, 1fr); align-items: start; }
+
+.split { display: grid; gap: 4vmin; grid-template-columns: 1fr 1fr; align-items: center; }
+.split.heavy-left { grid-template-columns: 1.4fr 1fr; }
+.split.heavy-right { grid-template-columns: 1fr 1.4fr; }
+
+
+.foldout {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color .2s var(--ease-out);
+}
+.foldout[open] { border-color: var(--accent-primary); }
+.foldout > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 2.5vmin 3vmin;
+  display: flex;
+  align-items: center;
+  gap: 2vmin;
+  user-select: none;
+  transition: background .2s var(--ease-out);
+}
+.foldout > summary::-webkit-details-marker { display: none; }
+.foldout > summary::marker { content: ''; }
+.foldout > summary:hover { background: var(--bg-elevated); }
+.foldout-icon { font-size: clamp(20px, 1.6vw, 28px); flex-shrink: 0; }
+.foldout-head { flex: 1; min-width: 0; }
+.foldout-title { font-family: var(--font-display); font-weight: 600; font-size: clamp(17px, 1.3vw, 22px); color: var(--fg); margin-bottom: 4px; }
+.foldout-teaser { font-size: clamp(13px, 1vw, 17px); color: var(--fg-muted); line-height: 1.45; }
+.foldout-chevron {
+  font-size: clamp(11px, 0.9vw, 14px);
+  color: var(--fg-muted);
+  flex-shrink: 0;
+  transition: transform .25s var(--ease-out);
+}
+.foldout[open] .foldout-chevron { transform: rotate(180deg); color: var(--accent-primary); }
+
+
+.foldout > .foldout-body {
+  display: grid !important;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .28s var(--ease-out);
+  border-top: 0;
+  padding: 0;
+  margin: 0;
+}
+.foldout[open] > .foldout-body { grid-template-rows: 1fr; }
+.foldout-body-inner {
+  overflow: hidden;
+  min-height: 0;
+  font-size: clamp(15px, 1.1vw, 19px);
+  color: var(--fg-secondary);
+  line-height: 1.55;
+  padding: 0 3vmin;
+  transition: padding .28s var(--ease-out), border-color .28s var(--ease-out);
+  border-top: 1px solid transparent;
+}
+.foldout[open] .foldout-body-inner {
+  padding: 2vmin 3vmin 3vmin;
+  border-top-color: var(--border-light);
+}
+.foldout-body-inner strong { color: var(--fg); font-weight: 600; }
+.foldout-body-inner ul { margin: 1vmin 0 0; padding-left: 1.4em; }
+.foldout-body-inner li + li { margin-top: 0.4vmin; }
+
+
+[data-reveal] { opacity: 0; transform: translateY(8px); transition: opacity .35s var(--ease-out), transform .35s var(--ease-out); }
+[data-reveal].is-shown { opacity: 1; transform: translateY(0); }
+
+
+.tabs { display: flex; flex-direction: column; gap: 2vmin; }
+.tab-strip {
+  display: inline-flex;
+  align-self: flex-start;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  gap: 2px;
+}
+.tab-btn {
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1vw, 17px);
+  font-weight: 600;
+  padding: 8px 18px;
+  background: transparent;
+  color: var(--fg-muted);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background .2s var(--ease-out), color .2s var(--ease-out);
+}
+.tab-btn:hover { color: var(--fg); }
+.tab-btn[aria-selected="true"] { background: var(--bg-card); color: var(--fg); box-shadow: var(--shadow-sm); }
+.tab-panel { display: none; }
+.tab-panel[aria-selected="true"] { display: block; animation: fadeIn .3s var(--ease-out); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+
+.toggle-wrap { display: flex; flex-direction: column; gap: 2.5vmin; align-items: stretch; }
+.toggle-switch {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 8px 18px 8px 8px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: clamp(13px, 1vw, 17px);
+  font-weight: 600;
+  color: var(--fg-muted);
+  user-select: none;
+  transition: background .2s var(--ease-out), color .2s var(--ease-out);
+}
+.toggle-switch:hover { background: var(--bg-card); }
+.toggle-switch > span:first-child { color: var(--fg); }
+.toggle-switch[aria-pressed="true"] > span:first-child { color: var(--fg-muted); }
+.toggle-switch[aria-pressed="true"] > span:last-child { color: var(--fg); }
+.toggle-track {
+  width: 52px;
+  height: 28px;
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+  position: relative;
+  transition: background .25s var(--ease-out);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: var(--bg-card);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: transform .25s var(--ease-out);
+}
+.toggle-switch[aria-pressed="true"] .toggle-track { background: var(--accent-primary); }
+.toggle-switch[aria-pressed="true"] .toggle-thumb { transform: translateX(24px); }
+
+.toggle-state-off, .toggle-state-on {
+  display: none;
+  position: relative;
+  padding: 3vmin 3.5vmin 3vmin 3.5vmin;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.toggle-state-off::before, .toggle-state-on::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 1.5vmin; bottom: 1.5vmin;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+}
+.toggle-state-off::after, .toggle-state-on::after {
+  position: absolute;
+  top: 2vmin; right: 2.5vmin;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.78vw, 13px);
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+.toggle-state-off {
+  color: var(--fg-muted);
+}
+.toggle-state-off::before { background: var(--fg-weak); }
+.toggle-state-off::after {
+  content: 'Without';
+  color: var(--fg-weak);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+.toggle-state-on {
+  background: var(--accent-primary-soft);
+  border-color: var(--accent-primary);
+  color: var(--fg);
+}
+.toggle-state-on::before { background: var(--accent-primary); }
+.toggle-state-on::after {
+  content: '✓ With';
+  color: var(--fg-on-accent);
+  background: var(--accent-primary);
+}
+.toggle-state-off .lead, .toggle-state-on .lead { margin: 0; padding-right: 8vmin; }
+.toggle-wrap[data-state="off"] .toggle-state-off { display: block; animation: fadeIn .3s var(--ease-out); }
+.toggle-wrap[data-state="on"] .toggle-state-on { display: block; animation: fadeIn .3s var(--ease-out); }
+
+
+.zoomable { cursor: zoom-in; transition: transform .2s var(--ease-out); border-radius: var(--radius-md); }
+.zoomable:hover { transform: scale(1.01); }
+.zoom-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4vmin;
+  cursor: zoom-out;
+  backdrop-filter: blur(8px);
+}
+.zoom-overlay.is-open { display: flex; animation: fadeIn .2s var(--ease-out); }
+.zoom-overlay img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+}
+
+
+.video-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+.video-card video { display: block; width: 100%; height: auto; }
+.video-card .video-caption {
+  padding: 1.5vmin 2vmin;
+  font-size: clamp(13px, 0.95vw, 16px);
+  color: var(--fg-muted);
+  border-top: 1px solid var(--border);
+}
+
+
+.terminal {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: clamp(14px, 1.1vw, 19px);
+  line-height: 1.5;
+  padding: 2.5vmin 3vmin;
+  position: relative;
+  overflow: hidden;
+}
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.5vmin;
+  padding-bottom: 1.5vmin;
+  border-bottom: 1px solid var(--border);
+}
+.terminal-header .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--border-strong); }
+.terminal-header .dot.red { background: var(--red); }
+.terminal-header .dot.amber { background: var(--amber); }
+.terminal-header .dot.green { background: var(--green); }
+.terminal-header .title { margin-left: 12px; color: var(--fg-muted); font-family: var(--font-body); font-size: clamp(12px, 0.9vw, 15px); display: inline-flex; align-items: center; gap: 8px; }
+.terminal-header .copilot-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: clamp(22px, 1.6vw, 28px); height: clamp(22px, 1.6vw, 28px);
+  border-radius: 4px;
+  background: #0A0E18;
+  border: 1px solid #1F2937;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+.terminal-header .copilot-mark svg { width: 78%; height: 78%; display: block; image-rendering: pixelated; shape-rendering: crispEdges; }
+.terminal-header .copilot-label { font-weight: 600; color: var(--fg); letter-spacing: 0.02em; }
+.terminal-header .copilot-sep { color: var(--fg-weak); }
+
+.terminal-body { color: var(--fg); white-space: pre-wrap; min-height: 6em; }
+.terminal-body .prompt { color: var(--accent-tertiary); }
+.terminal-body .cmd { color: var(--fg); }
+.terminal-body .out { color: var(--fg-secondary); }
+.terminal-body .ok { color: var(--green); }
+.terminal-body .cursor { display: inline-block; width: 0.55em; height: 1em; background: var(--accent-primary); vertical-align: text-bottom; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.terminal-replay {
+  position: absolute;
+  top: 2vmin;
+  right: 2vmin;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-size: clamp(11px, 0.8vw, 13px);
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: background .2s var(--ease-out), color .2s var(--ease-out);
+}
+.terminal-replay:hover { background: var(--bg-elevated); color: var(--fg); }
+
+
+.terminal {
+  --bg-code: #0E1118;
+  background: #0E1118 !important;
+  color: #E5E7EB !important;
+  border-color: #1F2937 !important;
+}
+.terminal .terminal-header { border-bottom-color: #1F2937 !important; }
+.terminal .terminal-header .title { color: #9CA3AF !important; }
+.terminal .terminal-header .copilot-label { color: #E5E7EB !important; }
+.terminal .terminal-header .copilot-sep { color: #4B5563 !important; }
+.terminal .terminal-body { color: #E5E7EB !important; }
+.terminal .terminal-body .prompt { color: #5BC0DE !important; }
+.terminal .terminal-body .cmd { color: #E5E7EB !important; }
+.terminal .terminal-body .out { color: #9CA3AF !important; }
+.terminal .terminal-body .ok { color: #4ADE80 !important; }
+.terminal .terminal-body .cursor { background: #5BC0DE !important; }
+.terminal .terminal-replay { background: #1A1E26 !important; border-color: #2A2F38 !important; color: #9CA3AF !important; }
+.terminal .terminal-replay:hover { background: #23272F !important; color: #E5E7EB !important; }
+
+
+.stat-row { display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: 3vmin; align-items: stretch; }
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vmin;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(56px, 7vw, 112px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--accent-primary);
+  font-variant-numeric: tabular-nums;
+}
+.stat-unit {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 48px);
+  font-weight: 600;
+  color: var(--accent-primary);
+  margin-left: 4px;
+}
+.stat-label {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.05vw, 18px);
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+.stat-sub {
+  font-size: clamp(12px, 0.85vw, 15px);
+  color: var(--fg-weak);
+}
+
+
+.slide-counter {
+  font-family: var(--font-mono);
+  color: var(--fg-weak);
+  font-size: clamp(11px, 0.8vw, 14px);
+  letter-spacing: 0.06em;
+}
+.slide-counter b { color: var(--fg-muted); font-weight: 500; }
+
+.presenter {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  display: grid;
+  grid-template-columns: var(--pres-thumb-w, minmax(320px, 1.2fr)) 6px minmax(280px, 1fr);
+  gap: 0;
+  overflow: hidden;
+}
+@media (max-width: 900px) {
+  .presenter { grid-template-columns: 1fr; grid-template-rows: 35vh 6px 1fr; }
+  .pres-resizer { cursor: row-resize; }
+}
+
+.pres-resizer {
+  background: var(--border);
+  cursor: col-resize;
+  position: relative;
+  transition: background 120ms ease;
+  user-select: none;
+}
+.pres-resizer:hover, .pres-resizer.is-dragging { background: var(--accent-primary); }
+.pres-resizer::after {
+  content: ''; position: absolute; inset: 0;
+  
+  margin: 0 -4px;
+}
+@media (max-width: 900px) {
+  .pres-resizer::after { margin: -4px 0; }
+}
+body.is-resizing-pres, body.is-resizing-pres * { cursor: col-resize !important; }
+body.is-resizing-pres iframe { pointer-events: none; }
+
+.pres-thumb { position: relative; background: var(--bg-elevated); overflow: hidden; border-right: 1px solid var(--border); }
+.pres-thumb iframe {
+  position: absolute; top: 0; left: 0;
+  width: 1600px; height: 900px;
+  border: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  background: var(--bg);
+}
+
+.pres-side {
+  padding: 24px 28px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 18px;
+  --pres-say-size: 24px;
+}
+.pres-statbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 10px 14px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);
+  font-family: var(--font-mono); font-size: 12.5px; color: var(--fg-muted);
+  letter-spacing: 0.05em;
+}
+.pres-counter { color: var(--accent-primary); font-weight: 700; }
+.pres-clocks { display: flex; gap: 14px; align-items: center; }
+.pres-clocks .lbl { color: var(--fg-weak); margin-right: 4px; font-weight: 500; }
+.pres-clock { color: var(--fg); font-weight: 600; }
+.slide-clk { color: var(--fg); font-weight: 600; transition: color 200ms ease; }
+.slide-clk.warn { color: var(--accent-secondary, #d97706); }
+.slide-clk.over { color: var(--accent-danger, #dc2626); }
+
+.pres-block { padding: 16px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--border); }
+.pres-block.pres-next { background: transparent; border-color: var(--border-light); opacity: 0.78; }
+.pres-label { font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--accent-primary); font-weight: 700; margin-bottom: 10px; }
+.pres-block.pres-next .pres-label { color: var(--accent-tertiary); }
+.pres-title { font-family: var(--font-display); font-weight: 700; font-size: 19px; color: var(--fg); margin-bottom: 10px; line-height: 1.3; }
+.pres-block.pres-next .pres-title { font-size: 15px; color: var(--fg-secondary); margin-bottom: 6px; }
+
+
+.pres-do {
+  display: block; font-family: var(--font-mono);
+  font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent-primary); font-weight: 600;
+  line-height: 1.5; margin-bottom: 12px;
+  padding: 8px 12px; border-left: 2px solid var(--accent-primary);
+  background: var(--accent-primary-soft);
+  border-radius: 0 4px 4px 0;
+  white-space: pre-wrap; opacity: 0.9;
+}
+.pres-do:empty { display: none; }
+.pres-do::before { content: 'DO · '; opacity: 0.6; font-weight: 700; }
+
+
+.pres-say {
+  font-family: var(--font-body); font-size: var(--pres-say-size, 24px);
+  line-height: 1.55; font-weight: 400;
+  color: var(--fg); white-space: pre-wrap;
+}
+.pres-say:empty { display: none; }
+.pres-say strong { color: var(--fg); font-weight: 700; }
+.pres-say .mark {
+  background: var(--accent-primary-soft);
+  color: var(--accent-primary);
+  padding: 1px 8px; border-radius: 6px;
+  font-weight: 600;
+}
+
+.pres-block.pres-next .pres-say {
+  font-size: 14px; line-height: 1.5; color: var(--fg-secondary);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pres-hint {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em;
+  color: var(--fg-weak); text-align: right; padding: 0 4px;
+}
+.pres-hint kbd {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--fg-secondary);
+  padding: 1px 6px; border-radius: 4px;
+  font-family: inherit; font-size: 10px;
+}
+
+
+.blackout-veil {
+  position: fixed; inset: 0; background: #000; z-index: 99999; display: none;
+}
+body.blacked .blackout-veil { display: block; }
+
+.popup-banner {
+  position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+  background: var(--accent-secondary-soft); color: var(--accent-secondary);
+  padding: 10px 18px; border-radius: var(--radius-pill);
+  font-size: 14px; font-weight: 600; z-index: 999;
+  border: 1px solid var(--accent-secondary);
+  display: none;
+}
+.popup-banner.is-shown { display: block; }
+
+[hidden], aside.notes { display:none !important; }
+:root {
+  --font-display:"Deck Segoe", "Segoe UI", sans-serif;
+  --font-body:"Deck Segoe", "Segoe UI", sans-serif;
+  --font-mono:"Deck Mono", Consolas, monospace;
+}
+[data-theme="clean"] {
+  --font-display:"Deck Segoe", "Segoe UI", sans-serif;
+  --font-body:"Deck Segoe", "Segoe UI", sans-serif;
+  --font-mono:"Deck Mono", Consolas, monospace;
+  --fg-muted:#595952; --accent-secondary:#2d6e6d; --accent-tertiary:#2d6e6d;
+}
+html,body { width:100%; height:100%; font-size:20px; background:#eeeee9; }
+.stage { width:100vw; height:100vh; }
+.deck { container-type:size; }
+.canvas { position:absolute; width:1600px; height:900px; transform-origin:0 0; }
+.slide { padding:0; transition:none; opacity:1; }
+.slide.is-active { display:block; }
+.slide h1,.slide h2 { position:absolute; left:80px; top:48px; width:1440px;
+  font-size:50px; line-height:1.14; font-weight:700; letter-spacing:-.018em; text-wrap:balance; }
+.slide.hero::before { display:none !important; }
+.slide.hero h1 { top:110px; width:1310px; font-size:88px; line-height:1.04;
+  max-width:none; font-weight:700; }
+.hero .event { position:absolute; left:85px; top:490px; font-size:29px; color:var(--accent-primary); }
+.speakers { position:absolute; left:85px; top:660px; width:1415px; display:flex; gap:190px; }
+.speaker strong { display:block; font-size:30px; font-weight:700; }
+.speaker span { display:block; margin-top:8px; font-size:23px; color:var(--fg-secondary); }
+.ms-logo { width:32px; height:32px; right:63px; bottom:30px; }
+.slide .caption { position:absolute; left:84px; bottom:53px; width:1355px; color:var(--fg-muted);
+  font-size:22px; line-height:1.3; text-transform:none; letter-spacing:0; }
+.statement h2 { top:205px; width:1420px; font-size:74px; line-height:1.1; text-wrap:balance; }
+.statement .answer { position:absolute; left:83px; top:455px; width:1410px;
+  font-size:65px; line-height:1.12; font-weight:700; color:var(--accent-primary); }
+.statement .quiet-action { position:absolute; left:85px; top:735px; font-size:25px; color:var(--fg-secondary); }
+[data-reveal] { opacity:0; visibility:hidden; transform:none; transition:opacity 260ms var(--ease-out),transform 260ms var(--ease-out); }
+[data-reveal].is-shown { opacity:1; visibility:visible; }
+.reveal-rise:not(.is-shown) { transform:translateY(9px); }
+.reveal-focus { background:transparent; border-radius:8px; }
+.reveal-focus.is-focus { background:var(--accent-primary-soft); }
+.timeline h2 { top:42px; font-size:60px; width:1470px; white-space:nowrap; letter-spacing:-.015em; }
+.timeline-spine { position:absolute; left:108px; top:244px; width:6px; height:414px; border-radius:3px; background:#d7d7d0; }
+.timeline-row { position:absolute; left:0; width:1600px; height:120px; }
+.timeline-dot { position:absolute; left:99px; top:12px; width:25px; height:25px; border-radius:50%; background:var(--accent-primary); }
+.timeline-date { position:absolute; left:165px; top:4px; width:210px; font:27px/1.35 var(--font-mono); color:var(--fg-muted); }
+.timeline-label { position:absolute; left:400px; top:-4px; width:270px; font-size:44px; font-weight:700; line-height:1.15; color:var(--accent-primary); }
+.timeline-description { position:absolute; left:685px; top:0; width:880px; font-size:38px; line-height:1.3; color:var(--fg); }
+.timeline .caption { bottom:72px; font-size:23px; }
+.benchmark-grid { position:absolute; left:85px; top:244px; width:1415px; display:grid; grid-template-columns:1fr 1fr; gap:130px; }
+.benchmark-grid .metric { padding:0; }
+.metric .number { font-size:142px; font-weight:700; line-height:1.05; color:var(--accent-primary); letter-spacing:-.04em; }
+.metric .label { margin-top:28px; font-size:36px; font-weight:600; }
+.benchmark-model { position:absolute; left:88px; top:634px; font-size:31px; }
+.benchmark-rule { position:absolute; top:246px; left:794px; height:300px; width:1px; background:var(--border-strong); }
+.work-patterns { position:absolute; left:83px; top:220px; width:1434px; display:flex; flex-direction:column; gap:8px; }
+.work-pattern { display:grid; grid-template-columns:440px 1fr; gap:40px; padding:20px 18px 23px 0; min-height:114px; }
+.work-pattern strong { font-size:39px; line-height:1.15; color:var(--accent-primary); }
+.work-pattern p { font-size:31px; line-height:1.32; }
+.comparison { position:absolute; top:242px; left:85px; width:1410px; display:grid; grid-template-columns:1fr 1fr; gap:155px; }
+.comparison h3 { font-size:37px; font-weight:700; color:var(--accent-primary); margin-bottom:40px; }
+.comparison p { font-size:33px; line-height:1.32; margin-bottom:36px; }
+.comparison .col { min-width:0; }
+.onboarding .comparison { gap:140px; }
+.onboarding .col:last-child { padding:35px 40px; background:var(--accent-primary-soft); border-radius:8px; }
+.onboarding .col:last-child h3 { margin-bottom:32px; }
+.editorial-rows { position:absolute; top:222px; left:85px; width:1420px; }
+.editorial-row { display:grid; grid-template-columns:365px 1fr; align-items:start; gap:55px;
+  padding:23px 0 27px; min-height:116px; border-top:1px solid var(--border); }
+.editorial-row:first-child { border-top:0; }
+.editorial-row strong { font-size:35px; font-weight:700; line-height:1.2; color:var(--accent-primary); }
+.editorial-row p { font-size:33px; line-height:1.28; }
+.status-rows .editorial-row { min-height:145px; }
+.status-rows .editorial-row strong { font-size:33px; }
+.offers-rows .editorial-row { grid-template-columns:550px 1fr; min-height:150px; }
+.offers-rows .editorial-row p { font-size:38px; }
+.objection-rows { top:194px; }
+.objection-rows .editorial-row { min-height:104px; padding:18px 0; grid-template-columns:630px 1fr; }
+.objection-rows .editorial-row strong { font-size:31px; color:var(--fg); }
+.objection-rows .editorial-row p { font-size:31px; }
+.foundation-diagram { position:absolute; top:193px; left:75px; width:1450px; height:540px; }
+.foundation-diagram svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.relationship { fill:none; stroke:var(--accent-primary); stroke-width:2.4; }
+.relationship.draw { stroke-dasharray:1800; stroke-dashoffset:1800; transition:stroke-dashoffset 420ms var(--ease-out); }
+.is-shown .relationship.draw,.relationship.draw.is-shown { stroke-dashoffset:0; }
+.case-label { position:absolute; top:72px; width:218px; text-align:left; font-size:28px; line-height:1.24; font-weight:600; }
+.case-label.demo-case { color:var(--accent-primary); font-weight:700; }
+.case-label .case-context { display:block; font-size:20px; line-height:1.3; font-weight:400; color:var(--fg-secondary); margin-top:15px; }
+.foundation-band { position:absolute; left:0; right:0; top:365px; height:150px;
+  background:var(--accent-primary-soft); border:1px solid #b9cdcb; border-radius:8px; padding:20px 28px; }
+.foundation-band h3 { font-size:32px; color:var(--accent-primary); font-weight:700; margin-bottom:19px; }
+.iq-strip { display:flex; align-items:center; gap:0; justify-content:space-between; font-size:29px; font-weight:600; }
+.iq-strip span { flex:1; border-left:1px solid #c8d7d5; padding-left:32px; }
+.iq-strip span:first-child { border-left:0; padding-left:0; }
+.foundation-commercial { position:absolute; left:85px; top:768px; font-size:28px; font-weight:600; color:var(--accent-primary); }
+.foundation .caption { bottom:26px; font-size:18px; }
+.lifecycle-lead { position:absolute; top:178px; left:85px; width:1405px; font-size:37px; line-height:1.25; max-width:62ch; }
+.lifecycle-main { position:absolute; left:85px; top:318px; width:1420px; display:grid; grid-template-columns:repeat(5,1fr); gap:30px; }
+.lifecycle-main .life-stage { padding:15px 12px 18px 0; min-width:0; }
+.life-stage h3 { font-size:35px; font-weight:700; color:var(--accent-primary); }
+.life-stage p { margin-top:26px; font-size:27px; line-height:1.32; }
+.lifecycle-links { position:absolute; top:315px; left:85px; width:1420px; height:368px; overflow:visible; }
+.life-feedback-label { position:absolute; top:702px; left:300px; width:1000px; text-align:center; font-size:26px; color:var(--accent-primary); }
+.lifecycle-overview .lifecycle-main { top:365px; }
+.lifecycle-overview .lifecycle-links { top:360px; height:310px; }
+.knowit-sub { position:absolute; left:85px; top:161px; font-size:25px; color:var(--fg-muted); }
+.knowit-network { position:absolute; left:85px; top:275px; width:1420px; height:460px; }
+.knowit-network svg { position:absolute; width:100%; height:100%; overflow:visible; }
+.country { position:absolute; top:0; width:360px; }
+.country h3 { font-size:43px; font-weight:700; color:var(--accent-primary); }
+.country p { margin-top:15px; font-size:30px; line-height:1.3; }
+.joint-brief { position:absolute; left:405px; top:278px; width:640px; background:var(--accent-primary-soft); padding:25px 36px; border-radius:8px; }
+.joint-brief p { font-size:27px; }
+.joint-brief strong { display:block; margin-top:7px; font-size:34px; color:var(--accent-primary); }
+.handover h2 { top:140px; font-size:65px; width:1400px; }
+.handover .ben { position:absolute; left:85px; top:382px; font-size:42px; font-weight:700; color:var(--accent-primary); }
+.handover .handover-line { position:absolute; left:85px; top:560px; width:1390px; font-size:38px; line-height:1.32; }
+.handover .support { position:absolute; left:85px; top:670px; font-size:31px; color:var(--fg-secondary); }
+.handover.finops h2 { font-size:57px; line-height:1.17; }
+.rfp-path { position:absolute; left:85px; top:560px; width:1420px; display:flex; gap:28px; align-items:flex-start; }
+.rfp-path p { width:320px; font-size:34px; font-weight:600; line-height:1.25; }
+.rfp-path span { font-size:33px; color:var(--accent-primary); }
+.platform-panel { position:absolute; left:85px; top:240px; width:600px; min-height:398px; background:var(--accent-primary-soft); border-radius:8px; padding:42px; }
+.platform-panel p { font-size:47px; line-height:1.15; font-weight:700; color:var(--accent-primary); }
+.platform-rows { position:absolute; top:240px; left:780px; width:720px; }
+.platform-rows strong { display:block; font-size:27px; color:var(--accent-primary); margin-bottom:12px; }
+.platform-rows p { font-size:32px; line-height:1.24; margin-bottom:41px; }
+.chat-prompt { position:absolute; left:85px; top:245px; width:1420px; padding:40px 38px; background:var(--accent-primary-soft); border-radius:8px; font-size:41px; font-weight:700; line-height:1.2; color:var(--accent-primary); }
+.chat-followup { position:absolute; left:85px; top:490px; width:1410px; }
+.chat-followup p { display:grid; grid-template-columns:300px 1fr; gap:60px; font-size:32px; line-height:1.3; margin-bottom:48px; }
+.chat-followup strong { font-weight:600; }
+
+.presenter { font-size:16px; }
+.pres-side { --pres-say-size:24px; }
+.pres-block.pres-next { background:transparent; opacity:.86; }
+.pres-next .pres-label { color:var(--fg-secondary); }
+.pres-next .pres-title { font-size:16px; }
+.pres-next .pres-say { font-size:15px; line-height:1.45; color:var(--fg-secondary); }
+.pres-next-preview { position:relative; width:min(100%,280px); aspect-ratio:16/9; overflow:hidden; margin-bottom:12px; border:1px solid var(--border); }
+.pres-next-preview iframe { position:absolute; width:1600px; height:900px; border:0; transform-origin:0 0; pointer-events:none; }
+.pres-do { border-left:0; border-radius:6px; }
+.copy-chip { display:flex; align-items:center; gap:10px; font:12px/1.4 var(--font-mono); margin-bottom:14px; padding:9px; background:var(--bg-elevated); border-radius:6px; }
+.copy-chip span { flex:1; overflow-wrap:anywhere; }
+.copy-chip button { background:var(--accent-primary); color:white; border:0; border-radius:4px; padding:6px 10px; cursor:pointer; font:inherit; }
+.pres-click { font:12px/1.4 var(--font-mono); color:var(--fg-secondary); margin-bottom:12px; }
+.pres-bridge { margin-top:18px; font-size:15px; color:var(--accent-primary); }
+.pres-dependencies { font-size:13px; line-height:1.4; margin-top:16px; }
+.pres-dependencies summary { cursor:pointer; }
+.popup-banner { background:#e7eeee; color:var(--accent-primary); border-color:var(--accent-primary); }
+
+.sphere-scene iframe { position:absolute; inset:0; width:1600px; height:900px; border:0; pointer-events:none; }
+.canvas:has(.sphere-scene.is-active) > .ms-logo { visibility:hidden; }
+.benchmark .caption { width:1390px; font-size:22px; }
+.statement .answer { font-size:57px; width:1395px; text-wrap:balance; }
+.offers-rows .editorial-row { grid-template-columns:490px 1fr; min-height:156px; }
+.offers-rows .editorial-row p { font-size:33px; }
+
+.pres-thumb { display:grid; grid-template-rows:minmax(0,1fr) auto auto; padding:16px; gap:14px; min-width:0; min-height:0; }
+.pres-current-frame { position:relative; min-height:0; overflow:hidden; }
+.pres-block.pres-next { display:grid; grid-template-columns:minmax(130px,190px) minmax(0,1fr); gap:14px; margin:0; padding:12px; align-items:start; }
+.pres-next-preview { width:100%; margin:0; }
+.pres-next-text { min-width:0; }
+.pres-next .pres-label { margin-bottom:5px; }
+.pres-next .pres-title { margin-bottom:7px; }
+.pres-next .pres-do { display:none; }
+.pres-next .pres-say { font-size:13px; line-height:1.35; }
+.pres-controls { display:flex; justify-content:space-between; gap:12px; }
+.pres-controls button { border:1px solid var(--border-strong); border-radius:6px; background:var(--bg-card); color:var(--fg); padding:9px 18px; font:15px var(--font-body); cursor:pointer; }
+.pres-controls button:disabled { opacity:.4; cursor:default; }
+.pres-side { min-height:0; }
+.pres-hint { position:static; flex-shrink:0; }
+@media(max-width:900px) {
+  .presenter { grid-template-rows:minmax(260px,43vh) 6px minmax(0,1fr); }
+  .pres-thumb { grid-template-columns:minmax(0,1fr) minmax(180px,.8fr); grid-template-rows:minmax(0,1fr) auto; gap:8px; padding:8px; }
+  .pres-block.pres-next { grid-template-columns:1fr; padding:6px; gap:4px; }
+  .pres-next-preview { width:min(100%,160px); }
+  .pres-next .pres-say { display:none; }
+  .pres-next .pres-title { font-size:12px; }
+  .pres-controls { grid-column:1/-1; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { transition:none !important; animation:none !important; scroll-behavior:auto !important; }
+}
+
+[data-preview] *,[data-preview] *::before,[data-preview] *::after {transition:none!important;animation:none!important;}</style></head><body>
+<div class="stage" id="stage" hidden><div class="deck" id="deck"><div class="canvas"><svg class="ms-logo" viewBox="0 0 23 23" aria-hidden="true">
+      <path d="M0 0h11v11H0z"/>
+      <path d="M12 0h11v11H12z"/>
+      <path d="M0 12h11v11H0z"/>
+      <path d="M12 12h11v11H12z"/>
+    </svg><section class="slide hero" id="title" data-title="Microsoft IQ: why context wins the AI deal" data-label="Microsoft IQ: why context wins the AI deal" data-target-seconds="30" aria-label="Microsoft IQ: why context wins the AI deal"><h1>Microsoft IQ:<br>why context wins<br>the AI deal</h1><p class="event">Knowit, Nordics · 28 October 2026</p><div class="speakers"><div class="speaker"><strong>Johan Wallquist</strong><span>Partner Tech Strategist, Microsoft</span></div><div class="speaker"><strong>Ben Gibbs</strong><span>Microsoft Global Black Belt</span></div></div></section><section class="slide statement" id="model-fight" data-title="Another week. Another model." data-label="Another week. Another model." data-target-seconds="30" aria-label="Another week. Another model."><h2 class="">Another week. Another model.</h2><p class="answer">What changed for your customer?</p></section><section class="slide timeline" id="talk-to-do" data-title="In four years, AI went from talking to doing" data-label="In four years, AI went from talking to doing" data-target-seconds="90" aria-label="In four years, AI went from talking to doing"><h2 class="">In four years, AI went from talking to doing</h2><div class="timeline-spine" aria-hidden="true"></div><div class="timeline-row" data-reveal="1" style="top:225px"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-date">Nov 2022</span><strong class="timeline-label">Chat</strong><p class="timeline-description">One RFP question. One paragraph.</p></div><div class="timeline-row" data-reveal="2" style="top:332px"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-date">Late 2024</span><strong class="timeline-label">Reasoning</strong><p class="timeline-description">Analyze requirements. Develop a response strategy.</p></div><div class="timeline-row" data-reveal="3" style="top:470px"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-date">Late 2025</span><strong class="timeline-label">Agents</strong><p class="timeline-description">Research, draft, validate, and assemble the proposal.</p></div><div class="timeline-row" data-reveal="4" style="top:596px"><span class="timeline-dot" aria-hidden="true"></span><span class="timeline-date">2026+</span><strong class="timeline-label">Agentic<br>enterprise</strong><p class="timeline-description">Orchestrate the entire RFP process across<br>people, agents, and enterprise systems.</p></div><p class="caption">Chat answers. An agent plans, acts and checks.</p></section><section class="slide benchmark" id="same-model" data-title="Same model. Different system around it." data-label="Same model. Different system around it." data-target-seconds="60" aria-label="Same model. Different system around it."><h2 class="">Same model. Different system around it.</h2><div class="benchmark-rule" aria-hidden="true"></div><div class="benchmark-grid" data-reveal="1" ><div class="metric" ><p class="number">78%</p><p class="label">Claude Code harness</p></div><div class="metric" ><p class="number">42%</p><p class="label">CORE-Agent harness</p></div></div><p class="benchmark-model">Claude Opus 4.5 · CORE-Bench</p><p class="caption">Ben Gibbs&#x27; keynote · Different harnesses, not a Microsoft IQ test. The gap is not context alone.</p></section><section class="slide work-patterns-scene" id="four-steps" data-title="Your role changes as AI does more of the work" data-label="Your role changes as AI does more of the work" data-target-seconds="90" aria-label="Your role changes as AI does more of the work"><h2 class="">Your role changes as AI does more of the work</h2><div class="work-patterns" ><div class="work-pattern reveal-focus reveal-rise" data-reveal="1" ><strong>You write it</strong><p>AI suggests a sentence.</p></div><div class="work-pattern reveal-focus reveal-rise" data-reveal="2" ><strong>You fix it</strong><p>AI drafts. You edit.</p></div><div class="work-pattern reveal-focus reveal-rise" data-reveal="3" ><strong>You brief it</strong><p>A bounded pre-study, ready for review.</p></div><div class="work-pattern reveal-focus reveal-rise" data-reveal="4" ><strong>You run it</strong><p>Parallel work. You set the rules.</p></div></div></section><section class="slide software-comparison" id="why-stalls" data-title="Why business work gets stuck at step two" data-label="Why business work gets stuck at step two" data-target-seconds="60" aria-label="Why business work gets stuck at step two"><h2 class="">Why business work gets stuck at step two</h2><div class="comparison" ><div class="col" ><h3>Software</h3><p>Much of the context is structured</p><p>Many outputs can be tested</p></div><div class="col" ><h3>Consulting work</h3><p>Context is spread across systems and people</p><p>Business definitions can differ</p></div></div><p class="caption">Capable models still need relevant context.</p></section><section class="slide statement" id="thesis" data-title="Capable models are widely available." data-label="Capable models are widely available." data-target-seconds="30" aria-label="Capable models are widely available."><h2 class="">Capable models are widely available.</h2><p class="answer">What does this customer know that the model doesn&#x27;t?</p></section><section class="slide onboarding" id="day-one" data-title="An agent walks in on day one" data-label="An agent walks in on day one" data-target-seconds="90" aria-label="An agent walks in on day one"><h2 class="">An agent walks in on day one</h2><div class="comparison" ><div class="col" ><h3>A new colleague gets</h3><p>Laptop and access</p><p>Who&#x27;s who</p><p>The project history</p><p>A buddy</p></div><div class="col" data-reveal="1" ><h3>An agent also needs</h3><p>Relevant context</p><p>Clear access and task boundaries</p></div></div><p class="caption">In the chat: your role, and one thing you wish you&#x27;d known on day one.</p></section><section class="slide sphere-scene" id="iq-sphere" data-title="Microsoft IQ: the context behind the answer" data-label="Microsoft IQ: the context behind the answer" data-target-seconds="180" aria-label="Microsoft IQ: the context behind the answer"><iframe id="iqSphere" title="Microsoft IQ: fictional Knowit logistics pursuit" src="microsoft-iq-context-sphere.html?presenter=thumb#pursuit/0" tabindex="-1" aria-label="Microsoft IQ context sphere"></iframe></section><section class="slide status" id="status" data-title="Check what&#x27;s available before you promise it" data-label="Check what&#x27;s available before you promise it" data-target-seconds="30" aria-label="Check what&#x27;s available before you promise it"><h2 class="">Check what&#x27;s available before you promise it</h2><div class="editorial-rows status-rows" ><div class="editorial-row reveal-focus" ><strong>Scope</strong><p>The exact capability and experience</p></div><div class="editorial-row reveal-focus" ><strong>Availability</strong><p>GA, preview or restricted access</p></div><div class="editorial-row reveal-focus" ><strong>Commercial terms</strong><p>Licensing, usage and source connections</p></div></div><p class="caption">Verify the exact capability and terms before a customer proposal.</p></section><section class="slide lifecycle-overview" id="customer-zero" data-title="Knowit as customer zero" data-label="Knowit as customer zero" data-target-seconds="90" aria-label="Knowit as customer zero"><h2 class="">Knowit as customer zero</h2><p class="lifecycle-lead">Try one repeated task. Measure useful work.</p><svg class="lifecycle-links" viewBox="0 0 1420 368" aria-hidden="true"><g data-reveal="1"><path class="relationship draw" d="M 247 37 h 36"/><path class="relationship" d="m 272 30 10 7 -10 7"/></g><g data-reveal="1"><path class="relationship draw" d="M 537 37 h 36"/><path class="relationship" d="m 562 30 10 7 -10 7"/></g><g data-reveal="1"><path class="relationship draw" d="M 827 37 h 36"/><path class="relationship" d="m 852 30 10 7 -10 7"/></g><g data-reveal="1"><path class="relationship draw" d="M 1117 37 h 36"/><path class="relationship" d="m 1142 30 10 7 -10 7"/></g><g data-reveal="2"><path class="relationship draw" d="M 1300 190 V 325 H 86 V 190"/><path class="relationship" d="m 79 203 7 -13 7 13"/></g></svg><div class="lifecycle-main" ><div class="life-stage reveal-focus" data-reveal="1" ><h3>Pursue</h3></div><div class="life-stage reveal-focus" data-reveal="1" ><h3>Scope</h3></div><div class="life-stage reveal-focus" data-reveal="1" ><h3>Build</h3></div><div class="life-stage reveal-focus" data-reveal="1" ><h3>Ship</h3></div><div class="life-stage reveal-focus" data-reveal="1" ><h3>Run</h3></div></div><div class="life-feedback-label" data-reveal="2" >Approved lessons improve the next pursuit</div><p class="caption">Proposed learning motion. No Knowit deployment or pilot is claimed.</p></section><section class="slide one-knowit" id="one-knowit" data-title="One Knowit: combine what we already know" data-label="One Knowit: combine what we already know" data-target-seconds="45" aria-label="One Knowit: combine what we already know"><h2 class="">One Knowit: combine what we already know</h2><p class="knowit-sub">A fictional logistics pursuit</p><div class="knowit-network" ><svg viewBox="0 0 1420 460" aria-hidden="true"><g><path class="relationship draw" d="M 160 144 V 205 H 725 V 278"/></g><g><path class="relationship draw" d="M 670 144 V 205 H 725 V 278"/></g><g><path class="relationship draw" d="M 1180 144 V 205 H 725 V 278"/></g></svg><div class="country" style="left:0px"><h3>Sweden</h3><p>A logistics lead</p></div><div class="country" style="left:510px"><h3>Norway</h3><p>Approved delivery experience</p></div><div class="country" style="left:1020px"><h3>Finland</h3><p>Relevant expertise</p></div><div class="joint-brief" ><p>Data · Workplace · Applications</p><strong>One brief, with an owner</strong></div></div><p class="caption">Fictional pursuit. Sources and connections are illustrative.</p></section><section class="slide lifecycle-context" id="pursue-to-run" data-title="Keep the context when the team changes" data-label="Keep the context when the team changes" data-target-seconds="135" aria-label="Keep the context when the team changes"><h2 class="">Keep the context when the team changes</h2><svg class="lifecycle-links" viewBox="0 0 1420 368" aria-hidden="true"><g data-reveal="2"><path class="relationship draw" d="M 247 37 h 36"/><path class="relationship" d="m 272 30 10 7 -10 7"/></g><g data-reveal="3"><path class="relationship draw" d="M 537 37 h 36"/><path class="relationship" d="m 562 30 10 7 -10 7"/></g><g data-reveal="4"><path class="relationship draw" d="M 827 37 h 36"/><path class="relationship" d="m 852 30 10 7 -10 7"/></g><g data-reveal="5"><path class="relationship draw" d="M 1117 37 h 36"/><path class="relationship" d="m 1142 30 10 7 -10 7"/></g><g data-reveal="6"><path class="relationship draw" d="M 1300 190 V 325 H 86 V 190"/><path class="relationship" d="m 79 203 7 -13 7 13"/></g></svg><div class="lifecycle-main" ><div class="life-stage reveal-focus" data-reveal="1" ><h3>Pursue</h3><p>Approved evidence and promises</p></div><div class="life-stage reveal-focus" data-reveal="2" ><h3>Scope</h3><p>Agreed outcomes and boundaries</p></div><div class="life-stage reveal-focus" data-reveal="3" ><h3>Build</h3><p>Decisions and checks</p></div><div class="life-stage reveal-focus" data-reveal="4" ><h3>Ship</h3><p>Accepted release and ownership</p></div><div class="life-stage reveal-focus" data-reveal="5" ><h3>Run</h3><p>Actual results improve the next pursuit</p></div></div><div class="life-feedback-label" data-reveal="6" >Approved lessons improve the next pursuit</div><p class="caption">Same fictional engagement. An owner at each stage.</p></section><section class="slide handover-lens" id="over-to-ben" data-title="Watch what the context does" data-label="Watch what the context does" data-target-seconds="240" aria-label="Watch what the context does"><h2 class="">Watch what the context does</h2><div class="editorial-rows status-rows" ><div class="editorial-row reveal-focus" ><strong>Evidence</strong><p>What context supports the answer?</p></div><div class="editorial-row reveal-focus" ><strong>Decisions</strong><p>Where does a person approve?</p></div><div class="editorial-row reveal-focus" ><strong>Economics</strong><p>What does it cost to run?</p></div></div><p class="caption">Over to Ben Gibbs.</p></section><section class="slide handover" id="demo-rfp" data-title="Live demo: RFP agent for sales" data-label="Live demo: RFP agent for sales" data-target-seconds="450" aria-label="Live demo: RFP agent for sales"><h2 class="">RFP agent for sales</h2><p class="ben">Ben Gibbs</p><p class="handover-line">Ben’s live RFP section</p><p class="support">Preparing a bid response</p><p class="caption">Handover to Ben’s live material · Microsoft Global Black Belt</p></section><section class="slide handover" id="demo-cos" data-title="Live demo: Chief-of-Staff agent for sales" data-label="Live demo: Chief-of-Staff agent for sales" data-target-seconds="450" aria-label="Live demo: Chief-of-Staff agent for sales"><h2 class="">Chief-of-Staff<br>agent for sales</h2><p class="ben">Ben Gibbs</p><p class="handover-line">Ben’s live Chief-of-Staff section</p><p class="support">Shared context for sales leadership</p><p class="caption">Handover to Ben’s live material · Microsoft Global Black Belt</p></section><section class="slide handover finops" id="finops" data-title="What does it cost to run? How do you bring it down?" data-label="What does it cost to run? How do you bring it down?" data-target-seconds="720" aria-label="What does it cost to run? How do you bring it down?"><h2 class="">What does it cost to run?<br>How do you bring it down?</h2><p class="ben">Ben Gibbs</p><p class="handover-line">Ben’s live AI FinOps section</p><p class="support">Customer agent-running costs and evaluations</p><p class="caption">Handover to Ben’s live material · Microsoft Global Black Belt</p></section><section class="slide offers" id="three-plays" data-title="What can Knowit sell?" data-label="What can Knowit sell?" data-target-seconds="120" aria-label="What can Knowit sell?"><h2 class="">What can Knowit sell?</h2><div class="editorial-rows offers-rows" ><div class="editorial-row reveal-focus reveal-rise" data-reveal="1" ><strong>Context foundation</strong><p>Source map + definitions. Measure answer agreement.</p></div><div class="editorial-row reveal-focus reveal-rise" data-reveal="2" ><strong>Process to production</strong><p>Approved workflow. Measure effort and response quality.</p></div><div class="editorial-row reveal-focus reveal-rise" data-reveal="3" ><strong>Evaluate and optimise</strong><p>Evaluation service. Measure cost per accepted outcome.</p></div></div><p class="caption">Proposed paid deliverables. Agree the baseline and quality threshold.</p></section><section class="slide platform" id="unique" data-title="Why build on Microsoft?" data-label="Why build on Microsoft?" data-target-seconds="90" aria-label="Why build on Microsoft?"><h2 class="">Why build on Microsoft?</h2><div class="platform-panel" ><p>Start with the context<br>this customer<br>already has.</p></div><div class="platform-rows" ><strong>Reuse</strong><p>Microsoft 365 work context</p><strong>Business meaning</strong><p>Useful Fabric or Power BI models</p><strong>Controls</strong><p>Configured access and identity</p></div><p class="caption">Reuse depends on supported connections, licences and configured access.</p></section><section class="slide objections" id="objections" data-title="Objections you will hear" data-label="Objections you will hear" data-target-seconds="90" aria-label="Objections you will hear"><h2 class="">Objections you will hear</h2><div class="editorial-rows objection-rows" ><div class="editorial-row reveal-focus" ><strong>&#x27;We run Snowflake.&#x27;</strong><p>Validate coexistence.</p></div><div class="editorial-row reveal-focus" ><strong>&#x27;We have Salesforce.&#x27;</strong><p>Keep the workflow in view.</p></div><div class="editorial-row reveal-focus" ><strong>&#x27;Glean already does this.&#x27;</strong><p>Compare on the same task.</p></div><div class="editorial-row reveal-focus" ><strong>&#x27;Is it ready?&#x27;</strong><p>Start with what&#x27;s GA.</p></div><div class="editorial-row reveal-focus" ><strong>&#x27;What will it cost?&#x27;</strong><p>One process, cost per outcome.</p></div></div><p class="caption">Take the exact workflow and access requirements into the comparison.</p></section><section class="slide ask" id="ask" data-title="Which customer or project does this fit?" data-label="Which customer or project does this fit?" data-target-seconds="120" aria-label="Which customer or project does this fit?"><h2 class="">Which customer or project does this fit?</h2><div class="chat-prompt" >In the chat: customer or project + why</div><div class="chat-followup" ><p><strong>After today</strong><span>The plays and one-pager, with one clear ask</span></p><p><strong>Then</strong><span>Choose one next step together</span></p></div><p class="caption">A safe description or private message is fine. No confidential detail.</p></section><section class="slide statement" id="close" data-title="Capable models are widely available." data-label="Capable models are widely available." data-target-seconds="360" aria-label="Capable models are widely available."><h2 class="">Capable models are widely available.</h2><p class="answer">What does this customer know that the model doesn&#x27;t?</p><p class="quiet-action">Questions · Customer or project + why. Chat or private message.</p></section></div></div></div>
+
+<div class="blackout-veil" aria-hidden="true"></div>
+<div class="popup-banner" id="popupBanner">Browser blocked the presenter window. Allow popups for this file.</div>
+<script type="application/json" id="deck-data">{"slides": [{"id": "title", "title": "Microsoft IQ: why context wins the AI deal", "steps": [], "duration_seconds": 30}, {"id": "model-fight", "title": "Another week. Another model.", "steps": [], "duration_seconds": 30}, {"id": "talk-to-do", "title": "In four years, AI went from talking to doing", "steps": [1, 2, 3, 4], "duration_seconds": 90}, {"id": "same-model", "title": "Same model. Different system around it.", "steps": [1], "duration_seconds": 60}, {"id": "four-steps", "title": "Your role changes as AI does more of the work", "steps": [1, 2, 3, 4], "duration_seconds": 90}, {"id": "why-stalls", "title": "Why business work gets stuck at step two", "steps": [], "duration_seconds": 60}, {"id": "thesis", "title": "Capable models are widely available.", "steps": [], "duration_seconds": 30}, {"id": "day-one", "title": "An agent walks in on day one", "steps": [1], "duration_seconds": 90}, {"id": "iq-sphere", "title": "Microsoft IQ: the context behind the answer", "steps": [1, 2, 3, 4, 5, 6], "duration_seconds": 180}, {"id": "status", "title": "Check what's available before you promise it", "steps": [], "duration_seconds": 30}, {"id": "customer-zero", "title": "Knowit as customer zero", "steps": [1, 2], "duration_seconds": 90}, {"id": "one-knowit", "title": "One Knowit: combine what we already know", "steps": [], "duration_seconds": 45}, {"id": "pursue-to-run", "title": "Keep the context when the team changes", "steps": [1, 2, 3, 4, 5, 6], "duration_seconds": 135}, {"id": "over-to-ben", "title": "Watch what the context does", "steps": [], "duration_seconds": 240}, {"id": "demo-rfp", "title": "Live demo: RFP agent for sales", "steps": [], "duration_seconds": 450}, {"id": "demo-cos", "title": "Live demo: Chief-of-Staff agent for sales", "steps": [], "duration_seconds": 450}, {"id": "finops", "title": "What does it cost to run? How do you bring it down?", "steps": [], "duration_seconds": 720}, {"id": "three-plays", "title": "What can Knowit sell?", "steps": [1, 2, 3], "duration_seconds": 120}, {"id": "unique", "title": "Why build on Microsoft?", "steps": [], "duration_seconds": 90}, {"id": "objections", "title": "Objections you will hear", "steps": [], "duration_seconds": 90}, {"id": "ask", "title": "Which customer or project does this fit?", "steps": [], "duration_seconds": 120}, {"id": "close", "title": "Capable models are widely available.", "steps": [], "duration_seconds": 360}], "positions": [{"position": 0, "scene": 0, "id": "title", "step": 0}, {"position": 1, "scene": 1, "id": "model-fight", "step": 0}, {"position": 2, "scene": 2, "id": "talk-to-do", "step": 0}, {"position": 3, "scene": 2, "id": "talk-to-do", "step": 1}, {"position": 4, "scene": 2, "id": "talk-to-do", "step": 2}, {"position": 5, "scene": 2, "id": "talk-to-do", "step": 3}, {"position": 6, "scene": 2, "id": "talk-to-do", "step": 4}, {"position": 7, "scene": 3, "id": "same-model", "step": 0}, {"position": 8, "scene": 3, "id": "same-model", "step": 1}, {"position": 9, "scene": 4, "id": "four-steps", "step": 0}, {"position": 10, "scene": 4, "id": "four-steps", "step": 1}, {"position": 11, "scene": 4, "id": "four-steps", "step": 2}, {"position": 12, "scene": 4, "id": "four-steps", "step": 3}, {"position": 13, "scene": 4, "id": "four-steps", "step": 4}, {"position": 14, "scene": 5, "id": "why-stalls", "step": 0}, {"position": 15, "scene": 6, "id": "thesis", "step": 0}, {"position": 16, "scene": 7, "id": "day-one", "step": 0}, {"position": 17, "scene": 7, "id": "day-one", "step": 1}, {"position": 18, "scene": 8, "id": "iq-sphere", "step": 0}, {"position": 19, "scene": 8, "id": "iq-sphere", "step": 1}, {"position": 20, "scene": 8, "id": "iq-sphere", "step": 2}, {"position": 21, "scene": 8, "id": "iq-sphere", "step": 3}, {"position": 22, "scene": 8, "id": "iq-sphere", "step": 4}, {"position": 23, "scene": 8, "id": "iq-sphere", "step": 5}, {"position": 24, "scene": 8, "id": "iq-sphere", "step": 6}, {"position": 25, "scene": 9, "id": "status", "step": 0}, {"position": 26, "scene": 10, "id": "customer-zero", "step": 0}, {"position": 27, "scene": 10, "id": "customer-zero", "step": 1}, {"position": 28, "scene": 10, "id": "customer-zero", "step": 2}, {"position": 29, "scene": 11, "id": "one-knowit", "step": 0}, {"position": 30, "scene": 12, "id": "pursue-to-run", "step": 0}, {"position": 31, "scene": 12, "id": "pursue-to-run", "step": 1}, {"position": 32, "scene": 12, "id": "pursue-to-run", "step": 2}, {"position": 33, "scene": 12, "id": "pursue-to-run", "step": 3}, {"position": 34, "scene": 12, "id": "pursue-to-run", "step": 4}, {"position": 35, "scene": 12, "id": "pursue-to-run", "step": 5}, {"position": 36, "scene": 12, "id": "pursue-to-run", "step": 6}, {"position": 37, "scene": 13, "id": "over-to-ben", "step": 0}, {"position": 38, "scene": 14, "id": "demo-rfp", "step": 0}, {"position": 39, "scene": 15, "id": "demo-cos", "step": 0}, {"position": 40, "scene": 16, "id": "finops", "step": 0}, {"position": 41, "scene": 17, "id": "three-plays", "step": 0}, {"position": 42, "scene": 17, "id": "three-plays", "step": 1}, {"position": 43, "scene": 17, "id": "three-plays", "step": 2}, {"position": 44, "scene": 17, "id": "three-plays", "step": 3}, {"position": 45, "scene": 18, "id": "unique", "step": 0}, {"position": 46, "scene": 19, "id": "objections", "step": 0}, {"position": 47, "scene": 20, "id": "ask", "step": 0}, {"position": 48, "scene": 21, "id": "close", "step": 0}], "notesBearing": false, "publicOnly": true}</script><script>/* Engagement-local adaptation of canonical deck-shell.html.
+ * One central flat state controller serves deck, notes and thumbnail modes.
+ * No framework files or Studio mechanics are changed.
+ */
+(function () {
+  'use strict';
+  const DATA = JSON.parse(document.getElementById('deck-data').textContent);
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const positions = DATA.positions;
+  const params = new URLSearchParams(location.search);
+  const presMode = DATA.publicOnly ? (params.get('presenter')==='thumb' ? 'thumb' : null) : params.get('presenter') || DATA.defaultPresenter || null;
+  const slug = 'knowit-microsoft-iq-html-v10';
+  if (presMode === 'notes' && !DATA.notesBearing) {
+    const u = new URL('presenter.html', location.href);
+    u.hash = location.hash;
+    location.replace(u.href);
+    return;
+  }
+  const bcName = slug + '-presenter';
+  const sender = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36));
+  const seen = new Set();
+  let serial = 0;
+  let bc = null;
+  try { if (presMode !== 'thumb' && 'BroadcastChannel' in window) bc = new BroadcastChannel(bcName); } catch (_) {}
+  document.documentElement.setAttribute('data-theme', 'clean');
+  if (presMode === 'thumb') document.documentElement.dataset.preview = 'true';
+  let current = 0;
+  let position = 0;
+  let slideStart = Date.now();
+  const sessionStart = Date.now();
+  let cancelledAnimations = 0;
+
+  function storageGet(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
+  function storageSet(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
+  function broadcast(payload) {
+    if (presMode === 'thumb') return;
+    const msg = { ...payload, sender, serial: ++serial };
+    try { if (bc) bc.postMessage(msg); } catch (_) {}
+    storageSet(bcName, JSON.stringify({ t:Date.now(), msg }));
+  }
+  function stopAnimations() {
+    document.getAnimations().forEach(a => { a.cancel(); cancelledAnimations++; });
+  }
+  function hashPosition() {
+    const raw = location.hash.slice(1).split('/');
+    const i = positions.findIndex(p => p.id === raw[0] && p.step === Number(raw[1] || 0));
+    return i >= 0 ? i : 0;
+  }
+  function frameUrl(sceneIndex, step, slot) {
+    const u = new URL(location.href);
+    u.search = '?presenter=thumb&theme=clean&slot=' + slot;
+    u.hash = DATA.slides[sceneIndex].id + '/' + step;
+    return u.href;
+  }
+  function updateHash() {
+    const p = positions[position];
+    try { history.replaceState(null, '', '#' + p.id + '/' + p.step); } catch (_) {}
+  }
+  function render(index, silent) {
+    position = Math.max(0, Math.min(positions.length - 1, Number(index) || 0));
+    const p = positions[position];
+    const changedScene = current !== p.scene;
+    stopAnimations();
+    current = p.scene;
+    slides.forEach((slide,i) => {
+      const active = i === current;
+      slide.classList.toggle('is-active', active);
+      slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+      slide.dataset.step = active ? p.step : 0;
+      slide.querySelectorAll('[data-reveal]').forEach(el => {
+        const shown = active && Number(el.dataset.reveal) <= p.step;
+        el.classList.toggle('is-shown', shown);
+        el.classList.toggle('is-focus', shown && Number(el.dataset.reveal) === p.step);
+        el.setAttribute('aria-hidden', shown ? 'false' : 'true');
+      });
+    });
+    if (changedScene) slideStart = Date.now();
+    syncSphere();
+    updateHash();
+    updatePresenter();
+    if (!silent) broadcast({type:'state', position});
+    window.dispatchEvent(new CustomEvent('deckstatechange', {detail:getState()}));
+  }
+  function syncSphere() {
+    const frame = document.getElementById('iqSphere');
+    if (!frame) return;
+    const p = positions[position];
+    frame.contentWindow.postMessage({type:'sphere-thumb',state:{
+      step:p.id === 'iq-sphere' ? p.step : 0,
+      task:'pursuit',quiet:true,motionPaused:true
+    }}, '*');
+  }
+  function getState() {
+    const p = positions[position];
+    return { position, scene:current, id:p.id, step:p.step,
+      sceneCount:slides.length, positionCount:positions.length,
+      maxStep:DATA.slides[current].steps.length,
+      cancelledAnimations };
+  }
+  function sceneStart(scene) {
+    const safe = Math.max(0, Math.min(slides.length-1, scene));
+    return positions.findIndex(p => p.scene === safe && p.step === 0);
+  }
+  function navigate(intent) {
+    if (intent === 'next') render(position+1);
+    else if (intent === 'previous') render(position-1);
+    else if (intent === 'nextScene') render(sceneStart(current+1));
+    else if (intent === 'previousScene') render(sceneStart(current-1));
+    else if (intent === 'home') render(0);
+    else if (intent === 'end') render(positions.length-1);
+  }
+  function onMessage(msg) {
+    if (presMode === 'thumb') return;
+    if (!msg || msg.sender === sender) return;
+    const key = msg.sender + ':' + msg.serial;
+    if (seen.has(key)) return;
+    seen.add(key);
+    if (seen.size > 1000) seen.delete(seen.values().next().value);
+    if (msg.type === 'state') render(msg.position, true);
+    else if (msg.type === 'hello' && presMode !== 'notes') broadcast({type:'state', position});
+    else if (msg.type === 'blackout' && presMode !== 'notes') setBlackout(msg.on);
+  }
+  if (bc) bc.onmessage = e => onMessage(e.data);
+  window.addEventListener('storage', e => {
+    if (e.key !== bcName || !e.newValue) return;
+    try { onMessage(JSON.parse(e.newValue).msg); } catch (_) {}
+  });
+
+  /* Canonical presenter helpers, extended locally for next thumb and COPY. */
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function renderSay(text) {
+    return escapeHtml(text || '').replace(/\*\*([^*\n][^*]*?)\*\*/g,'<strong>$1</strong>')
+      .replace(/==([^=\n][^=]*?)==/g,'<span class="mark">$1</span>');
+  }
+  function firstSentence(text) {
+    const t = (text || '').trim();
+    const m = t.match(/^(.+?[.!?])(\s|$)/);
+    return (m ? m[1] : t.split('\n')[0]).trim();
+  }
+  async function copyText(text, button) {
+    let ok = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text); ok = true;
+      }
+    } catch (_) {}
+    if (!ok) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+      document.body.appendChild(ta); ta.select();
+      try { ok = document.execCommand('copy'); } catch (_) {}
+      ta.remove();
+    }
+    button.textContent = ok ? 'Copied' : 'Copy failed';
+    if (ok) window.__lastCopied = text;
+  }
+  function updatePresenter() {
+    if (presMode !== 'notes') return;
+    const scene = DATA.slides[current], p = positions[position];
+    const n = scene.state_notes ? {...scene.notes,...scene.state_notes[p.step]} : scene.notes;
+    document.getElementById('curTitle').textContent = n.title || scene.title;
+    document.getElementById('curDo').textContent = n.do;
+    document.getElementById('curSay').innerHTML = renderSay(n.say);
+    const cue = p.step === 0 ? 'Start: ' + (scene.steps[0] || 'Hold this scene. Advance when ready.')
+      : 'Shown: ' + scene.steps[p.step-1] + (scene.steps[p.step] ? ' Next: ' + scene.steps[p.step] : ' Next action: next scene.');
+    document.getElementById('curClick').textContent = cue;
+    document.getElementById('curBridge').textContent = 'Next: ' + n.transition;
+    const dep = document.getElementById('curDependencies');
+    dep.textContent = n.timing + '\n\n' + (n.production_dependencies || []).join('\n\n')
+      + (n.sources?.length ? '\n\nPublic product resources:\n'+n.sources.join('\n') : '');
+    const copies = document.getElementById('curCopy');
+    copies.replaceChildren();
+    if (n.copy) {
+      const chip = document.createElement('div'); chip.className = 'copy-chip';
+      const span = document.createElement('span'); span.textContent = n.copy;
+      const button = document.createElement('button'); button.textContent = 'Copy'; button.type = 'button';
+      button.addEventListener('click', () => {copyText(n.copy,button);document.getElementById('curSay').focus({preventScroll:true});});
+      chip.append(span,button); copies.append(chip);
+    }
+    document.getElementById('presCounter').textContent = (current+1) + ' / ' + slides.length
+      + (scene.steps.length ? ' · build ' + p.step + '/' + scene.steps.length : '');
+    const ifr = document.getElementById('presIframe');
+    ifr.contentWindow.postMessage({type:'thumbstate',position},'*');
+    const hasNext = position+1 < positions.length;
+    const nextP = positions[Math.min(position+1,positions.length-1)];
+    const next = hasNext ? DATA.slides[nextP.scene] : null;
+    const nextN = next ? (next.state_notes ? {...next.notes,...next.state_notes[nextP.step]} : next.notes) : null;
+    document.getElementById('nxtTitle').textContent = nextN ? nextN.title || next.title : 'End of deck';
+    document.getElementById('nxtSay').innerHTML = nextN ? renderSay(firstSentence(nextN.say)) : '';
+    document.getElementById('nxtDo').textContent = nextN ? nextN.do : '';
+    document.getElementById('nextThumbWrap').hidden = !hasNext;
+    if (hasNext) {
+      document.getElementById('nextIframe').contentWindow.postMessage({type:'thumbstate',position:position+1},'*');
+    }
+    document.getElementById('presPrevious').disabled = position === 0;
+    document.getElementById('presNext').disabled = !hasNext;
+    updSlideClk();
+  }
+  function scaleIframe(ifr) {
+    if (!ifr) return;
+    const wrap = ifr.parentElement;
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    const scale = Math.min(w/1600,h/900);
+    ifr.style.transform = 'scale(' + scale + ')';
+    ifr.style.left = (w-1600*scale)/2 + 'px';
+    ifr.style.top = (h-900*scale)/2 + 'px';
+  }
+  function scaleThumb() {
+    scaleIframe(document.getElementById('presIframe'));
+    scaleIframe(document.getElementById('nextIframe'));
+  }
+  function resizeStage() {
+    const deck = document.getElementById('deck');
+    const canvas = document.querySelector('.canvas');
+    if (deck && canvas) canvas.style.transform = 'scale(' + Math.min(deck.clientWidth/1600,deck.clientHeight/900) + ')';
+  }
+  function setupResizer() {
+    const bar = document.getElementById('presResizer'), pres = document.getElementById('presenter');
+    const storageKey = slug + '-presenter-thumbW';
+    function applyWidth(px) {
+      const min=240, max=Math.max(min,window.innerWidth-350);
+      px=Math.max(min,Math.min(max,px));
+      pres.style.setProperty('--pres-thumb-w',px+'px'); scaleThumb(); return px;
+    }
+    const saved = parseInt(storageGet(storageKey),10);
+    if (!isNaN(saved)) applyWidth(saved);
+    let dragging=false;
+    bar.addEventListener('mousedown', e => {
+      dragging=true; bar.classList.add('is-dragging');
+      document.body.classList.add('is-resizing-pres'); e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      storageSet(storageKey,String(applyWidth(e.clientX)));
+    });
+    document.addEventListener('mouseup', () => {
+      dragging=false; bar.classList.remove('is-dragging');
+      document.body.classList.remove('is-resizing-pres');
+    });
+    bar.addEventListener('keydown', e => {
+      if (!['ArrowLeft','ArrowRight'].includes(e.key)) return;
+      const width=pres.querySelector('.pres-thumb').offsetWidth;
+      storageSet(storageKey,String(applyWidth(width+(e.key==='ArrowLeft'?-1:1)*(e.shiftKey?60:20))));
+      e.preventDefault(); e.stopPropagation();
+    });
+    window.addEventListener('resize', () => applyWidth(pres.querySelector('.pres-thumb').offsetWidth));
+    new ResizeObserver(scaleThumb).observe(pres.querySelector('.pres-thumb'));
+    new ResizeObserver(scaleThumb).observe(document.getElementById('nextThumbWrap'));
+  }
+  function clockString(s) { return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+  function updSlideClk() {
+    const el=document.getElementById('presSlideClk');
+    if (!el) return;
+    const seconds=Math.floor((Date.now()-slideStart)/1000);
+    el.textContent=clockString(seconds);
+    const target=DATA.slides[current].duration_seconds;
+    el.classList.toggle('warn',seconds>=target*.8 && seconds<target);
+    el.classList.toggle('over',seconds>=target);
+  }
+  function clockTick() {
+    document.getElementById('presClock').textContent=clockString(Math.floor((Date.now()-sessionStart)/1000));
+    document.getElementById('presWallClock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false});
+    updSlideClk();
+  }
+  let presBlacked=false;
+  function setBlackout(on) { document.body.classList.toggle('blacked',!!on); }
+  function openPresenter() {
+    if (DATA.publicOnly) return;
+    const u=new URL('presenter.html',location.href); u.search='?presenter=notes&theme=clean';u.hash=location.hash;
+    const w=window.open(u.href,slug+'-presenter','popup=yes,resizable=yes,scrollbars=yes,width=1280,height=820');
+    if (!w) {
+      const banner=document.getElementById('popupBanner'); banner.classList.add('is-shown');
+      setTimeout(()=>banner.classList.remove('is-shown'),5000);
+    }
+  }
+  /* One keyboard listener for the entire engagement, in all modes. */
+  window.addEventListener('keydown', e => {
+    if (presMode==='thumb' || e.defaultPrevented || e.target.closest('input,textarea,select')) return;
+    const key=e.key;
+    if ((key==='ArrowUp'||key==='ArrowDown') && e.shiftKey && presMode==='notes') {
+      applySaySize(currentSaySize()+(key==='ArrowUp'?2:-2)); e.preventDefault(); return;
+    }
+    let intent;
+    if (e.ctrlKey && key==='ArrowRight') intent='nextScene';
+    else if (e.ctrlKey && key==='ArrowLeft') intent='previousScene';
+    else if (['ArrowRight','ArrowDown','PageDown',' ','Spacebar'].includes(key)) intent='next';
+    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(key)) intent='previous';
+    else if (key==='Home') intent='home';
+    else if (key==='End') intent='end';
+    if (intent) { e.preventDefault(); navigate(intent); return; }
+    if ((key==='p'||key==='P') && presMode!=='notes') { e.preventDefault(); openPresenter(); }
+    if (['b','B','.'].includes(key)) {
+      e.preventDefault();
+      if (presMode==='notes') { presBlacked=!presBlacked; broadcast({type:'blackout',on:presBlacked}); }
+      else setBlackout(!document.body.classList.contains('blacked'));
+    }
+    if (presMode==='notes' && ['+','-','[',']'].includes(key)) {
+      e.preventDefault(); applySaySize(currentSaySize()+(['+',']'].includes(key)?2:-2));
+    }
+    if (key==='Escape') {
+      document.querySelectorAll('.zoom-overlay.is-open').forEach(el=>el.classList.remove('is-open'));
+    }
+  });
+  function currentSaySize() {
+    return parseFloat(getComputedStyle(document.querySelector('.pres-side')).getPropertyValue('--pres-say-size'))||24;
+  }
+  function applySaySize(px) {
+    px=Math.max(16,Math.min(40,px));
+    document.querySelector('.pres-side').style.setProperty('--pres-say-size',px+'px');
+    storageSet(slug+'-presenter-saySize',String(px));
+  }
+  document.addEventListener('click', e => {
+    if (presMode || e.target.closest('button,a,input,textarea,details,summary,.zoomable,.zoom-overlay')) return;
+    if (e.target.closest('.stage')) navigate('next');
+  });
+  window.addEventListener('message', e => {
+    if (presMode==='thumb' && e.source===parent && e.data && e.data.type==='thumbstate') render(e.data.position,true);
+    if (presMode==='notes' && e.data && e.data.type==='thumbready' &&
+        [document.getElementById('presIframe').contentWindow,document.getElementById('nextIframe').contentWindow].includes(e.source)) updatePresenter();
+    if (e.data && e.data.type==='sphere-thumb-ready' &&
+        e.source===document.getElementById('iqSphere')?.contentWindow) syncSphere();
+  });
+  window.addEventListener('hashchange',()=>render(hashPosition(),true));
+  window.addEventListener('resize',resizeStage);
+
+  window.KnowitDeck = Object.freeze({
+    getState, positions, go:index=>render(index),
+    navigate, channel:bcName, cancelAnimations:stopAnimations,
+  });
+  position=hashPosition();
+  if (presMode==='notes') {
+    document.getElementById('stage').hidden=true;
+    document.getElementById('presenter').hidden=false;
+    const p=positions[position], next=Math.min(slides.length-1,p.scene+1);
+    const ifr=document.getElementById('presIframe'), nextIfr=document.getElementById('nextIframe');
+    ifr.src=frameUrl(p.scene,p.step,'current');
+    nextIfr.src=frameUrl(next,DATA.slides[next].steps.length,'next');
+    ifr.addEventListener('load',()=>{scaleThumb();updatePresenter();});
+    nextIfr.addEventListener('load',()=>{scaleThumb();updatePresenter();});
+    setupResizer();
+    for (const [id,intent] of [['presPrevious','previous'],['presNext','next']]) {
+      document.getElementById(id).addEventListener('click',()=>{
+        navigate(intent);
+        document.getElementById('curSay').focus({preventScroll:true});
+      });
+    }
+    applySaySize(parseInt(storageGet(slug+'-presenter-saySize'),10)||24);
+    clockTick(); setInterval(clockTick,1000);
+  } else {
+    document.getElementById('stage').hidden=false;
+    document.getElementById('presenter')?.remove();
+    resizeStage();
+  }
+  render(position,true);
+  if (presMode==='thumb') parent.postMessage({type:'thumbready'},'*');
+  else broadcast({type:'hello'});
+})();
+</script></body></html>

@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Microsoft IQ: the context behind the answer</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #070d19;
+  --surface: #101b2d;
+  --surface-raised: #15233a;
+  --text: #f5f7fc;
+  --secondary: #c0cde1;
+  --muted: #96a8c2;
+  --border: #2a3b55;
+  --work: #66e1c9;
+  --fabric: #79b9ff;
+  --foundry: #f7c778;
+  --web: #d2adff;
+  --focus: #ffffff;
+  --font: "Segoe UI", Aptos, Calibri, sans-serif;
+  --mono: Consolas, "Courier New", monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); }
+button, select { font: inherit; }
+button { color: inherit; cursor: pointer; }
+button:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 3px solid var(--work); outline-offset: 5px;
+}
+button:disabled { opacity: .32; cursor: default; }
+button svg { width: 20px; height: 20px; display: block; }
+.viewport { position: fixed; inset: 0; display: grid; place-items: center; }
+.stage { width: 1600px; height: 900px; position: absolute; left: 50%; top: 50%; margin-left: -800px; margin-top: -450px; overflow: hidden; transform-origin: center; }
+#sphere { position: absolute; inset: 0; width: 1600px; height: 900px; touch-action: none; }
+.masthead { position: absolute; top: 30px; left: 50px; right: 50px; height: 40px; display: flex; align-items: center; gap: 18px; }
+.wordmark { font-weight: 650; font-size: 23px; letter-spacing: -.5px; display: flex; align-items: center; gap: 12px; }
+.ms-mark { width: 20px; height: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.ms-mark i { background: var(--secondary); opacity: .8; }
+.artifact-label { border-left: 1px solid var(--border); padding-left: 18px; color: var(--muted); font-size: 15px; }
+.tools { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.task-picker { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); margin-right: 12px; }
+.task-picker select { width: 205px; padding: 9px 32px 9px 12px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text); }
+.icon-button { display: grid; place-items: center; width: 38px; height: 38px; background: transparent; border: 1px solid var(--border); border-radius: 7px; }
+.icon-button:hover { background: var(--surface); }
+.heading { position: absolute; left: 50px; top: 103px; right: 60px; pointer-events: none; }
+.eyebrow { font: 13px/1.4 var(--mono); letter-spacing: 1.6px; color: var(--work); text-transform: uppercase; margin: 0 0 13px; }
+h1 { margin: 0; font-size: 49px; line-height: 1.12; font-weight: 650; letter-spacing: -1.8px; text-wrap: balance; }
+.story { position: absolute; top: 247px; left: 52px; width: 420px; }
+.iq-heading { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; color: var(--domain-color); }
+.iq-heading::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--domain-color); }
+.iq-heading h2 { margin: 0; font-size: 31px; line-height: 1.15; font-weight: 600; letter-spacing: -.6px; }
+.story-lead { font-size: 22px; line-height: 1.35; color: var(--secondary); margin: 0 0 23px; }
+.domain-row { width: 100%; text-align: left; display: flex; gap: 12px; padding: 14px 0; border: 0; border-bottom: 1px solid var(--border); background: transparent; align-items: flex-start; }
+.domain-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 8px; background: var(--domain-color); flex: none; }
+.domain-row strong { display: block; font-size: 20px; color: var(--domain-color); font-weight: 600; }
+.domain-row small { display: block; color: var(--secondary); font-size: 16px; margin-top: 5px; line-height: 1.35; }
+.domain-row .domain-count { margin-left: auto; margin-top: 5px; font: 12px var(--mono); color: var(--muted); }
+.domain-row.is-current { padding-left: 12px; margin-left: -12px; width: calc(100% + 12px); background: var(--surface); border-radius: 7px; }
+.section-label { font: 12px/1.5 var(--mono); letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin: 0 0 10px; }
+.evidence-list { display: grid; gap: 9px; }
+.evidence { width: 100%; text-align: left; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.evidence:hover { background: var(--surface-raised); border-color: var(--domain-color); }
+.evidence-code { color: var(--domain-color); font: 13px/1.5 var(--mono); flex: none; min-width: 24px; }
+.evidence strong { font-size: 18px; font-weight: 600; display: block; line-height: 1.25; }
+.access-note { color: var(--muted); margin: 18px 0 0; font-size: 15px; line-height: 1.5; }
+.task-label { position: absolute; left: 660px; right: 170px; top: 213px; text-align: center; color: var(--secondary); font-size: 16px; letter-spacing: .1px; pointer-events: none; }
+.task-label strong { color: var(--text); font-size: 21px; font-weight: 550; display: block; margin-top: 6px; }
+.graph-caption { position: absolute; left: 620px; width: 870px; top: 733px; text-align: center; pointer-events: none; }
+.graph-caption strong { display: block; color: var(--text); font-size: 20px; font-weight: 500; }
+.graph-caption small { display: block; color: var(--muted); font-size: 14px; margin-top: 6px; }
+.iq-rail { position: absolute; left: 600px; width: 915px; top: 790px; display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.iq-chip { text-align: left; background: transparent; border: 1px solid var(--border); border-bottom: 2px solid var(--domain-color); padding: 4px 12px; border-radius: 6px; color: var(--secondary); }
+.iq-chip strong { display: block; color: var(--domain-color); font-size: 20px; font-weight: 600; line-height: 24px; }
+.iq-chip small { display: block; color: var(--secondary); font-size: 13px; line-height: 15px; margin-top: 2px; }
+.iq-chip.is-current { background: var(--surface-raised); outline: 2px solid var(--domain-color); outline-offset: 2px; }
+.iq-chip.is-used { background: var(--surface); }
+.iq-chip:hover { background: var(--surface-raised); }
+.brief { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--work); border-radius: 9px; padding: 16px 20px; }
+.brief-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.brief-header strong { font-size: 20px; font-weight: 600; }
+.draft-tag { color: var(--work); border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px; font: 11px var(--mono); }
+.brief-item { margin-top: 12px; }
+.brief-item strong { display: block; font-size: 15px; color: var(--text); font-weight: 600; }
+.brief-item p { font-size: 16px; line-height: 1.4; color: var(--secondary); margin: 5px 0; }
+.source-link { font: 11px var(--mono); color: var(--domain-color); border: 0; background: transparent; padding: 2px 3px; text-decoration: underline; text-underline-offset: 3px; }
+.review-owner { padding-top: 11px; margin-top: 12px; border-top: 1px solid var(--border); color: var(--work); font-size: 15px; line-height: 1.4; }
+.reuse-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.reuse-case { display: grid; align-content: center; min-height: 76px; padding: 13px 14px; border: 1px solid var(--border); border-radius: 7px; font-size: 17px; background: var(--surface); line-height: 1.25; }
+.reuse-case strong { color: var(--work); font-weight: 550; }
+.knowit-work { border-left: 2px solid var(--work); padding-left: 15px; margin-top: 24px; }
+.knowit-work strong { font-size: 18px; }
+.knowit-work p { color: var(--secondary); font-size: 17px; line-height: 1.5; margin: 7px 0 0; }
+.controls { position: absolute; left: 50px; right: 50px; top: 852px; display: flex; align-items: center; gap: 18px; }
+.step-count { font: 13px var(--mono); color: var(--secondary); min-width: 65px; }
+.step-nav { display: flex; align-items: center; gap: 5px; margin: 0 auto; }
+.step-button { background: transparent; border: 0; border-radius: 6px; color: var(--muted); padding: 10px 15px; font-size: 14px; position: relative; }
+.step-button.is-active { color: var(--text); background: var(--surface-raised); }
+.step-button.is-active::after { content: ""; position: absolute; bottom: 2px; left: 15px; right: 15px; height: 2px; background: var(--work); }
+.step-button:hover { color: var(--text); }
+.footer { position: absolute; left: 52px; top: 793px; width: 435px; font-size: 13px; line-height: 1.5; color: var(--muted); margin: 0; }
+.detail { position: absolute; top: 332px; left: 1110px; width: 410px; background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--domain-color); border-radius: 9px; padding: 21px; box-shadow: 0 20px 65px #0008; z-index: 5; }
+.detail-close { position: absolute; right: 11px; top: 11px; background: transparent; border: 0; font-size: 24px; color: var(--muted); }
+.detail h2 { margin: 12px 28px 10px 0; font-size: 25px; line-height: 1.2; }
+.detail p { font-size: 18px; line-height: 1.5; color: var(--secondary); }
+.detail .detail-status { font-size: 14px; color: var(--muted); padding-top: 14px; border-top: 1px solid var(--border); }
+.tooltip { position: absolute; pointer-events: none; max-width: 290px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 9px 12px; z-index: 4; font-size: 15px; }
+.tooltip small { color: var(--muted); font-size: 12px; display: block; margin-bottom: 4px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.overlay { position: absolute; inset: 0; background: #030711df; z-index: 10; display: grid; place-items: center; }
+.help-card { width: 820px; padding: 36px 42px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.help-card h2 { font-size: 30px; margin: 0 0 22px; }
+.help-card p { color: var(--secondary); font-size: 18px; line-height: 1.5; }
+.key-grid { display: grid; grid-template-columns: 220px 1fr; gap: 12px 22px; font-size: 18px; margin-bottom: 25px; }
+kbd { font: 14px var(--mono); color: var(--work); }
+.help-close { background: var(--work); color: var(--bg); border: 0; border-radius: 6px; padding: 11px 19px; font-size: 17px; font-weight: 600; }
+.quiet .masthead .artifact-label, .quiet .tools, .quiet .controls { opacity: 0; pointer-events: none; }
+.quiet .footer { top: 840px; width: 1100px; }
+.blackout { position: fixed; inset: 0; background: #000; z-index: 100; }
+.notice { position: absolute; right: 50px; top: 85px; padding: 12px 18px; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 7px; max-width: 430px; z-index: 12; color: var(--secondary); }
+.notes { position: fixed; inset: 0; display: grid; grid-template-columns: 55% 45%; background: var(--bg); }
+.notes-preview { min-width: 0; display: grid; grid-template-rows: 1fr 210px; padding: 20px; gap: 18px; }
+.notes-current { position: relative; min-height: 0; display: grid; align-items: center; }
+.frame-box { width: 100%; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border: 1px solid var(--border); }
+.frame-box iframe { width: 1600px; height: 900px; position: absolute; border: 0; transform-origin: 0 0; pointer-events: none; }
+.next-section { display: grid; grid-template-columns: 280px 1fr; align-items: center; gap: 20px; border-top: 1px solid var(--border); padding-top: 18px; min-width: 0; }
+.next-section p { font-size: 16px; color: var(--secondary); line-height: 1.5; }
+.next-section h3 { font-size: 20px; margin: 6px 0; }
+.notes-side { display: grid; grid-template-rows: 62px auto auto 1fr 55px; gap: 15px; padding: 25px 30px; min-height: 0; border-left: 1px solid var(--border); }
+.notes-bar { display: flex; gap: 12px; align-items: center; justify-content: space-between; color: var(--secondary); font: 13px var(--mono); border-bottom: 1px solid var(--border); }
+.notes-do { padding: 14px 16px; border-left: 2px solid var(--work); background: var(--surface); color: var(--work); font-size: 17px; line-height: 1.4; }
+.notes-side h2 { font-size: 27px; margin: 0; line-height: 1.2; }
+.notes-say { min-height: 0; overflow-y: auto; font-size: 24px; line-height: 1.65; color: var(--secondary); white-space: pre-line; padding-right: 15px; }
+.notes-nav { display: flex; align-items: center; justify-content: space-between; }
+.notes-nav button { background: var(--surface); border: 1px solid var(--border); padding: 9px 16px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<main class="viewport" id="audience">
+  <div class="stage" id="stage">
+    <canvas id="sphere" aria-label="Illustrative landscape of connected context. Use the evidence buttons to inspect sources." role="img"></canvas>
+    <header class="masthead">
+      <div class="wordmark"><span class="ms-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Microsoft IQ</div>
+      <span class="artifact-label">Fictional Knowit example</span>
+      <div class="tools">
+        <label class="task-picker">Task
+          <select id="taskSelect" aria-label="Choose the illustrative task">
+            <option value="pursuit">Pursuit brief</option>
+            <option value="handover">Project handover</option>
+            <option value="leadership">Leadership brief</option>
+          </select>
+        </label>
+        <button class="icon-button" id="motionButton" type="button" aria-label="Pause ambient motion" title="Pause ambient motion" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <button class="icon-button" id="presentButton" type="button" aria-label="Hide controls for presenting" title="Hide controls for presenting">↗</button>
+        <button class="icon-button" id="helpButton" type="button" aria-label="Open controls and explanation" title="Controls and explanation">?</button>
+      </div>
+    </header>
+    <div class="heading">
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1 id="headline"></h1>
+    </div>
+    <section class="story" aria-labelledby="headline">
+      <div class="iq-heading" id="iqHeading" hidden><h2 id="iqName"></h2></div>
+      <p class="story-lead" id="storyLead"></p>
+      <div id="storyBody"></div>
+    </section>
+    <div class="task-label" id="taskLabel"></div>
+    <div class="graph-caption"><strong id="graphCaption"></strong><small id="graphSubcaption"></small></div>
+    <nav class="iq-rail" id="iqRail" aria-label="The four IQ capabilities"></nav>
+    <p class="footer">Fictional Knowit example. Illustrative relationships and prepared outputs.<br>Configured sources keep their own access controls. No live data is queried.</p>
+    <nav class="controls" aria-label="Illustration steps">
+      <span class="step-count" id="stepCount"></span>
+      <button class="icon-button" id="previous" type="button" aria-label="Previous step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      <div class="step-nav" id="stepNav"></div>
+      <button class="icon-button" id="next" type="button" aria-label="Next step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      <button class="icon-button" id="restart" type="button" aria-label="Restart the illustration" title="Restart">↺</button>
+    </nav>
+    <section class="detail" id="detail" aria-labelledby="detailTitle" hidden>
+      <button class="detail-close" id="closeDetail" type="button" aria-label="Close source detail">×</button>
+      <p class="section-label" id="detailDomain"></p><h2 id="detailTitle"></h2>
+      <p id="detailText"></p><p class="detail-status">Illustrative source, not a connected record. Access and suitability must be validated in a real implementation.</p>
+    </section>
+    <div class="tooltip" id="tooltip" hidden></div>
+    <div class="overlay" id="help" role="dialog" aria-modal="true" aria-labelledby="helpTitle" hidden>
+      <div class="help-card">
+        <h2 id="helpTitle">A guided illustration, at your pace</h2>
+        <div class="key-grid">
+          <kbd>→ / ↓ / PageDown / Space</kbd><span>Next step</span>
+          <kbd>← / ↑ / PageUp / Backspace</kbd><span>Previous step</span>
+          <kbd>Home / End</kbd><span>First / last step</span>
+          <kbd>1–7</kbd><span>Jump to a step</span>
+          <kbd>I / F</kbd><span>Hide controls / full screen</span>
+          <kbd>M / B</kbd><span>Pause motion / blackout</span>
+          <kbd>Drag / click</kbd><span>Rotate the landscape / inspect a source</span>
+          <kbd>Esc</kbd><span>Close a panel or restore presentation controls</span>
+        </div>
+        <p>The dense landscape represents a breadth of possible context. The question highlights a small relevant subset while the wider information stays visible. The four IQ capabilities are complementary. This sphere does not represent a single shared data store, and the steps do not prescribe a runtime call order.</p>
+        <p>All examples are fictional. Counts describe this diagram, not a tenant. Prepared answers illustrate the concept; this file does not call Microsoft IQ or an AI model.</p>
+        <p>Interaction concept inspired by Brett Johnson's Work IQ Sphere pack.</p>
+        <button type="button" class="help-close" id="closeHelp">Back to the illustration</button>
+      </div>
+    </div>
+    <div class="notice" id="notice" role="status" hidden></div>
+    <div class="sr" id="announcement" aria-live="polite"></div>
+  </div>
+</main>
+<div class="blackout" id="blackout" hidden></div>
+<script>
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const mode = params.get('presenter') === 'thumb' ? 'thumb' : null;
+  const thumb = mode === 'thumb';
+  const notesMode = mode === 'notes';
+  const reducedQuery = matchMedia('(prefers-reduced-motion: reduce)');
+  const COLORS = Object.fromEntries(['work','fabric','foundry','web','text','secondary','muted','bg'].map(key =>
+    [key, getComputedStyle(document.documentElement).getPropertyValue('--' + key).trim()]));
+  const DOMAIN = [
+    { key:'work', name:'Work IQ', short:'People & work', description:'People and their work', role:'Who has done this before?', code:'W' },
+    { key:'fabric', name:'Fabric IQ', short:'Business data & definitions', description:'Business data and agreed definitions', role:'Can we staff it and make the numbers work?', code:'F' },
+    { key:'foundry', name:'Foundry IQ', short:'Trusted knowledge', description:'Knowledge from chosen sources', role:'Which evidence can we use?', code:'K' },
+    { key:'web', name:'Web IQ', short:'Public web', description:'Information from the public web', role:'What is the customer saying publicly?', code:'X' }
+  ];
+  const SOURCES = [
+    ['w1','work','Norwegian delivery team','People','A Norwegian team delivered a comparable logistics engagement. The reference owner confirms what can be reused.'],
+    ['w2','work','Finnish logistics specialist','Expertise','A colleague in Finland has relevant logistics experience. Availability still needs to be confirmed.'],
+    ['w3','work','Customer discovery notes','Meeting context','The Swedish account team recorded the customer problem and open questions after discovery.'],
+    ['w4','work','Pursuit decisions','Working decisions','The pursuit record distinguishes agreed commitments from assumptions awaiting approval.'],
+    ['w5','work','Delivery ownership','People and responsibility','The handover names the accountable delivery owner and the receiving operations team.'],
+    ['w6','work','Open project actions','Working context','The project team maintains open actions and the decision owners needed at handover.'],
+    ['f1','fabric','Delivery capacity','Business data','A governed view defines available delivery capacity by practice and period. Use its agreed definition rather than counting people in chat.'],
+    ['f2','fabric','Margin definition','Business meaning','An agreed margin measure gives the bid team a consistent basis for commercial checks. It is not a generated price recommendation.'],
+    ['f3','fabric','Comparable project results','Business evidence','Historical delivery measures provide business context for a comparable engagement. Comparability requires review.'],
+    ['f4','fabric','Pipeline measures','Business meaning','Shared definitions distinguish qualified opportunities from names raised in a conversation.'],
+    ['f5','fabric','Service performance','Operational measures','Agreed service measures show how actual performance compares with accepted operating targets.'],
+    ['f6','fabric','Acceptance measures','Business measures','The project has agreed acceptance criteria and an owned method for reporting results.'],
+    ['k1','foundry','Approved logistics reference','Authoritative knowledge','A configured knowledge source contains a reference approved for this audience, with scope and reuse conditions.'],
+    ['k2','foundry','Tender requirements','Customer requirements','A versioned tender document defines the requirements against which the response must be checked.'],
+    ['k3','foundry','Bid approval policy','Policy','The authoritative policy identifies which bid decisions require human approval.'],
+    ['k4','foundry','Architecture decisions','Delivery knowledge','An owned decision record explains what was selected and the constraints that remain.'],
+    ['k5','foundry','Operating runbook','Operating knowledge','An accepted runbook defines support ownership and response procedures for the service.'],
+    ['k6','foundry','Accepted release record','Delivery evidence','The accepted release record separates delivered scope from open issues and remaining work.'],
+    ['x1','web',"Customer's public priorities",'Public web','Public statements provide dated context about the logistics customer. They must be attributed and checked for relevance.'],
+    ['x2','web','Public tender notice','Public web','A published tender notice provides external dates and scope. Verify the current authoritative version.'],
+    ['x3','web','Published transport requirements','Public web','Published requirements may affect the opportunity. A qualified owner must confirm how they apply.'],
+    ['x4','web','Market changes','Public web','Attributed public information helps the leadership team identify changes that may affect customer conversations.'],
+    ['x5','web','Recent company news','Public web','Dated company announcements provide external context. They are not evidence of private customer intent.'],
+    ['x6','web','Public service advisory','Public web','A published vendor advisory can inform an operating handover after its relevance is verified.']
+  ].map(([id,domain,label,type,detail],index) => ({id,domain,label,type,detail,code:DOMAIN.find(d=>d.key===domain).code+(index%6+1)}));
+  const BY_ID = new Map(SOURCES.map(s=>[s.id,s]));
+  const TASKS = {
+    pursuit: {
+      name:'Pursuit brief', question:'Help us prepare this logistics bid.', centre:'Logistics bid',
+      ids:[['w1','w2','w3','w4'],['f1','f2','f3'],['k1','k2','k3'],['x1','x2','x3']],
+      descriptions:[
+        'Start with the customer notes. Find colleagues with relevant experience in Norway and Finland.',
+        'Those colleagues may be relevant. Are they available, and how do we assess the delivery margin?',
+        'We need a reference we are allowed to share, and the requirements for this tender.',
+        "Check the customer's public priorities and tender notice. Confirm which transport requirements apply."
+      ],
+      brief:[
+        {heading:'Relevant experience',text:'Approved Nordic reference. Confirm what the team may reuse.',ids:['w1','k1']},
+        {heading:'People to involve',text:'Swedish account team, Norwegian reference owner and Finnish specialist.',ids:['w1','w2','w3']},
+        {heading:'Checks before a bid decision',text:'Confirm capacity and the margin assumptions. Check the tender requirements.',ids:['f1','f2','k2','x3']}
+      ],
+      owner:'The pursuit lead reviews the brief and owns the bid decision.'
+    },
+    handover: {
+      name:'Project handover', question:'Help the next team take over this service.', centre:'Service handover',
+      opening:'A new team is taking over the service. What are they receiving, and who can help?',
+      titles:{0:'The next team needs to take over the service.',1:'Who owns the service? What is still open?',2:'What counts as accepted and ready to run?',3:'Where are the release record and runbook?',4:'Do any public advisories affect this service?',5:'The receiving owner can now review the handover.'},
+      ids:[['w5','w6','w4'],['f5','f6'],['k4','k5','k6'],['x6','x3']],
+      descriptions:[
+        'Find the service owner and the people responsible for the open actions.',
+        'Check the agreed acceptance criteria and how service performance will be measured.',
+        'Use the accepted release record and current runbook. Keep unresolved issues visible.',
+        'Check public vendor advisories and whether they apply to this service.'
+      ],
+      brief:[
+        {heading:'Responsibility',text:'Name the delivery owner and receiving operations team. Assign every open action.',ids:['w5','w6']},
+        {heading:'Accepted scope',text:'Check the accepted release against the decision record and agreed acceptance measures.',ids:['k4','k6','f6']},
+        {heading:'Operating readiness',text:'Review the runbook and service measures. Check whether the public advisory applies.',ids:['k5','f5','x6']}
+      ],
+      owner:'The receiving service owner accepts the handover.'},
+    leadership: {
+      name:'Leadership brief', question:'Prepare the Nordic leadership update.', centre:'Nordic update',
+      opening:'The Nordic team needs an update they can use to make decisions. Start with what has changed and who owns it.',
+      titles:{0:'The Nordic team needs a leadership update.',1:'Which decisions need attention, and who owns them?',2:'Are we using the same business numbers?',3:'Which results can we back up?',4:'What has changed for our customers?',5:'Leadership can review the update and decide.'},
+      ids:[['w3','w4','w5'],['f1','f3','f4'],['k1','k3','k6'],['x1','x4','x5']],
+      descriptions:[
+        'Find the open decisions and the people responsible for them.',
+        'Use shared definitions of capacity and pipeline. Check which delivery results are comparable.',
+        'Back up the reported results with approved references and accepted releases.',
+        'Look at dated public customer and market information. Keep assumptions separate from facts.'
+      ],
+      brief:[
+        {heading:'Shared business view',text:'Check capacity and qualified pipeline.',ids:['f1','f4']},
+        {heading:'Evidence and ownership',text:'Link the reported outcomes to approved references and accepted releases.',ids:['k1','k6','w5']},
+        {heading:'Decisions to discuss',text:'Bring open pursuit decisions together with dated public customer and market context.',ids:['w4','x1','x4']}
+      ],
+      owner:'Nordic leadership owns priorities and any resulting commitments.'}
+  };
+  const STEPS = [
+    {id:'landscape',nav:'The question',kicker:'One Knowit',title:'A Swedish team is preparing a logistics bid.',
+      lead:'Before they write the proposal, they need to know what Knowit can bring.',
+      caption:'Start with the question we need to answer.',sub:'The example uses all four IQ capabilities to explain their different roles.'},
+    {id:'work',nav:'Work IQ',kicker:'Find the people',title:'Who in Knowit has done this before?',
+      caption:'Work IQ helps find the people and their work.',sub:'Relevant colleagues and earlier decisions, within the right access.'},
+    {id:'business',nav:'Fabric IQ',kicker:'Check the business numbers',title:'Do we have the capacity to deliver?',
+      caption:'Fabric IQ adds the business data and its meaning.',sub:'Use the definitions agreed for this task.'},
+    {id:'knowledge',nav:'Foundry IQ',kicker:'Find the documents we need',title:'Which references can we use in the bid?',
+      caption:'Foundry IQ connects the agent to chosen knowledge sources.',sub:'Check the owner and version of each source.'},
+    {id:'external',nav:'Web IQ',kicker:'Check the public information',title:'What else should we know about the customer?',
+      caption:'Web IQ adds information from the public web.',sub:'Check the date and who published it.'},
+    {id:'brief',nav:'Draft brief',kicker:'Review the draft',title:'Now the pursuit lead has something to work with.',
+      lead:'Check the sources behind the draft before acting on it.',
+      caption:'A first draft for someone to review.',sub:'Open a source to check what is behind a point.'},
+    {id:'reuse',nav:'The next task',kicker:'What Knowit can deliver',title:'Where else could Knowit use this?',
+      lead:'A handover needs different information from a bid. Reuse the sources that fit, with the right access.',
+      caption:'Change the question. A different set of information matters.',sub:'Sources and business definitions can be reused where they fit the next task.'}
+  ];
+  const FILLER = {
+    work:['Account conversation','Project meeting','Team expertise','Delivery review','Customer follow-up','Decision owner','Practice collaboration','Working agreement','Engagement history'],
+    fabric:['Practice capacity','Project result','Service measure','Business definition','Qualified pipeline','Resource plan','Delivery period','Forecast measure','Acceptance result'],
+    foundry:['Approved reference','Operating guidance','Requirement record','Knowledge article','Decision record','Release evidence','Support procedure','Bid policy','Contract guidance'],
+    web:['Public announcement','Market report','Customer publication','Industry guidance','Tender notice','Company update','Public advisory','Published requirement','External research']
+  };
+  let seed = 47291;
+  function random() { seed=(Math.imul(seed,1664525)+1013904223)>>>0; return seed/4294967296; }
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const nodes = [];
+  DOMAIN.forEach((d,di) => {
+    const featured=SOURCES.filter(s=>s.domain===d.key);
+    for(let i=0;i<60;i++) {
+      const source=featured[i];
+      const theta=(i*2.3999632297+di*.38), z=1-2*(i+.5)/60;
+      const radial=Math.sqrt(1-z*z);
+      const x=(di%2 ? .46:-.46)+Math.cos(theta)*radial*.65;
+      const y=(di<2 ? -.38:.38)+Math.sin(theta)*radial*.61;
+      const depth=z*.72;
+      const norm=Math.sqrt(x*x+y*y+depth*depth);
+      const shell=.70+random()*.31;
+      nodes.push({
+        id:source?source.id:d.key+'-'+i,domain:d.key,di,label:source?source.label:FILLER[d.key][i%FILLER[d.key].length]+' '+String(Math.floor(i/9)+1).padStart(2,'0'),
+        type:source?source.type:d.description,source:source||null,
+        x:x/norm*shell,y:y/norm*shell,z:depth/norm*shell,
+        radius:source?4.8+random()*1.3:1.9+random()*2.3,phase:random()*Math.PI*2,emphasis:0
+      });
+    }
+  });
+  const nodeMap=new Map(nodes.map(n=>[n.id,n]));
+  const edges=[];
+  nodes.forEach((n,i) => {
+    const base=n.di*60;
+    for(let j=0;j<2;j++) {
+      const other=nodes[base+Math.floor(random()*60)];
+      if(other!==n) edges.push({a:n,b:other,phase:random()});
+    }
+    if(i%4===0) edges.push({a:n,b:nodes[Math.floor(random()*nodes.length)],phase:random()});
+  });
+  const particles=Array.from({length:1500},(_,i)=>{
+    const z=1-2*(i+.5)/1500,theta=i*2.3999632297;
+    const r=Math.sqrt(1-z*z),shell=.46+Math.pow(random(),.32)*.59;
+    return {x:Math.cos(theta)*r*shell,y:Math.sin(theta)*r*shell,z:z*shell,di:i%4,size:.55+random()*.9,phase:random()*7};
+  });
+  let step=0,taskKey='pursuit',quiet=false,blacked=false;
+  let motionPaused=reducedQuery.matches;
+  let yaw=0,pitch=0,drag=null,hovered=null,selected=null,detailOpener=null,helpOpener=null;
+  let frameId=0,lastTime=0,lastDrawTime=0,rotation=0,animationUntil=0,noticeTimer=0;
+  let projection=[],currentRoot=null;
+  let bridge=null,sequence=0;
+  const sender=(crypto.randomUUID?crypto.randomUUID():String(Math.random()));
+  const channel='knowit-microsoft-iq-context-sphere-v02';
+  const seen=new Set();
+  try { if(!thumb) bridge=new BroadcastChannel(channel); } catch (_) { /* Storage is the local fallback. */ }
+  function readStorage(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
+  function writeStorage(key,value) { try { localStorage.setItem(key,value); } catch (_) { /* Presentation also works without storage. */ } }
+  function send(payload) {
+    if(thumb) return;
+    const msg={...payload,sender,seq:++sequence};
+    if(bridge) bridge.postMessage(msg);
+    writeStorage(channel,JSON.stringify(msg));
+  }
+  function receive(msg) {
+    if(!msg||msg.sender===sender||thumb) return;
+    const key=msg.sender+':'+msg.seq;
+    if(seen.has(key)) return;
+    seen.add(key);if(seen.size>200) seen.delete(seen.values().next().value);
+    if(msg.type==='state') applyState(msg.state,true);
+    else if(msg.type==='hello'&&!notesMode) send({type:'state',state:getState()});
+  }
+  if(bridge) bridge.onmessage=e=>receive(e.data);
+  addEventListener('storage',e=>{
+    if(e.key!==channel||!e.newValue) return;
+    try { receive(JSON.parse(e.newValue)); } catch (_) { /* Ignore unrelated or incomplete storage events. */ }
+  });
+  function task() { return TASKS[taskKey]; }
+  function currentNarration(index=step) { const s=STEPS[index]; return {title:task().titles&&task().titles[index]||s.title}; }
+  function getState() { return {step,task:taskKey,quiet,blacked,motionPaused}; }
+  function stateFromHash() {
+    const [t,s]=location.hash.slice(1).split('/');
+    return {task:Object.hasOwn(TASKS,t)?t:'pursuit',step:clamp(Number(s)||0,0,6)};
+  }
+  function relevantIds() {
+    if(step===0) return new Set();
+    const through=step>=5?3:step-1;
+    return new Set(task().ids.slice(0,through+1).flat());
+  }
+  function element(tag,cls,text) { const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el; }
+  function domainColor(key) { return COLORS[key]; }
+  function showNotice(text) {
+    if(thumb||notesMode) return;
+    $('notice').textContent=text;$('notice').hidden=false;
+    clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').hidden=true,4200);
+  }
+  function closeDetail(restore=true) {
+    $('detail').hidden=true;selected=null;
+    if(restore&&detailOpener&&detailOpener.isConnected) detailOpener.focus();
+    detailOpener=null;requestDraw();
+  }
+  function showSource(id,opener) {
+    const n=nodeMap.get(id);
+    if(!n) return;
+    selected=n;detailOpener=opener||null;
+    const domain=DOMAIN[n.di];
+    $('detail').style.setProperty('--domain-color',domainColor(n.domain));
+    $('detailDomain').textContent=domain.name+' · '+n.type;
+    $('detailTitle').textContent=n.label;
+    $('detailText').textContent=n.source?n.source.detail:'An illustrative item in the broader context landscape. A real workflow would need an authoritative source, suitable access and a reason to use it.';
+    $('detail').hidden=false;$('tooltip').hidden=true;$('closeDetail').focus();requestDraw();
+  }
+  function buildDomainRows() {
+    DOMAIN.forEach((d,i)=>{
+      const button=element('button','domain-row'+(step===i+1?' is-current':''));
+      button.type='button';button.style.setProperty('--domain-color',domainColor(d.key));
+      button.setAttribute('aria-label','Show '+d.name+' context');
+      const dot=element('span','domain-dot');dot.setAttribute('aria-hidden','true');
+      const content=element('span');content.append(element('strong','',d.name),element('small','',d.role));
+      button.append(dot,content,element('span','domain-count','60 nodes'));
+      button.addEventListener('click',()=>{applyState({step:i+1});$('stage').focus({preventScroll:true});});
+      $('storyBody').append(button);
+    });
+  }
+  function buildEvidence() {
+    const di=step-1,domain=DOMAIN[di];
+    const list=element('div','evidence-list');
+    task().ids[di].forEach(id=>{
+      const source=BY_ID.get(id),button=element('button','evidence');
+      button.type='button';button.style.setProperty('--domain-color',domainColor(domain.key));
+      const content=element('span');content.append(element('strong','',source.label));
+      button.append(element('span','evidence-code',source.code),content);
+      button.addEventListener('click',()=>showSource(id,button));list.append(button);
+    });
+    const accessNotes=['Finding a person does not confirm availability.','Use the agreed measures and check the data is current.','The reference owner still approves what can be shared.','Public statements do not reveal private plans.'];
+    $('storyBody').append(list,element('p','access-note',accessNotes[di]));
+  }
+  function buildBrief() {
+    const box=element('div','brief'),header=element('div','brief-header');
+    header.append(element('strong','',task().name),element('span','draft-tag','DRAFT'));box.append(header);
+    task().brief.forEach(item=>{
+      const row=element('div','brief-item');row.append(element('strong','',item.heading),element('p','',item.text));
+      item.ids.forEach(id=>{
+        const s=BY_ID.get(id),button=element('button','source-link','['+s.code+']');
+        button.type='button';button.style.setProperty('--domain-color',domainColor(s.domain));button.setAttribute('aria-label','Inspect source '+s.code+': '+s.label);
+        button.addEventListener('click',()=>showSource(id,button));row.append(button);
+      });box.append(row);
+    });
+    box.append(element('div','review-owner',task().owner));$('storyBody').append(box);
+  }
+  function buildReuse() {
+    const list=element('div','reuse-list');
+    ['RFP responses','Meeting preparation','Finding expertise','Project handovers','Service cases','Leadership decisions'].forEach((name,i)=>{
+      const item=element('div','reuse-case');item.append(element(i===0?'strong':'span','',name));list.append(item);
+    });
+    const work=element('div','knowit-work');work.append(element('strong','','A paid customer engagement'),element('p','','Connect the sources and agree the business definitions. Build the workflow and keep it working.'));
+    $('storyBody').append(list,work);
+  }
+  function updateContent() {
+    if(notesMode) { updateNotes();return; }
+    const s=STEPS[step];
+    const activeDomain=step>=1&&step<=4?DOMAIN[step-1]:null;
+    $('eyebrow').textContent=s.kicker;$('headline').textContent=currentNarration().title;
+    $('eyebrow').style.color=activeDomain?domainColor(activeDomain.key):'';
+    $('iqHeading').hidden=!activeDomain;
+    if(activeDomain) {
+      $('iqName').textContent=activeDomain.name;
+      $('iqHeading').style.setProperty('--domain-color',domainColor(activeDomain.key));
+    }
+    $('storyLead').textContent=activeDomain?task().descriptions[step-1]:step===0&&task().opening?task().opening:s.lead;
+    $('storyBody').replaceChildren();
+    if(step===0) buildDomainRows();else if(step<=4) buildEvidence();else if(step===5) buildBrief();else buildReuse();
+    $('taskLabel').replaceChildren(element('span','','The request'),element('strong','',task().question));
+    $('graphCaption').textContent=s.caption;$('graphSubcaption').textContent=s.sub;
+    $('taskSelect').value=taskKey;$('stepCount').textContent=String(step+1).padStart(2,'0')+' / 07';
+    document.querySelectorAll('.step-button').forEach((b,i)=>{
+      b.classList.toggle('is-active',i===step);
+      b.setAttribute('aria-label','Step '+(i+1)+': '+currentNarration(i).title);
+      if(i===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('.iq-chip').forEach((button,i)=>{
+      button.classList.toggle('is-current',step===i+1);
+      button.classList.toggle('is-used',step>i+1);
+      button.setAttribute('aria-pressed',String(step===i+1));
+    });
+    $('previous').disabled=step===0;$('next').disabled=step===6;
+    $('motionButton').setAttribute('aria-pressed',String(motionPaused));
+    $('motionButton').setAttribute('aria-label',motionPaused?'Resume ambient motion':'Pause ambient motion');
+    $('motionButton').title=motionPaused?'Resume ambient motion':'Pause ambient motion';
+    $('stage').classList.toggle('quiet',quiet||thumb);
+    $('blackout').hidden=!blacked||thumb;
+    $('announcement').textContent='Step '+(step+1)+' of 7. '+currentNarration().title;
+  }
+  function applyState(value,silent=false) {
+    const oldStep=step,oldTask=taskKey;
+    if(Object.hasOwn(TASKS,value.task)) taskKey=value.task;
+    if(Number.isInteger(value.step))step=clamp(value.step,0,6);
+    if(typeof value.quiet==='boolean')quiet=value.quiet;
+    if(typeof value.blacked==='boolean')blacked=value.blacked;
+    if(typeof value.motionPaused==='boolean')motionPaused=value.motionPaused;
+    if(!notesMode&&(oldStep!==step||oldTask!==taskKey)) {
+      if(!notesMode)closeDetail(false);
+    }
+    if(!notesMode){$('tooltip').hidden=true;hovered=null;}
+    try { history.replaceState(null,'','#'+taskKey+'/'+step); } catch (_) { /* Hash persistence is optional on local file viewers. */ }
+    updateContent();
+    animationUntil=performance.now()+(reducedQuery.matches?0:800);requestDraw();
+    if(!silent)send({type:'state',state:getState()});
+  }
+  function navigate(delta) {
+    applyState({step:clamp(step+delta,0,6)});
+  }
+  function rotatePoint(point) {
+    const a=yaw+rotation,ca=Math.cos(a),sa=Math.sin(a),cp=Math.cos(pitch),sp=Math.sin(pitch);
+    const x=point.x*ca+point.z*sa,z=-point.x*sa+point.z*ca,y=point.y*cp-z*sp;
+    return {x,y,z:point.y*sp+z*cp};
+  }
+  function project(point) {
+    const p=rotatePoint(point),depth=1/(1-p.z*.20);
+    return {x:1050+p.x*363*depth,y:478+p.y*278*depth,z:p.z,depth};
+  }
+  function rgba(hex,alpha) {
+    const n=parseInt(hex.replace('#',''),16);
+    return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+clamp(alpha,0,1)+')';
+  }
+  const cv=$('sphere'),ctx=cv.getContext('2d');
+  function line(a,b,color,width) {
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
+  }
+  function renderCanvas(now,dt) {
+    ctx.clearRect(0,0,1600,900);
+    const ambient=ctx.createRadialGradient(1050,475,20,1050,475,490);
+    ambient.addColorStop(0,'rgba(39,74,112,.18)');ambient.addColorStop(.68,'rgba(24,48,78,.11)');ambient.addColorStop(1,'rgba(7,13,25,0)');
+    ctx.fillStyle=ambient;ctx.fillRect(480,170,1100,660);
+    const relevant=relevantIds(),all=step===0,interpolating=!reducedQuery.matches;
+    for(const n of nodes) {
+      const target=relevant.has(n.id)?1:0;
+      n.emphasis=interpolating?lerp(n.emphasis,target,Math.min(1,dt*7)):target;
+    }
+    for(let lat=-2;lat<=2;lat++) {
+      let previous=null;
+      for(let i=0;i<=80;i++) {
+        const angle=i/80*Math.PI*2,y=lat*.28,r=Math.sqrt(1-y*y),point=project({x:Math.cos(angle)*r,y,z:Math.sin(angle)*r});
+        if(previous)line(previous,point,rgba(COLORS.fabric,.055+(point.z+1)*.012),.7);
+        previous=point;
+      }
+    }
+    for(let lng=0;lng<6;lng++) {
+      let previous=null;
+      for(let i=0;i<=64;i++) {
+        const phi=i/64*Math.PI*2,a=lng/6*Math.PI;
+        const point=project({x:Math.cos(phi)*Math.cos(a),y:Math.sin(phi),z:Math.cos(phi)*Math.sin(a)});
+        if(previous)line(previous,point,rgba(COLORS.fabric,.045),.7);
+        previous=point;
+      }
+    }
+    for(const p of particles) {
+      const point=project(p),alpha=(.15+(point.z+1)*.13)*(all?1:.82);
+      ctx.beginPath();ctx.arc(point.x,point.y,p.size*point.depth,0,Math.PI*2);ctx.fillStyle=rgba(COLORS[DOMAIN[p.di].key],alpha);ctx.fill();
+    }
+    projection=nodes.map(n=>({...project(n),node:n}));
+    const map=new Map(projection.map(p=>[p.node.id,p]));
+    for(const edge of edges) {
+      const a=map.get(edge.a.id),b=map.get(edge.b.id);
+      const both=Math.min(edge.a.emphasis,edge.b.emphasis);
+      line(a,b,rgba(COLORS[edge.a.domain],.035+(a.z+b.z+2)*.014+both*.33),both>.5?1.2:.65);
+    }
+    currentRoot={x:1050,y:478,z:.5};
+    if(!all) {
+      const targets=projection.filter(p=>p.node.emphasis>.05);
+      for(const point of targets) {
+        const e=point.node.emphasis,mid={x:(point.x+currentRoot.x)/2,y:(point.y+currentRoot.y)/2-27};
+        ctx.beginPath();ctx.moveTo(currentRoot.x,currentRoot.y);ctx.quadraticCurveTo(mid.x,mid.y,point.x,point.y);
+        ctx.strokeStyle=rgba(COLORS[point.node.domain],.70*e);ctx.lineWidth=1.7;ctx.stroke();
+        if(!motionPaused&&!reducedQuery.matches) {
+          const t=(now*.00012+point.node.phase)%1;
+          const x=(1-t)*(1-t)*currentRoot.x+2*(1-t)*t*mid.x+t*t*point.x;
+          const y=(1-t)*(1-t)*currentRoot.y+2*(1-t)*t*mid.y+t*t*point.y;
+          ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fillStyle=rgba(COLORS[point.node.domain],e);ctx.fill();
+        }
+      }
+    }
+    projection.sort((a,b)=>a.z-b.z);
+    for(const point of projection) {
+      const n=point.node,e=n.emphasis,isHover=hovered===n||selected===n;
+      const alpha=all?.35+(point.z+1)*.24:.22+(point.z+1)*.15+e*.45;
+      const size=(n.radius+e*2.5+(isHover?2:0))*point.depth;
+      if(n.source||e>.1||isHover) {
+        const glow=ctx.createRadialGradient(point.x,point.y,0,point.x,point.y,size*3.6);
+        glow.addColorStop(0,rgba(COLORS[n.domain],.19+e*.20));glow.addColorStop(1,rgba(COLORS[n.domain],0));
+        ctx.fillStyle=glow;ctx.fillRect(point.x-size*4,point.y-size*4,size*8,size*8);
+      }
+      ctx.beginPath();ctx.arc(point.x,point.y,size,0,Math.PI*2);ctx.fillStyle=rgba(COLORS[n.domain],alpha);ctx.fill();
+      if(e>.15||isHover) {
+        ctx.beginPath();ctx.arc(point.x,point.y,size+3,0,Math.PI*2);ctx.strokeStyle=rgba(COLORS[n.domain],e*.6+.2);ctx.lineWidth=1;ctx.stroke();
+      }
+    }
+    const labels=projection.filter(p=>p.node.emphasis>.25||p.node.source&&p.z>-.35||p.node===hovered||p.node===selected)
+      .sort((a,b)=>(b.node.emphasis-a.node.emphasis)||(Number(b.node===selected)-Number(a.node===selected))||(b.z-a.z));
+    const occupied=[{x:895,y:441,w:310,h:126}];
+    let labelCount=0;
+    for(const point of labels) {
+      const n=point.node,e=n.emphasis,focus=e>.25||n===hovered||n===selected;
+      if(!focus&&labelCount>23)continue;
+      const font=focus?16:13;
+      ctx.font=(focus?'600 ':'400 ')+font+'px "Segoe UI",sans-serif';
+      const width=ctx.measureText(n.label).width;
+      const offsets=[[12,-10],[-width-12,-10],[12,22],[-width-12,22],[12,-30]];
+      let placed=null;
+      for(const [dx,dy] of offsets) {
+        const box={x:point.x+dx-4,y:point.y+dy-font,w:width+8,h:font+8};
+        if(box.x<478||box.x+box.w>1535||box.y<286||box.y+box.h>720)continue;
+        if(!occupied.some(b=>box.x<b.x+b.w+5&&box.x+box.w>b.x-5&&box.y<b.y+b.h+3&&box.y+box.h>b.y-3)) {placed={box,dx,dy};break;}
+      }
+      if(!placed)continue;
+      occupied.push(placed.box);labelCount++;
+      ctx.lineWidth=5;ctx.strokeStyle=rgba(COLORS.bg,.94);ctx.lineJoin='round';ctx.strokeText(n.label,point.x+placed.dx,point.y+placed.dy);
+      ctx.fillStyle=rgba(focus?COLORS.text:COLORS.secondary,focus?.98:.65);ctx.fillText(n.label,point.x+placed.dx,point.y+placed.dy);
+    }
+    const rootGlow=ctx.createRadialGradient(1050,478,2,1050,478,65);
+    rootGlow.addColorStop(0,rgba(COLORS.work,all?.04:.18));rootGlow.addColorStop(1,rgba(COLORS.work,0));
+    ctx.fillStyle=rootGlow;ctx.fillRect(980,408,140,140);
+    ctx.beginPath();ctx.arc(1050,478,all?17:21,0,Math.PI*2);ctx.fillStyle=rgba(COLORS.bg,.94);ctx.fill();ctx.strokeStyle=all?rgba(COLORS.secondary,.5):COLORS.work;ctx.lineWidth=1.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(1050,478,all?4:6,0,Math.PI*2);ctx.fillStyle=all?COLORS.secondary:COLORS.work;ctx.fill();
+    const rootTitle=all?'Microsoft IQ':step===5?'Draft brief':task().centre;
+    ctx.font='600 21px "Segoe UI",sans-serif';ctx.textAlign='center';ctx.lineWidth=7;ctx.strokeStyle=rgba(COLORS.bg,.96);
+    ctx.strokeText(rootTitle,1050,531);ctx.fillStyle=COLORS.text;ctx.fillText(rootTitle,1050,531);
+    const rootSubtitles=['People and information across the business','Relevant colleagues and earlier work','Capacity and agreed business measures','References and requirements','Public information for this task','Ready for someone to review','Try a different question'];
+    ctx.font='12px "Segoe UI",sans-serif';ctx.fillStyle=COLORS.muted;ctx.fillText(rootSubtitles[step],1050,553);
+    ctx.textAlign='left';
+  }
+  function requestDraw() {
+    if(notesMode||frameId||document.hidden)return;
+    frameId=requestAnimationFrame(frame);
+  }
+  function frame(now) {
+    frameId=0;
+    const dt=lastTime?Math.min(.06,(now-lastTime)/1000):1/30;
+    lastTime=now;
+    const moving=!motionPaused&&!reducedQuery.matches&&!thumb;
+    if(moving)rotation+=dt*.018;
+    if(now-lastDrawTime>=30||!moving) {
+      renderCanvas(now,dt);lastDrawTime=now;
+    }
+    if(moving||now<animationUntil)requestDraw();
+  }
+  function resize() {
+    if(notesMode){scaleNotes();return;}
+    const scale=Math.min(innerWidth/1600,innerHeight/900);
+    $('stage').style.transform='scale('+scale+')';
+    const dpr=Math.min(devicePixelRatio||1,2);
+    cv.width=Math.round(1600*dpr);cv.height=Math.round(900*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);requestDraw();
+  }
+  function pointerPosition(event) {
+    const rect=cv.getBoundingClientRect();
+    return {x:(event.clientX-rect.left)*1600/rect.width,y:(event.clientY-rect.top)*900/rect.height};
+  }
+  function hitTest(p) {
+    let best=null,distance=Infinity;
+    for(const n of projection) {
+      const d=(n.x-p.x)**2+(n.y-p.y)**2;
+      if(d<(n.node.radius+8)**2&&d<distance) {best=n.node;distance=d;}
+    }
+    return best;
+  }
+  cv.addEventListener('pointerdown',e=>{
+    const p=pointerPosition(e);if(p.x<470||p.y<275||p.y>765)return;
+    drag={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove',e=>{
+    if(drag) {
+      const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+      if(Math.abs(dx)+Math.abs(dy)>5)drag.moved=true;
+      yaw=drag.yaw+dx*.004;pitch=clamp(drag.pitch+dy*.003,-.55,.55);requestDraw();return;
+    }
+    const p=pointerPosition(e);hovered=hitTest(p);
+    cv.style.cursor=hovered?'pointer':p.x>470&&p.y>275&&p.y<765?'grab':'default';
+    if(hovered&&!quiet) {
+      const tip=$('tooltip');tip.replaceChildren(element('small','',DOMAIN[hovered.di].name),document.createTextNode(hovered.label));
+      tip.style.left=clamp(p.x+16,480,1290)+'px';tip.style.top=clamp(p.y-45,285,700)+'px';tip.hidden=false;
+    } else $('tooltip').hidden=true;
+    requestDraw();
+  });
+  cv.addEventListener('pointerup',e=>{
+    if(!drag)return;
+    const click=!drag.moved;drag=null;
+    if(click){const n=hitTest(pointerPosition(e));if(n)showSource(n.id,null);}
+    cv.style.cursor='grab';
+  });
+  cv.addEventListener('pointercancel',()=>{drag=null;});
+  cv.addEventListener('pointerleave',()=>{hovered=null;$('tooltip').hidden=true;requestDraw();});
+  function toggleHelp(on) {
+    if(on){helpOpener=document.activeElement;$('help').hidden=false;$('closeHelp').focus();}
+    else {$('help').hidden=true;if(helpOpener&&helpOpener.isConnected)helpOpener.focus();}
+  }
+  function toggleFullScreen() {
+    if(document.fullscreenElement) {
+      document.exitFullscreen().catch(()=>showNotice('Full screen could not close. Use the browser full-screen control.'));
+    } else {
+      const target=notesMode?document.documentElement:$('audience');
+      if(target.requestFullscreen)target.requestFullscreen().catch(()=>showNotice('Use F11 for browser full screen.'));
+      else showNotice('Use F11 for browser full screen.');
+    }
+  }
+  function focusStage(){if(!notesMode&&!thumb)$('stage').focus({preventScroll:true});}
+  function openNotes() {}
+  function setupAudience() {
+    $('stage').tabIndex=-1;
+    DOMAIN.forEach((domain,i)=>{
+      const button=element('button','iq-chip');button.type='button';
+      button.style.setProperty('--domain-color',domainColor(domain.key));
+      button.append(element('strong','',domain.name),element('small','',domain.short));
+      button.setAttribute('aria-label','Show '+domain.name+': '+domain.short);
+      button.addEventListener('click',()=>{applyState({step:i+1});focusStage();});
+      $('iqRail').append(button);
+    });
+    STEPS.forEach((s,i)=>{
+      const button=element('button','step-button',s.nav);button.type='button';
+      button.setAttribute('aria-label','Step '+(i+1)+': '+s.title);
+      button.addEventListener('click',()=>{applyState({step:i});focusStage();});$('stepNav').append(button);
+    });
+    $('previous').addEventListener('click',()=>{navigate(-1);focusStage();});
+    $('next').addEventListener('click',()=>{navigate(1);focusStage();});
+    $('restart').addEventListener('click',()=>{yaw=pitch=rotation=0;applyState({step:0,blacked:false});focusStage();});
+    $('taskSelect').addEventListener('change',e=>{applyState({task:e.target.value});focusStage();});
+    $('motionButton').addEventListener('click',()=>{applyState({motionPaused:!motionPaused});focusStage();});
+    $('presentButton').addEventListener('click',()=>{applyState({quiet:!quiet});focusStage();});
+    $('helpButton').addEventListener('click',()=>toggleHelp(true));$('closeHelp').addEventListener('click',()=>toggleHelp(false));
+    $('closeDetail').addEventListener('click',()=>closeDetail());
+    if(thumb) {
+      cv.style.pointerEvents='none';motionPaused=true;
+      $('stage').classList.add('quiet');
+    }
+  }
+  let notesCurrentFrame=null,notesNextFrame=null,startTime=Date.now();
+  function thumbUrl(position,slot) {
+    const url=new URL(location.href);url.search='?presenter=thumb&slot='+slot;url.hash=taskKey+'/'+position;return url.href;
+  }
+  function setupNotes() {}
+  function scaleNotes() {}
+  function updateNotes() {}
+  addEventListener('message',e=>{
+    if(thumb&&e.source===parent&&e.data&&e.data.type==='sphere-thumb')applyState(e.data.state,true);
+    if(notesMode&&e.data&&e.data.type==='sphere-thumb-ready'&&(e.source===notesCurrentFrame.contentWindow||e.source===notesNextFrame.contentWindow))updateNotes();
+  });
+  addEventListener('keydown',e=>{
+    if(thumb||e.defaultPrevented||e.altKey||e.metaKey)return;
+    const key=e.key;
+    if(!notesMode&&!$('help').hidden) {
+      if(key==='Escape'){e.preventDefault();toggleHelp(false);}
+      else if(key==='Tab'){e.preventDefault();$('closeHelp').focus();}
+      return;
+    }
+    if(!notesMode&&!$('detail').hidden) {
+      if(key==='Escape'){e.preventDefault();closeDetail();return;}
+      if(key==='Tab'){e.preventDefault();$('closeDetail').focus();return;}
+    }
+    if(e.target.closest('input,textarea,select'))return;
+    const actionKeys=['ArrowRight','ArrowDown','PageDown',' ','ArrowLeft','ArrowUp','PageUp','Backspace','Home','End'];
+    if(actionKeys.includes(key)) {
+      e.preventDefault();
+      if(key==='Home')applyState({step:0});
+      else if(key==='End')applyState({step:6});
+      else navigate(['ArrowRight','ArrowDown','PageDown',' '].includes(key)?1:-1);
+      return;
+    }
+    if(/^[1-7]$/.test(key)){e.preventDefault();applyState({step:Number(key)-1});return;}
+    if(key==='p'||key==='P'){e.preventDefault();if(!notesMode)openNotes();}
+    else if(key==='m'||key==='M'){e.preventDefault();applyState({motionPaused:!motionPaused});}
+    else if(key==='i'||key==='I'){e.preventDefault();applyState({quiet:!quiet});}
+    else if(key==='f'||key==='F'){e.preventDefault();toggleFullScreen();}
+    else if(key==='b'||key==='B'||key==='.'){e.preventDefault();applyState({blacked:!blacked});}
+    else if((key==='?'||key==='h'||key==='H')&&!notesMode){e.preventDefault();toggleHelp(true);}
+    else if(key==='Escape'&&!notesMode){applyState({quiet:false,blacked:false});focusStage();}
+  });
+  addEventListener('resize',resize);
+  addEventListener('hashchange',()=>applyState(stateFromHash()));
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){if(frameId)cancelAnimationFrame(frameId);frameId=0;lastTime=0;}
+    else {lastTime=0;requestDraw();}
+  });
+  reducedQuery.addEventListener('change',()=>{motionPaused=reducedQuery.matches;requestDraw();});
+  window.MicrosoftIQSphere=Object.freeze({
+    getState,go:position=>applyState({step:position}),setTask:key=>{if(!Object.hasOwn(TASKS,key))throw new Error('Unknown task');applyState({task:key});},
+    dataSummary:()=>({nodes:nodes.length,particles:particles.length,edges:edges.length,relevant:[...relevantIds()]}),
+    steps:STEPS.map(({id,title,nav})=>({id,title,nav})),
+    sources:SOURCES.map(s=>({...s})),channel
+  });
+  if(notesMode)setupNotes();else setupAudience();
+  const initial=stateFromHash();
+  applyState({...initial,motionPaused:thumb||reducedQuery.matches},true);
+  resize();
+  if(thumb)parent.postMessage({type:'sphere-thumb-ready'},'*');
+  else send({type:'hello'});
+})();
+</script>
+</body>
+</html>
