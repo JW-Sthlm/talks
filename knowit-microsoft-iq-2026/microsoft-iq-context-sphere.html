@@ -138,6 +138,8 @@ kbd { font: 14px var(--mono); color: var(--work); }
 .notes-nav { display: flex; align-items: center; justify-content: space-between; }
 .notes-nav button { background: var(--surface); border: 1px solid var(--border); padding: 9px 16px; border-radius: 6px; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+.access-note {font-size:15px;line-height:1.45;}
 </style>
 </head>
 <body>
@@ -225,8 +227,8 @@ kbd { font: 14px var(--mono); color: var(--work); }
     [key, getComputedStyle(document.documentElement).getPropertyValue('--' + key).trim()]));
   const DOMAIN = [
     { key:'work', name:'Work IQ', short:'People & work', description:'People and their work', role:'Who has done this before?', code:'W' },
-    { key:'fabric', name:'Fabric IQ', short:'Business data & definitions', description:'Business data and agreed definitions', role:'Can we staff it and make the numbers work?', code:'F' },
-    { key:'foundry', name:'Foundry IQ', short:'Trusted knowledge', description:'Knowledge from chosen sources', role:'Which evidence can we use?', code:'K' },
+    { key:'fabric', name:'Fabric IQ', short:'Business meaning & measures', description:'Business data and agreed definitions', role:'Can we staff it and make the numbers work?', code:'F' },
+    { key:'foundry', name:'Foundry IQ', short:'Reusable chosen knowledge', description:'Knowledge from chosen sources', role:'Which evidence can we use?', code:'K' },
     { key:'web', name:'Web IQ', short:'Public web', description:'Information from the public web', role:'What is the customer saying publicly?', code:'X' }
   ];
   const SOURCES = [
@@ -236,8 +238,8 @@ kbd { font: 14px var(--mono); color: var(--work); }
     ['w4','work','Pursuit decisions','Working decisions','The pursuit record distinguishes agreed commitments from assumptions awaiting approval.'],
     ['w5','work','Delivery ownership','People and responsibility','The handover names the accountable delivery owner and the receiving operations team.'],
     ['w6','work','Open project actions','Working context','The project team maintains open actions and the decision owners needed at handover.'],
-    ['f1','fabric','Delivery capacity','Business data','A governed view defines available delivery capacity by practice and period. Use its agreed definition rather than counting people in chat.'],
-    ['f2','fabric','Margin definition','Business meaning','An agreed margin measure gives the bid team a consistent basis for commercial checks. It is not a generated price recommendation.'],
+    ['f1','fabric','Available-capacity measure','Governed measure','A governed view defines available delivery capacity by practice and period. Use its agreed definition rather than counting people in chat.'],
+    ['f2','fabric','Owned margin measure','Governed measure','An agreed margin measure gives the bid team a consistent basis for commercial checks. It is not a generated price recommendation.'],
     ['f3','fabric','Comparable project results','Business evidence','Historical delivery measures provide business context for a comparable engagement. Comparability requires review.'],
     ['f4','fabric','Pipeline measures','Business meaning','Shared definitions distinguish qualified opportunities from names raised in a conversation.'],
     ['f5','fabric','Service performance','Operational measures','Agreed service measures show how actual performance compares with accepted operating targets.'],
@@ -257,76 +259,263 @@ kbd { font: 14px var(--mono); color: var(--work); }
   ].map(([id,domain,label,type,detail],index) => ({id,domain,label,type,detail,code:DOMAIN.find(d=>d.key===domain).code+(index%6+1)}));
   const BY_ID = new Map(SOURCES.map(s=>[s.id,s]));
   const TASKS = {
-    pursuit: {
-      name:'Pursuit brief', question:'Help us prepare this logistics bid.', centre:'Logistics bid',
-      ids:[['w1','w2','w3','w4'],['f1','f2','f3'],['k1','k2','k3'],['x1','x2','x3']],
-      descriptions:[
-        'Start with the customer notes. Find colleagues with relevant experience in Norway and Finland.',
-        'Those colleagues may be relevant. Are they available, and how do we assess the delivery margin?',
-        'We need a reference we are allowed to share, and the requirements for this tender.',
-        "Check the customer's public priorities and tender notice. Confirm which transport requirements apply."
+  "pursuit": {
+    "name": "Pursuit brief",
+    "question": "Help us prepare this logistics bid.",
+    "centre": "Logistics bid",
+    "ids": [
+      [
+        "w1",
+        "w2",
+        "w3",
+        "w4"
       ],
-      brief:[
-        {heading:'Relevant experience',text:'Approved Nordic reference. Confirm what the team may reuse.',ids:['w1','k1']},
-        {heading:'People to involve',text:'Swedish account team, Norwegian reference owner and Finnish specialist.',ids:['w1','w2','w3']},
-        {heading:'Checks before a bid decision',text:'Confirm capacity and the margin assumptions. Check the tender requirements.',ids:['f1','f2','k2','x3']}
+      [
+        "f1",
+        "f2",
+        "f3"
       ],
-      owner:'The pursuit lead reviews the brief and owns the bid decision.'
+      [
+        "k1",
+        "k2",
+        "k3"
+      ],
+      [
+        "x1",
+        "x2",
+        "x3"
+      ]
+    ],
+    "descriptions": [
+      "Start with the customer notes. Find colleagues with relevant experience in Norway and Finland.",
+      "Use the agreed available-capacity and margin measures, with their business meaning. Reuse useful Power BI semantic models.",
+      "Configure a reusable knowledge base for this bid workflow. Search chosen authoritative sources for permission-aware evidence with citations.",
+      "Check the customer's public priorities and tender notice. Confirm which transport requirements apply."
+    ],
+    "brief": [
+      {
+        "heading": "Relevant experience",
+        "text": "Approved Nordic reference. Confirm what the team may reuse.",
+        "ids": [
+          "w1",
+          "k1"
+        ]
+      },
+      {
+        "heading": "People to involve",
+        "text": "Swedish account team, Norwegian reference owner and Finnish specialist.",
+        "ids": [
+          "w1",
+          "w2",
+          "w3"
+        ]
+      },
+      {
+        "heading": "Checks before a bid decision",
+        "text": "Confirm capacity and the margin assumptions. Check the tender requirements.",
+        "ids": [
+          "f1",
+          "f2",
+          "k2",
+          "x3"
+        ]
+      }
+    ],
+    "owner": "The pursuit lead reviews the brief and owns the bid decision."
+  },
+  "handover": {
+    "name": "Project handover",
+    "question": "Help the next team take over this service.",
+    "centre": "Service handover",
+    "opening": "A new team is taking over the service. What are they receiving, and who can help?",
+    "titles": {
+      "0": "The next team needs to take over the service.",
+      "1": "Who owns the service? What is still open?",
+      "2": "What counts as accepted and ready to run?",
+      "3": "Where are the release record and runbook?",
+      "4": "Do any public advisories affect this service?",
+      "5": "The receiving owner can now review the handover."
     },
-    handover: {
-      name:'Project handover', question:'Help the next team take over this service.', centre:'Service handover',
-      opening:'A new team is taking over the service. What are they receiving, and who can help?',
-      titles:{0:'The next team needs to take over the service.',1:'Who owns the service? What is still open?',2:'What counts as accepted and ready to run?',3:'Where are the release record and runbook?',4:'Do any public advisories affect this service?',5:'The receiving owner can now review the handover.'},
-      ids:[['w5','w6','w4'],['f5','f6'],['k4','k5','k6'],['x6','x3']],
-      descriptions:[
-        'Find the service owner and the people responsible for the open actions.',
-        'Check the agreed acceptance criteria and how service performance will be measured.',
-        'Use the accepted release record and current runbook. Keep unresolved issues visible.',
-        'Check public vendor advisories and whether they apply to this service.'
+    "ids": [
+      [
+        "w5",
+        "w6",
+        "w4"
       ],
-      brief:[
-        {heading:'Responsibility',text:'Name the delivery owner and receiving operations team. Assign every open action.',ids:['w5','w6']},
-        {heading:'Accepted scope',text:'Check the accepted release against the decision record and agreed acceptance measures.',ids:['k4','k6','f6']},
-        {heading:'Operating readiness',text:'Review the runbook and service measures. Check whether the public advisory applies.',ids:['k5','f5','x6']}
+      [
+        "f5",
+        "f6"
       ],
-      owner:'The receiving service owner accepts the handover.'},
-    leadership: {
-      name:'Leadership brief', question:'Prepare the Nordic leadership update.', centre:'Nordic update',
-      opening:'The Nordic team needs an update they can use to make decisions. Start with what has changed and who owns it.',
-      titles:{0:'The Nordic team needs a leadership update.',1:'Which decisions need attention, and who owns them?',2:'Are we using the same business numbers?',3:'Which results can we back up?',4:'What has changed for our customers?',5:'Leadership can review the update and decide.'},
-      ids:[['w3','w4','w5'],['f1','f3','f4'],['k1','k3','k6'],['x1','x4','x5']],
-      descriptions:[
-        'Find the open decisions and the people responsible for them.',
-        'Use shared definitions of capacity and pipeline. Check which delivery results are comparable.',
-        'Back up the reported results with approved references and accepted releases.',
-        'Look at dated public customer and market information. Keep assumptions separate from facts.'
+      [
+        "k4",
+        "k5",
+        "k6"
       ],
-      brief:[
-        {heading:'Shared business view',text:'Check capacity and qualified pipeline.',ids:['f1','f4']},
-        {heading:'Evidence and ownership',text:'Link the reported outcomes to approved references and accepted releases.',ids:['k1','k6','w5']},
-        {heading:'Decisions to discuss',text:'Bring open pursuit decisions together with dated public customer and market context.',ids:['w4','x1','x4']}
+      [
+        "x6",
+        "x3"
+      ]
+    ],
+    "descriptions": [
+      "Find the service owner and the people responsible for the open actions.",
+      "Check the agreed acceptance criteria and how service performance will be measured.",
+      "Use the accepted release record and current runbook. Keep unresolved issues visible.",
+      "Check public vendor advisories and whether they apply to this service."
+    ],
+    "brief": [
+      {
+        "heading": "Responsibility",
+        "text": "Name the delivery owner and receiving operations team. Assign every open action.",
+        "ids": [
+          "w5",
+          "w6"
+        ]
+      },
+      {
+        "heading": "Accepted scope",
+        "text": "Check the accepted release against the decision record and agreed acceptance measures.",
+        "ids": [
+          "k4",
+          "k6",
+          "f6"
+        ]
+      },
+      {
+        "heading": "Operating readiness",
+        "text": "Review the runbook and service measures. Check whether the public advisory applies.",
+        "ids": [
+          "k5",
+          "f5",
+          "x6"
+        ]
+      }
+    ],
+    "owner": "The receiving service owner accepts the handover."},
+  "leadership": {
+    "name": "Leadership brief",
+    "question": "Prepare the Nordic leadership update.",
+    "centre": "Nordic update",
+    "opening": "The Nordic team needs an update they can use to make decisions. Start with what has changed and who owns it.",
+    "titles": {
+      "0": "The Nordic team needs a leadership update.",
+      "1": "Which decisions need attention, and who owns them?",
+      "2": "Are we using the same business numbers?",
+      "3": "Which results can we back up?",
+      "4": "What has changed for our customers?",
+      "5": "Leadership can review the update and decide."
+    },
+    "ids": [
+      [
+        "w3",
+        "w4",
+        "w5"
       ],
-      owner:'Nordic leadership owns priorities and any resulting commitments.'}
-  };
+      [
+        "f1",
+        "f3",
+        "f4"
+      ],
+      [
+        "k1",
+        "k3",
+        "k6"
+      ],
+      [
+        "x1",
+        "x4",
+        "x5"
+      ]
+    ],
+    "descriptions": [
+      "Find the open decisions and the people responsible for them.",
+      "Use shared definitions of capacity and pipeline. Check which delivery results are comparable.",
+      "Back up the reported results with approved references and accepted releases.",
+      "Look at dated public customer and market information. Keep assumptions separate from facts."
+    ],
+    "brief": [
+      {
+        "heading": "Shared business view",
+        "text": "Check capacity and qualified pipeline.",
+        "ids": [
+          "f1",
+          "f4"
+        ]
+      },
+      {
+        "heading": "Evidence and ownership",
+        "text": "Link the reported outcomes to approved references and accepted releases.",
+        "ids": [
+          "k1",
+          "k6",
+          "w5"
+        ]
+      },
+      {
+        "heading": "Decisions to discuss",
+        "text": "Bring open pursuit decisions together with dated public customer and market context.",
+        "ids": [
+          "w4",
+          "x1",
+          "x4"
+        ]
+      }
+    ],
+    "owner": "Nordic leadership owns priorities and any resulting commitments."}
+};
   const STEPS = [
-    {id:'landscape',nav:'The question',kicker:'One Knowit',title:'A Swedish team is preparing a logistics bid.',
-      lead:'Before they write the proposal, they need to know what Knowit can bring.',
-      caption:'Start with the question we need to answer.',sub:'The example uses all four IQ capabilities to explain their different roles.'},
-    {id:'work',nav:'Work IQ',kicker:'Find the people',title:'Who in Knowit has done this before?',
-      caption:'Work IQ helps find the people and their work.',sub:'Relevant colleagues and earlier decisions, within the right access.'},
-    {id:'business',nav:'Fabric IQ',kicker:'Check the business numbers',title:'Do we have the capacity to deliver?',
-      caption:'Fabric IQ adds the business data and its meaning.',sub:'Use the definitions agreed for this task.'},
-    {id:'knowledge',nav:'Foundry IQ',kicker:'Find the documents we need',title:'Which references can we use in the bid?',
-      caption:'Foundry IQ connects the agent to chosen knowledge sources.',sub:'Check the owner and version of each source.'},
-    {id:'external',nav:'Web IQ',kicker:'Check the public information',title:'What else should we know about the customer?',
-      caption:'Web IQ adds information from the public web.',sub:'Check the date and who published it.'},
-    {id:'brief',nav:'Draft brief',kicker:'Review the draft',title:'Now the pursuit lead has something to work with.',
-      lead:'Check the sources behind the draft before acting on it.',
-      caption:'A first draft for someone to review.',sub:'Open a source to check what is behind a point.'},
-    {id:'reuse',nav:'The next task',kicker:'What Knowit can deliver',title:'Where else could Knowit use this?',
-      lead:'A handover needs different information from a bid. Reuse the sources that fit, with the right access.',
-      caption:'Change the question. A different set of information matters.',sub:'Sources and business definitions can be reused where they fit the next task.'}
-  ];
+  {
+    "id": "landscape",
+    "nav": "The question",
+    "kicker": "One Knowit",
+    "title": "A Swedish team is preparing a logistics bid.",
+    "lead": "Before they write the proposal, they need to know what Knowit can bring.",
+    "caption": "Start with the question we need to answer.",
+    "sub": "The example uses all four IQ capabilities to explain their different roles."},
+  {
+    "id": "work",
+    "nav": "Work IQ",
+    "kicker": "Find the people",
+    "title": "Who in Knowit has done this before?",
+    "caption": "Work IQ helps find the people and their work.",
+    "sub": "Work IQ also accesses documents and business data. The capabilities overlap."},
+  {
+    "id": "business",
+    "nav": "Fabric IQ",
+    "kicker": "Check the business numbers",
+    "title": "Do we have the capacity to deliver?",
+    "caption": "Fabric IQ adds shared business meaning and trusted measures.",
+    "sub": "Optional ontology preview: consultant → skill → project. Reuse existing semantic models."},
+  {
+    "id": "knowledge",
+    "nav": "Foundry IQ",
+    "kicker": "Find the documents we need",
+    "title": "Which references can we use in the bid?",
+    "caption": "Foundry IQ reuses chosen knowledge for this custom workflow.",
+    "sub": "Configure sources and caller access. Evaluate retrieved evidence and citations."},
+  {
+    "id": "external",
+    "nav": "Web IQ",
+    "kicker": "Check the public information",
+    "title": "What else should we know about the customer?",
+    "caption": "Web IQ adds information from the public web.",
+    "sub": "Check the date and who published it."},
+  {
+    "id": "brief",
+    "nav": "Draft brief",
+    "kicker": "Review the draft",
+    "title": "Now the pursuit lead has something to work with.",
+    "lead": "Check the sources behind the draft before acting on it.",
+    "caption": "A first draft for someone to review.",
+    "sub": "Open a source to check what is behind a point."},
+  {
+    "id": "reuse",
+    "nav": "The next task",
+    "kicker": "What Knowit can deliver",
+    "title": "Where else could Knowit use this?",
+    "lead": "A handover needs different information from a bid. Reuse the sources that fit, with the right access.",
+    "caption": "Change the question. A different set of information matters.",
+    "sub": "Use the capabilities the task needs. All four are not required for every project."}
+];
   const FILLER = {
     work:['Account conversation','Project meeting','Team expertise','Delivery review','Customer follow-up','Decision owner','Practice collaboration','Working agreement','Engagement history'],
     fabric:['Practice capacity','Project result','Service measure','Business definition','Qualified pipeline','Resource plan','Delivery period','Forecast measure','Acceptance result'],
@@ -379,7 +568,7 @@ kbd { font: 14px var(--mono); color: var(--work); }
   let projection=[],currentRoot=null;
   let bridge=null,sequence=0;
   const sender=(crypto.randomUUID?crypto.randomUUID():String(Math.random()));
-  const channel='knowit-microsoft-iq-context-sphere-v02';
+  const channel='knowit-microsoft-iq-context-sphere-v11';
   const seen=new Set();
   try { if(!thumb) bridge=new BroadcastChannel(channel); } catch (_) { /* Storage is the local fallback. */ }
   function readStorage(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
@@ -460,7 +649,7 @@ kbd { font: 14px var(--mono); color: var(--work); }
       button.append(element('span','evidence-code',source.code),content);
       button.addEventListener('click',()=>showSource(id,button));list.append(button);
     });
-    const accessNotes=['Finding a person does not confirm availability.','Use the agreed measures and check the data is current.','The reference owner still approves what can be shared.','Public statements do not reveal private plans.'];
+    const accessNotes=['Finding a person does not confirm availability.','The measure keeps its agreed definition. Optional preview ontology can describe consultant, skill and project relationships.','Optional preview path: Fabric ontology source → Foundry IQ knowledge base → agent. Configure and evaluate each connection.','Public statements do not reveal private plans.'];
     $('storyBody').append(list,element('p','access-note',accessNotes[di]));
   }
   function buildBrief() {
