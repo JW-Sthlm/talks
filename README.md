@@ -70,6 +70,8 @@ Each talk lives in its own folder named `<topic>-<year>` (e.g. `frontier-firms-2
 
 The root [`index.html`](./index.html) is a card-based landing page that mirrors the table above.
 
+Feature the latest delivered talk first. Add new talks above older entries; updating an older deck must not promote it.
+
 When adding a new talk:
 
 1. Build the deck in any local source folder with `deck.html`, `presenter.html`, and `storyboard.html`.
