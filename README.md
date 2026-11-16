@@ -10,6 +10,7 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
+| 2026-11-17 | Enter the Agentic Enterprise Era | Forefront (English) | [Open talk](https://jw-sthlm.github.io/talks/agentic-enterprise-era-2026/) |
 | 2026-10-28 | Microsoft IQ: why context wins the AI deal | Knowit Nordic (English, Johan's sections with Ben Gibbs handovers) | [Open deck](https://jw-sthlm.github.io/talks/knowit-microsoft-iq-2026/) |
 | 2026 | När AI börjar göra jobbet | Nexer kundevent (Swedish, with Sara Kiraly) | [Open talk](https://jw-sthlm.github.io/talks/nexer-frontier-event-2026/) |
 | 2026 | What happens when AI joins your project team? | Capgemini / Graduate consulting | [Open talk](https://jw-sthlm.github.io/talks/capgemini-graduate-consulting-2026/) |
@@ -19,6 +20,16 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 | 2026-04 | Autonoma Agenter. Vad är det och vågar vi? | Internal Microsoft session | [Open deck](https://jw-sthlm.github.io/talks/agents-2026/) |
 
 ## How talks are published
+
+### Agentic Enterprise Era audience release
+
+The folder contains the landing page, the interactive audience `deck.html`,
+`audience.pdf` and the title image. The deck is built in the speaking source
+workspace from the presented deck, with the speaker notes, the spoken lines of
+the terminal demo and the presenter view removed. The same deck serves later
+events, so republish all four files from the source build when it changes, and
+never with the legacy publisher. The companies and people in the story are
+fictional.
 
 ### Knowit Microsoft IQ audience release
 
