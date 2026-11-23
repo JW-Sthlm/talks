@@ -10,7 +10,7 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
-| 2026-11-17 | Enter the Agentic Enterprise Era | Forefront (English) | [Open talk](https://jw-sthlm.github.io/talks/agentic-enterprise-era-2026/) |
+| November 2026 | Enter the Agentic Enterprise Era | English | [Open talk](https://jw-sthlm.github.io/talks/agentic-enterprise-era-2026/) |
 | 2026-10-28 | Microsoft IQ: why context wins the AI deal | Knowit Nordic (English, Johan's sections with Ben Gibbs handovers) | [Open deck](https://jw-sthlm.github.io/talks/knowit-microsoft-iq-2026/) |
 | 2026 | När AI börjar göra jobbet | Nexer kundevent (Swedish, with Sara Kiraly) | [Open talk](https://jw-sthlm.github.io/talks/nexer-frontier-event-2026/) |
 | 2026 | What happens when AI joins your project team? | Capgemini / Graduate consulting | [Open talk](https://jw-sthlm.github.io/talks/capgemini-graduate-consulting-2026/) |
