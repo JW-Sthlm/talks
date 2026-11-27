@@ -11,6 +11,7 @@ Each talk has its own folder and runs as a live HTML deck on GitHub Pages.
 | Date | Title | Venue | Live |
 |------|-------|-------|------|
 | November 2026 | Enter the Agentic Enterprise Era | English | [Open talk](https://jw-sthlm.github.io/talks/agentic-enterprise-era-2026/) |
+| 2026-11 | Enter the Agentic Enterprise Era | Keynote (English) | [Open talk](https://jw-sthlm.github.io/talks/agentic-enterprise-era-2026/) |
 | 2026-10-28 | Microsoft IQ: why context wins the AI deal | Knowit Nordic (English, Johan's sections with Ben Gibbs handovers) | [Open deck](https://jw-sthlm.github.io/talks/knowit-microsoft-iq-2026/) |
 | 2026 | När AI börjar göra jobbet | Nexer kundevent (Swedish, with Sara Kiraly) | [Open talk](https://jw-sthlm.github.io/talks/nexer-frontier-event-2026/) |
 | 2026 | What happens when AI joins your project team? | Capgemini / Graduate consulting | [Open talk](https://jw-sthlm.github.io/talks/capgemini-graduate-consulting-2026/) |
@@ -79,7 +80,7 @@ Each talk lives in its own folder named `<topic>-<year>` (e.g. `frontier-firms-2
 | `presenter.html` | Presenter view (speaker script + timer + thumbnails). | Direct URL only |
 | `storyboard.html` | Full storyboard with script, risks, bridge notes. | Direct URL only |
 
-The root [`index.html`](./index.html) is a card-based landing page that mirrors the table above.
+The root [`index.html`](./index.html) is the keynotes page of jw-sthlm.github.io and mirrors the table above. It uses the shared site styles at `/assets/site.css` and `/assets/site.js` from the JW-Sthlm.github.io repository, so it only renders fully when served from the live domain or a local server that maps both repositories. Talks given more than once are grouped as one entry with several deliveries.
 
 Feature the latest delivered talk first. Add new talks above older entries; updating an older deck must not promote it.
 
@@ -88,7 +89,7 @@ When adding a new talk:
 1. Build the deck in any local source folder with `deck.html`, `presenter.html`, and `storyboard.html`.
 2. Run `.\Publish-Talk.ps1 -Source <source-folder> -Slug <topic>-<year>`. The script renames `deck.html` to `index.html`, rewrites internal `src=`/`href=` path references, copies the other files, then commits and pushes.
 3. Add the row to the talks table above.
-4. Add a matching card to the root `index.html` landing page.
+4. Add a matching entry to the root `index.html` keynotes page, newest first, with its PDF size.
 5. GitHub Pages picks it up within a minute.
 
 For tweaks to an already-published talk, re-run the same `Publish-Talk.ps1` command. Use `-WhatIf` for a dry run, `-Message "..."` to override the commit subject, `-NoPush` to commit locally only.
